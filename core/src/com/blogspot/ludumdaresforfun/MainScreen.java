@@ -234,7 +234,7 @@ public class MainScreen extends BaseScreen {
 		else if (this.boss.velocity.x < 0)
 			this.boss.facesRight = false;
 
-		if (this.boss.state == this.boss.state.Standing)
+		if (this.boss.state == Boss.State.Standing)
 			frame = Assets.bossStanding.getKeyFrame(this.boss.stateTime);
 
 		Batch batch = this.renderer.getSpriteBatch();
@@ -574,8 +574,7 @@ public class MainScreen extends BaseScreen {
         }
 
 	    int i = 0;
-	    // TODO: fix error here. the number 3 not have sense
-		boolean[] toBeDeleted = new boolean[3];
+		boolean[] toBeDeleted = new boolean[this.enemies.size];
 		for (Enemy enemy : this.enemies){
 			if (enemy != null){
 				if(enemy.setToDie == true) //&& animation finished
