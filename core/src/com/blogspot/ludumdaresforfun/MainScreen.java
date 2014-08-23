@@ -116,12 +116,7 @@ public class MainScreen extends BaseScreen {
 		batch.end();
 	}
 
-    public void updateShot(Shot shot, float deltaTime){
-        if (shot.shotGoesRight)
-            shot.desiredPosition.x = (shot.getX() + (deltaTime * shot.SHOT_VELOCITY));
-        else
-        	shot.desiredPosition.x = (shot.getX() - (deltaTime * shot.SHOT_VELOCITY));
-
+    public boolean updateShot(Shot shot, float deltaTime){
         shot.desiredPosition.y = shot.getY();
 
         shot.stateTime += deltaTime;
@@ -133,125 +128,100 @@ public class MainScreen extends BaseScreen {
 
 		shot.velocity.scl(deltaTime);
 
-		//collision
+		//collision (destroy if necessary)
+		boolean collided = collisionShot(shot);
 
-		/*
+		// unscale the velocity by the inverse delta time and set
+		// the latest position
+		if (shot != null){
+			shot.desiredPosition.add(shot.velocity);
+			shot.velocity.scl(1 / deltaTime);
+
+			shot.setPosition(shot.desiredPosition.x, shot.desiredPosition.y);
+			if (shot.normalGravity && (shot.getY() < 240))
+				collided = true;	//dont traspass to the other world
+			else if (!shot.normalGravity && (shot.getY() >= 240))
+				collided = true;
+			else if (shot.getY() > 480 || shot.getY() < 0)
+				collided = true;
+		}
+
+		return collided;
+    }
+
+
+	private boolean collisionShot(Shot shot) {
 		this.rayaRect = this.rectPool.obtain();
 
-		this.raya.desiredPosition.y = Math.round(this.raya.getY());
-		this.raya.desiredPosition.x = Math.round(this.raya.getX());
+		shot.desiredPosition.y = Math.round(shot.getY());
+		shot.desiredPosition.x = Math.round(shot.getX());
 
-		this.rayaRect.set(this.raya.desiredPosition.x, (this.raya.desiredPosition.y), this.raya.getWidth(), this.raya.getHeight());
+		this.rayaRect.set(shot.desiredPosition.x, (shot.desiredPosition.y), shot.getWidth(), shot.getHeight());
 
 		int startX, startY, endX, endY;
 
 		if (this.raya.velocity.x > 0) {
-			startX = endX = (int)((this.raya.desiredPosition.x + this.raya.velocity.x + this.raya.getWidth()) / 16);
+			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x + shot.getWidth()) / 16);
 		}
 		else {
-			startX = endX = (int)((this.raya.desiredPosition.x + this.raya.velocity.x) / 16);
+			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x) / 16);
 		}
 
-		if (this.raya.grounded && normalGravity){
-			startY = (int)((this.raya.desiredPosition.y) / 16) + 1;
-			endY = (int)((this.raya.desiredPosition.y + this.raya.getHeight()) / 16) + 1;
-		}
-		else if (this.raya.grounded && !normalGravity){
-			startY = (int)((this.raya.desiredPosition.y) / 16) - 1;
-			endY = (int)((this.raya.desiredPosition.y + this.raya.getHeight()) / 16) - 1;
-		}
-		else{
-			startY = (int)((this.raya.desiredPosition.y) / 16);
-			endY = (int)((this.raya.desiredPosition.y + this.raya.getHeight()) / 16);
-		}
+		startY = (int)((shot.desiredPosition.y) / 16);
+		endY = (int)((shot.desiredPosition.y + this.raya.getHeight()) / 16);
 
 		this.getTiles(startX, startY, endX, endY, this.tiles);
 
-		this.rayaRect.x += this.raya.velocity.x;
+		this.rayaRect.x += shot.velocity.x;
 
 		for (Rectangle tile : this.tiles) {
 			if (this.rayaRect.overlaps(tile)) {
-				this.raya.velocity.x = 0;
-				break;
+				shot = null;
+				return true;
 				}
 		}
 
-
-		this.rayaRect.x = this.raya.desiredPosition.x;
+		this.rayaRect.x = shot.desiredPosition.x;
 
 		// if the koala is moving upwards, check the tiles to the top of it's
 		// top bounding box edge, otherwise check the ones to the bottom
 
 		if (normalGravity){
-			if (this.raya.velocity.y > 0) {
-				startY = endY = (int)((this.raya.desiredPosition.y + this.raya.velocity.y + this.raya.getHeight()) / 16f);
+			if (shot.velocity.y > 0) {
+				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y + shot.getHeight()) / 16f);
 			}
 			else {
-				startY = endY = (int)((this.raya.desiredPosition.y + this.raya.velocity.y) / 16f);
+				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y) / 16f);
 			}
 		}
 		else{
-			if (this.raya.velocity.y < 0) {
-				//TODO:check choque
-				startY = endY = (int)((this.raya.desiredPosition.y + this.raya.velocity.y) / 16f);
+			if (shot.velocity.y < 0) {
+
+				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y) / 16f);
 			}
 			else {
-				startY = endY = (int)((this.raya.desiredPosition.y + this.raya.velocity.y + this.raya.getHeight() ) / 16f);
+				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y + shot.getHeight() ) / 16f);
 			}
 		}
 
 
-		startX = (int)(this.raya.desiredPosition.x / 16);					//16 tile size
-		endX = (int)((this.raya.desiredPosition.x + this.raya.getWidth()) / 16);
+		startX = (int)(shot.desiredPosition.x / 16);					//16 tile size
+		endX = (int)((shot.desiredPosition.x + shot.getWidth()) / 16);
 
 		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
 
 		this.getTiles(startX, startY, endX, endY, this.tiles);
 
-		this.rayaRect.y += (int)(this.raya.velocity.y);
+		this.rayaRect.y += (int)(shot.velocity.y);
 
 		for (Rectangle tile : this.tiles) {
-			// System.out.println(rayaRect.x + " " + rayaRect.y + " " + tile.x + " " + tile.y);
 			if (this.rayaRect.overlaps(tile)) {
-				// we actually reset the koala y-position here
-				// so it is just below/above the tile we collided with
-				// this removes bouncing :)
-
-				if (normalGravity){
-					if (this.raya.velocity.y > 0) {
-						this.raya.desiredPosition.y = tile.y - this.raya.getHeight() - 1;
-						// we hit a block jumping upwards, let's destroy it!
-					}
-					else {
-						this.raya.desiredPosition.y = (tile.y + tile.height) - 1;
-						// if we hit the ground, mark us as grounded so we can jump
-						this.raya.grounded = true;
-					}
-				}
-				else{
-					if (this.raya.velocity.y > 0) {
-						//this.raya.desiredPosition.y = tile.y - tile.height- 1;
-						// if we hit the ground, mark us as grounded so we can jump
-						this.raya.grounded = true;
-					}
-					else {
-						this.raya.desiredPosition.y = tile.y + tile.height - 1;
-						// we hit a block jumping upwards, let's destroy it!
-					}
-				}
-
-				this.raya.velocity.y = 0;
-				break;
+				shot = null;
+				return true;
 				}
 			}
-			*/
-		// unscale the velocity by the inverse delta time and set
-		// the latest position
-		shot.desiredPosition.add(shot.velocity);
-		shot.velocity.scl(1 / deltaTime);
-
-		shot.setPosition(shot.desiredPosition.x, shot.desiredPosition.y);
-    }
+		return false;
+	}
 
 	private void renderRayaMan (float deltaTime) {
 		// based on the koala state, get the animation frame
@@ -361,10 +331,23 @@ public class MainScreen extends BaseScreen {
 		if (Assets.standingShot.isAnimationFinished(this.raya.stateTime))
 			this.raya.shooting = false;
 
+		int i = 0;
+		boolean[] toBeDeleted = new boolean[3];
 		for (Shot shot : shotArray){
-			if (shot != null)
-				updateShot(shot, deltaTime);		//pool of shots?
+			if (shot != null){
+				if(updateShot(shot, deltaTime) == true)
+					toBeDeleted[i] = true;
+					//pool of shots?
+			}
+			i++;
 		}
+
+		for(int j = 0; j < toBeDeleted.length; j++){
+			if (toBeDeleted[j] && shotArray.size >= j + 1)
+				shotArray.removeIndex(j);
+		}
+
+
 		if (normalGravity)
 			this.raya.velocity.add(0, this.GRAVITY);
 		else
@@ -458,7 +441,7 @@ public class MainScreen extends BaseScreen {
 		}
 		else{
 			if (this.raya.velocity.y < 0) {
-				//TODO:check choque
+
 				startY = endY = (int)((this.raya.desiredPosition.y + this.raya.velocity.y) / 16f);
 			}
 			else {
