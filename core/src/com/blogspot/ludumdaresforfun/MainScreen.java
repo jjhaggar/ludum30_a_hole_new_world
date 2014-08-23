@@ -430,6 +430,21 @@ public class MainScreen extends BaseScreen {
             enemy.setPosition(enemy.desiredPosition.x, enemy.desiredPosition.y);
 
         }
+
+	    int i = 0;
+		boolean[] toBeDeleted = new boolean[3];
+		for (Enemy enemy : this.enemies){
+			if (enemy != null){
+				if(enemy.setToDie == true) //&& animation finished
+					toBeDeleted[i] = true;
+			}
+			i++;
+		}
+
+		for(int j = 0; j < toBeDeleted.length; j++){
+			if (toBeDeleted[j] && (this.enemies.size >= (j + 1)))
+				this.enemies.removeIndex(j);
+		}
 	}
 
 	private void updatePlayer(float deltaTime) {
