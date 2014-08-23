@@ -22,6 +22,7 @@ public class Player extends Image {
     public boolean updateVelocity;
     public boolean shooting = false;
     public boolean invincible = false;
+    public HUDCounter counter = new HUDCounter(5);
 
     public Rectangle rect = new Rectangle();
     protected Animation animation = null;
@@ -39,14 +40,25 @@ public class Player extends Image {
     }
 
     public void beingHit() {
-        this.invincible = true;
-        Timer.schedule(new Task() {
-            @Override
-            public void run() {
-                Player.this.invincible = false;
+        if (!this.invincible) {
+            this.invincible = true;
+            int lifes = this.counter.lostLife();
+            if (lifes <= 0) {
+                this.die();
             }
-        }, 1);
+            Timer.schedule(new Task() {
+                @Override
+                public void run() {
+                    Player.this.invincible = false;
+                }
+            }, 1);
+        }
 
+    }
+
+    private void die() {
+        // TODO: animate, sound and reset game
+        System.out.println("GAME OVER");
     }
 
     @Override
