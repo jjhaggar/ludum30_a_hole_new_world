@@ -10,7 +10,6 @@ public class Shot extends Image {
     float stateTime = 0;
     boolean shotGoesRight;
     boolean normalGravity;
-    private float GRAVITY = -10f;
     Vector2 desiredPosition = new Vector2();
     final Vector2 velocity = new Vector2();
 
@@ -25,9 +24,9 @@ public class Shot extends Image {
         this.setPosition(x, y);
         this.shotGoesRight = facesRight;
         if (facesRight)
-        	this.velocity.x = SHOT_VELOCITY;
+        	this.velocity.x = this.SHOT_VELOCITY;
         else
-        	this.velocity.x = -SHOT_VELOCITY;
+        	this.velocity.x = -this.SHOT_VELOCITY;
 
         if (normalGravity)
         	this.velocity.y = 100;

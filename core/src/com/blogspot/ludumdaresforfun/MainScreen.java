@@ -27,7 +27,6 @@ public class MainScreen extends BaseScreen {
 	private OrthographicCamera camera;
 	private Player player;
 	private ShapeRenderer shapeRenderer;
-	private Shot shot;
 	private TiledMap map;
 	private boolean normalGravity = true;
 
@@ -150,8 +149,8 @@ public class MainScreen extends BaseScreen {
 		shot.velocity.scl(deltaTime);
 
 		//collision (destroy if necessary)
-		boolean collided = collisionShot(shot);		//agains a wall
-		collided = collisionShotEnemy(shot);
+		boolean collided = this.collisionShot(shot);
+		collided = this.collisionShotEnemy(shot);
 
 		// unscale the velocity by the inverse delta time and set
 		// the latest position
@@ -164,7 +163,7 @@ public class MainScreen extends BaseScreen {
 				collided = true;	//dont traspass to the other world
 			else if (!shot.normalGravity && (shot.getY() >= 240))
 				collided = true;
-			else if (shot.getY() > 480 || shot.getY() < 0)
+			else if ((shot.getY() > 480) || (shot.getY() < 0))
 				collided = true;
 		}
 
@@ -182,7 +181,7 @@ public class MainScreen extends BaseScreen {
 
 		this.playerRect.set(shot.desiredPosition.x, (shot.desiredPosition.y), shot.getWidth(), shot.getHeight());
 
-		for (Enemy enemy : enemies){
+		for (Enemy enemy : this.enemies){
 			if (this.playerRect.overlaps(enemy.rect)) {
 				enemy.die();
 				collided = true;
@@ -227,7 +226,7 @@ public class MainScreen extends BaseScreen {
 
 		this.playerRect.x = shot.desiredPosition.x;
 
-		if (normalGravity){
+		if (this.normalGravity){
 			if (shot.velocity.y > 0) {
 				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y + shot.getHeight()) / 16f);
 			}
@@ -353,7 +352,26 @@ public class MainScreen extends BaseScreen {
 
 	private void updateEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
-	        if (enemy.dir == Enemy.Direction.Left) {
+	        // Collision between player vs enemy
+	        if (((enemy.getY() - (enemy.getWidth() / 2)) <= this.player.getY()) &&
+	                (this.player.getY() <= (enemy.getY() + (enemy.getWidth() / 2)))) {
+	            if (enemy.getX() < this.player.getX()) {
+                    if ((enemy.getX() - enemy.ATTACK_DISTANCE) <= (this.player.getX() + this.player.getHeight())) {
+                        enemy.dir = Enemy.Direction.Right;
+                        enemy.diffInitialPos += 2;
+                        enemy.velocity.x = enemy.ATTACK_VELOCITY;
+                    }
+	            }
+	            else {
+                    if ((enemy.getX() + enemy.ATTACK_DISTANCE) >= this.player.getX()) {
+                        enemy.dir = Enemy.Direction.Left;
+                        enemy.diffInitialPos -= 2;
+                        enemy.velocity.x = -enemy.ATTACK_VELOCITY;
+                    }
+	            }
+	        }
+
+            else if (enemy.dir == Enemy.Direction.Left) {
                 if (-enemy.RANGE < enemy.diffInitialPos) {
                     enemy.diffInitialPos -= 1;
                     enemy.velocity.x = -enemy.VELOCITY;
@@ -468,9 +486,9 @@ public class MainScreen extends BaseScreen {
 
 		int i = 0;
 		boolean[] toBeDeleted = new boolean[3];
-		for (Shot shot : shotArray){
+		for (Shot shot : this.shotArray){
 			if (shot != null){
-				if(updateShot(shot, deltaTime) == true)
+				if(this.updateShot(shot, deltaTime) == true)
 					toBeDeleted[i] = true;
 					//pool of shots?
 			}
@@ -478,12 +496,12 @@ public class MainScreen extends BaseScreen {
 		}
 
 		for(int j = 0; j < toBeDeleted.length; j++){
-			if (toBeDeleted[j] && shotArray.size >= j + 1)
-				shotArray.removeIndex(j);
+			if (toBeDeleted[j] && (this.shotArray.size >= (j + 1)))
+				this.shotArray.removeIndex(j);
 		}
 
 
-		if (normalGravity)
+		if (this.normalGravity)
 			this.player.velocity.add(0, this.GRAVITY);
 		else
 			this.player.velocity.add(0, -this.GRAVITY);
