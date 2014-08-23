@@ -15,26 +15,26 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
 public class MainScreen extends BaseScreen {
 
-	private ShapeRenderer shapeRenderer;
-	private TiledMap map;
+	ConfigControllers configControllers;
+	Rectangle playerRect;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
-	private float GRAVITY = -10f;
-	private Array<Rectangle> tiles = new Array<Rectangle>();
-	Rectangle rayaRect;
-
-	private final float yPosUpperWorld = 360;
-	private final float yPosLowerWorld = 120;
-
+	private Player player;
+	private ShapeRenderer shapeRenderer;
+	private Shot shot;
+	private TiledMap map;
 	private boolean normalGravity = true;
 
-
-	ConfigControllers configControllers = new ConfigControllers();
+	private Array<Enemy> enemies = new Array<Enemy>();
+	private Array<Rectangle> tiles = new Array<Rectangle>();
+	private Array<Shot> shotArray = new Array<Shot>();
+	private Array<Vector2> spawns = new Array<Vector2>();
 
 	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 		@Override
@@ -43,11 +43,11 @@ public class MainScreen extends BaseScreen {
 		}
     };
 
-	private RayaMan raya;
-	//private Shot shot;
-	//private Shot shot2;
-	//private Shot shot3;
-	private Array<Shot> shotArray = new Array<Shot>();
+	private final float GRAVITY = -10f;
+	private final float yPosUpperWorld = 360;
+	private final float yPosLowerWorld = 120;
+	final int DISTANCESPAWN = 410;
+	final int TILED_SIZE = 16;
 
 
 	public MainScreen() {
@@ -58,17 +58,28 @@ public class MainScreen extends BaseScreen {
 
 		this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
+		TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(2));
+		this.rectPool.freeAll(this.tiles);
+		this.tiles.clear();
+        for (int x = 0; x <= layerSpawn.getHeight(); x++) {
+            for (int y = 0; y <= layerSpawn.getWidth(); y++) {
+				Cell cell = layerSpawn.getCell(x, y);
+				if (cell != null) {
+                    this.spawns.add(new Vector2(x * this.TILED_SIZE, y * this.TILED_SIZE));
+                }
+            }
+        }
+
 		Gdx.graphics.setDisplayMode(400, 240, false);
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, 400, 240);
-		this.camera.position.y = yPosUpperWorld;
+		this.camera.position.y = this.yPosUpperWorld;
 		this.camera.update();
 
-		this.raya = new RayaMan(Assets.stand);
-		this.raya.setPosition(0, 380);
+		this.player = new Player(Assets.stand);
+		this.player.setPosition(0, 380);
 
-		//this.stage.addActor(this.raya);
-
+        this.configControllers = new ConfigControllers();
 		this.configControllers.init();
 	}
 
@@ -78,23 +89,33 @@ public class MainScreen extends BaseScreen {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		this.updateRaya(delta);
+		this.updatePlayer(delta);
 
-		this.camera.position.x = this.raya.getX(); //200;//raya.position.x;
+		this.camera.position.x = this.player.getX(); //200;//raya.position.x;
 		this.camera.update();
+		if (this.spawns.size > 0) {
+            Vector2 auxNextSpawn = this.spawns.first();
+            if ((this.camera.position.x + this.DISTANCESPAWN) >= auxNextSpawn.x) {
+                Enemy auxShadow = new Enemy(Assets.jump);
+                if (auxNextSpawn.y < 240) {
+                    auxNextSpawn.y -= 5; // Offset fixed collision
+                }
+                auxShadow.setPosition(auxNextSpawn.x, auxNextSpawn.y);
+                this.enemies.add(auxShadow);
+                this.spawns.removeIndex(0);
+            }
+		}
 
+		this.updateEnemies(delta);
 		this.renderer.setView(this.camera);
-		this.renderer.render();
+		this.renderer.render(new int[]{0,1});
 
-		this.renderRayaMan(delta);
-
-		for (Shot shot : shotArray){
+		this.renderEnemies(delta);
+		this.renderPlayer(delta);
+		for (Shot shot : this.shotArray){
 			if (shot != null)
 				this.renderShot(shot, delta);
 		}
-		//this.stage.act(delta);
-		//this.stage.draw();
-
 	}
 
 	private void renderShot(Shot shot, float deltaTime){
@@ -121,7 +142,7 @@ public class MainScreen extends BaseScreen {
 
         shot.stateTime += deltaTime;
 
-		if (normalGravity)
+		if (this.normalGravity)
 			shot.velocity.add(0, this.GRAVITY);
 		else
 			shot.velocity.add(0, -this.GRAVITY);
@@ -151,16 +172,16 @@ public class MainScreen extends BaseScreen {
 
 
 	private boolean collisionShot(Shot shot) {
-		this.rayaRect = this.rectPool.obtain();
+		this.playerRect = this.rectPool.obtain();
 
 		shot.desiredPosition.y = Math.round(shot.getY());
 		shot.desiredPosition.x = Math.round(shot.getX());
 
-		this.rayaRect.set(shot.desiredPosition.x, (shot.desiredPosition.y), shot.getWidth(), shot.getHeight());
+		this.playerRect.set(shot.desiredPosition.x, (shot.desiredPosition.y), shot.getWidth(), shot.getHeight());
 
 		int startX, startY, endX, endY;
 
-		if (this.raya.velocity.x > 0) {
+		if (shot.velocity.x > 0) {	//this.raya.velocity.x > 0
 			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x + shot.getWidth()) / 16);
 		}
 		else {
@@ -168,23 +189,20 @@ public class MainScreen extends BaseScreen {
 		}
 
 		startY = (int)((shot.desiredPosition.y) / 16);
-		endY = (int)((shot.desiredPosition.y + this.raya.getHeight()) / 16);
+		endY = (int)((shot.desiredPosition.y + shot.getHeight()) / 16);
 
 		this.getTiles(startX, startY, endX, endY, this.tiles);
 
-		this.rayaRect.x += shot.velocity.x;
+		this.playerRect.x += shot.velocity.x;
 
 		for (Rectangle tile : this.tiles) {
-			if (this.rayaRect.overlaps(tile)) {
+			if (this.playerRect.overlaps(tile)) {
 				shot = null;
 				return true;
 				}
 		}
 
-		this.rayaRect.x = shot.desiredPosition.x;
-
-		// if the koala is moving upwards, check the tiles to the top of it's
-		// top bounding box edge, otherwise check the ones to the bottom
+		this.playerRect.x = shot.desiredPosition.x;
 
 		if (normalGravity){
 			if (shot.velocity.y > 0) {
@@ -204,18 +222,18 @@ public class MainScreen extends BaseScreen {
 			}
 		}
 
-
 		startX = (int)(shot.desiredPosition.x / 16);					//16 tile size
 		endX = (int)((shot.desiredPosition.x + shot.getWidth()) / 16);
+
 
 		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
 
 		this.getTiles(startX, startY, endX, endY, this.tiles);
 
-		this.rayaRect.y += (int)(shot.velocity.y);
+		shot.desiredPosition.y += (int)(shot.velocity.y);
 
 		for (Rectangle tile : this.tiles) {
-			if (this.rayaRect.overlaps(tile)) {
+			if (this.playerRect.overlaps(tile)) {
 				shot = null;
 				return true;
 				}
@@ -223,21 +241,21 @@ public class MainScreen extends BaseScreen {
 		return false;
 	}
 
-	private void renderRayaMan (float deltaTime) {
+	private void renderPlayer (float deltaTime) {
 		// based on the koala state, get the animation frame
 		TextureRegion frame = null;
-		switch (this.raya.state) {
+		switch (this.player.state) {
 		case Standing:
-			frame = Assets.stand.getKeyFrame(this.raya.stateTime);
+			frame = Assets.stand.getKeyFrame(this.player.stateTime);
 			break;
 		case Walking:
-			frame = Assets.walk.getKeyFrame(this.raya.stateTime);
+			frame = Assets.walk.getKeyFrame(this.player.stateTime);
 			break;
 		case Jumping:
-			frame = Assets.jump.getKeyFrame(this.raya.stateTime);
+			frame = Assets.jump.getKeyFrame(this.player.stateTime);
 			break;
 		case StandingShooting:
-			frame = Assets.standingShot.getKeyFrame(this.raya.stateTime);
+			frame = Assets.standingShot.getKeyFrame(this.player.stateTime);
 			break;
 		}
 		// draw the koala, depending on the current velocity
@@ -245,17 +263,18 @@ public class MainScreen extends BaseScreen {
 		// or left
 		Batch batch = this.renderer.getSpriteBatch();
 		batch.begin();
-		if (this.raya.facesRight && frame.isFlipX())
-				frame.flip(true, false);
-		else if (!this.raya.facesRight && !frame.isFlipX())
+		if (this.player.facesRight && frame.isFlipX()) {
+            frame.flip(true, false);
+		}
+		else if (!this.player.facesRight && !frame.isFlipX()) {
 			frame.flip(true, false);
+		}
 
-		if (normalGravity && frame.isFlipY())
+		if (this.normalGravity && frame.isFlipY())
 			frame.flip(false, true);
-		else if (!normalGravity && !frame.isFlipY())
+		else if (!this.normalGravity && !frame.isFlipY())
 			frame.flip(false, true);
-
-			batch.draw(frame, this.raya.getX(), this.raya.getY());
+        batch.draw(frame, this.player.getX(), this.player.getY());
 
 		batch.end();
 		this.shapeRenderer.begin(ShapeType.Filled);
@@ -267,69 +286,162 @@ public class MainScreen extends BaseScreen {
 		//	shapeRenderer.rect(tile.x * 1.6f, tile.y * 2, tile.width * 2, tile.height * 2);
 		//}
 		this.shapeRenderer.setColor(Color.RED);
-		//shapeRenderer.rect(rayaRect.x * 1.6f, rayaRect.y * 2, rayaRect.width * 2, rayaRect.height * 2);
-
+		//shapeRenderer.rect(playerRect.x * 1.6f, playerRect.y * 2, playerRect.width * 2, playerRect.height * 2);
 
         this.shapeRenderer.end();
-		}
+    }
 
-	private void updateRaya(float deltaTime) {
+	private void renderEnemies(float deltaTime) {
+	    for (Enemy enemy : this.enemies) {
+            TextureRegion frame = null;
+            frame = Assets.walk.getKeyFrame(enemy.stateTime);
+            switch (enemy.state) {
+            case Walking:
+                //frame = Assets.enemyWalk.getKeyFrame(enemy.stateTime);
+                break;
+            case Running:
+                //frame = Assets.enemyRun.getKeyFrame(enemy.stateTime);
+                break;
+            case Hurting:
+                //frame = Assets.enemyHurt.getKeyFrame(enemy.stateTime);
+                break;
+            }
+
+            Batch batch = this.renderer.getSpriteBatch();
+            batch.begin();
+            if (enemy.facesRight) {
+                if (frame.isFlipX())
+                    frame.flip(true, false);
+                batch.draw(frame, enemy.getX(), enemy.getY());
+            } else {
+                if (!frame.isFlipX())
+                    frame.flip(true, false);
+                batch.draw(frame, enemy.getX(), enemy.getY());
+            }
+            batch.end();
+
+            this.shapeRenderer.begin(ShapeType.Filled);
+            this.shapeRenderer.setColor(Color.BLACK);
+            this.getTiles(0, 0, 25, 15, this.tiles);
+            this.shapeRenderer.setColor(Color.RED);
+            this.shapeRenderer.end();
+	    }
+	}
+
+	private void updateEnemies(float deltaTime) {
+	    for (Enemy enemy : this.enemies) {
+	        if (enemy.dir == Enemy.Direction.Left) {
+                if (-enemy.RANGE < enemy.diffInitialPos) {
+                    enemy.diffInitialPos -= 1;
+                    enemy.velocity.x = -enemy.VELOCITY;
+                }
+                else {
+                    enemy.dir = Enemy.Direction.Right;
+                }
+	        }
+	        else if (enemy.dir == Enemy.Direction.Right) {
+                if (enemy.diffInitialPos < enemy.RANGE) {
+                    enemy.diffInitialPos += 1;
+                    enemy.velocity.x = enemy.VELOCITY;
+                }
+                else {
+                    enemy.dir = Enemy.Direction.Left;
+                }
+	        }
+
+            enemy.velocity.scl(deltaTime);
+
+            // Enviroment collision
+            enemy.desiredPosition.y = Math.round(enemy.getY());
+            enemy.desiredPosition.x = Math.round(enemy.getX());
+            int startX, startY, endX, endY;
+            if (enemy.velocity.x > 0) {
+                startX = endX = (int)((enemy.desiredPosition.x + enemy.velocity.x + enemy.getWidth()) / this.TILED_SIZE);
+            }
+            else {
+                startX = endX = (int)((enemy.desiredPosition.x + enemy.velocity.x) / this.TILED_SIZE);
+            }
+            startY = (int) enemy.getY() / this.TILED_SIZE;
+            endY =  (int) (enemy.getY() + enemy.getHeight()) / this.TILED_SIZE;
+            this.getTiles(startX, startY, endX, endY, this.tiles);
+
+            enemy.getRect();
+            enemy.rect.x += enemy.velocity.x;
+
+            for (Rectangle tile : this.tiles) {
+                if (enemy.rect.overlaps(tile)) {
+                    enemy.velocity.x = 0;
+                    break;
+                }
+            }
+
+            enemy.rect.x = enemy.desiredPosition.x;
+
+            enemy.desiredPosition.add(enemy.velocity);
+            enemy.velocity.scl(1 / deltaTime);
+
+            enemy.setPosition(enemy.desiredPosition.x, enemy.desiredPosition.y);
+
+        }
+	}
+
+	private void updatePlayer(float deltaTime) {
 
 		if (deltaTime == 0)
 			return;
-		this.raya.stateTime += deltaTime;
+		this.player.stateTime += deltaTime;
 
-		this.raya.desiredPosition.x = this.raya.getX();
-		this.raya.desiredPosition.y = this.raya.getY();
+		this.player.desiredPosition.x = this.player.getX();
+		this.player.desiredPosition.y = this.player.getY();
 
-		if ((Gdx.input.isKeyJustPressed(Keys.S) || this.configControllers.jumpPressed) && this.raya.grounded){
-			if (normalGravity)
-				this.raya.velocity.y = this.raya.JUMP_VELOCITY;
+		if ((Gdx.input.isKeyJustPressed(Keys.S) || this.configControllers.jumpPressed) && this.player.grounded){
+			if (this.normalGravity)
+				this.player.velocity.y = this.player.JUMP_VELOCITY;
 			else
-				this.raya.velocity.y = -this.raya.JUMP_VELOCITY;
-			this.raya.grounded = false;
-			this.raya.state = RayaMan.State.Jumping;
-			//this.raya.stateTime = 0;
+				this.player.velocity.y = -this.player.JUMP_VELOCITY;
+			this.player.grounded = false;
+			this.player.state = Player.State.Jumping;
+			//this.player.stateTime = 0;
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.LEFT) || this.configControllers.leftPressed){
-			this.raya.velocity.x = -this.raya.MAX_VELOCITY;
-			if (this.raya.grounded){
-				this.raya.state = RayaMan.State.Walking;
-				//this.raya.stateTime = 0;
+			this.player.velocity.x = -this.player.MAX_VELOCITY;
+			if (this.player.grounded){
+				this.player.state = Player.State.Walking;
+				//this.player.stateTime = 0;
 			}
-			this.raya.facesRight = false;
+			this.player.facesRight = false;
 		}
 
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) || this.configControllers.rightPressed){
-			this.raya.velocity.x = this.raya.MAX_VELOCITY;
-			if (this.raya.grounded){
-				this.raya.state = RayaMan.State.Walking;
-				//this.raya.stateTime = 0;
+			this.player.velocity.x = this.player.MAX_VELOCITY;
+			if (this.player.grounded){
+				this.player.state = Player.State.Walking;
+				//this.player.stateTime = 0;
 			}
-			this.raya.facesRight = true;
+			this.player.facesRight = true;
 		}
 
-		if (Gdx.input.isKeyJustPressed(Keys.D) && shotArray.size < 3){
+		if (Gdx.input.isKeyJustPressed(Keys.D) && (this.shotArray.size < 3)){
 			Shot shot = new Shot(Assets.shotAnim);
-			if (this.raya.facesRight){
+			if (this.player.facesRight){
 				//-1 necessary to be exactly the same as the other facing
-				shot.Initialize((this.raya.getX() + (this.raya.getHeight() / 2)) - 1, (this.raya.getY() + (this.raya.getWidth() / 2)), this.raya.facesRight, normalGravity);
+				shot.Initialize((this.player.getX() + (this.player.getHeight() / 2)) - 1, (this.player.getY() + (this.player.getWidth() / 2)), this.player.facesRight, this.normalGravity);
 			}
 			else {
-				shot.Initialize(this.raya.getX(), (this.raya.getY() + (this.raya.getWidth() / 2)), this.raya.facesRight, normalGravity);
+				shot.Initialize(this.player.getX(), (this.player.getY() + (this.player.getWidth() / 2)), this.player.facesRight, this.normalGravity);
 			}
-			shotArray.add(shot);
+			this.shotArray.add(shot);
 
-			if (this.raya.grounded){	//&& raya.velocity.x == 0)
-				this.raya.state = RayaMan.State.StandingShooting;
-				this.raya.stateTime = 0;
+			if (this.player.grounded){	//&& raya.velocity.x == 0)
+				this.player.state = Player.State.StandingShooting;
+				this.player.stateTime = 0;
 			}
-			this.raya.shooting = true;
+			this.player.shooting = true;
 		}
 
-		if (Assets.standingShot.isAnimationFinished(this.raya.stateTime))
-			this.raya.shooting = false;
+		if (Assets.standingShot.isAnimationFinished(this.player.stateTime))
+			this.player.shooting = false;
 
 		int i = 0;
 		boolean[] toBeDeleted = new boolean[3];
@@ -349,167 +461,166 @@ public class MainScreen extends BaseScreen {
 
 
 		if (normalGravity)
-			this.raya.velocity.add(0, this.GRAVITY);
+			this.player.velocity.add(0, this.GRAVITY);
 		else
-			this.raya.velocity.add(0, -this.GRAVITY);
+			this.player.velocity.add(0, -this.GRAVITY);
 
-		if (this.raya.getY() < 240){
-			this.camera.position.y = yPosLowerWorld;
-			if (normalGravity == true){
-				normalGravity = false;
-				this.raya.velocity.y = -this.raya.JUMP_VELOCITY;
+		if (this.player.getY() < 240){
+			this.camera.position.y = this.yPosLowerWorld;
+			if (this.normalGravity == true){
+				this.normalGravity = false;
+				this.player.velocity.y = -this.player.JUMP_VELOCITY;
 			}
 		}
 		else{
-			this.camera.position.y = yPosUpperWorld;
-			if (normalGravity == false){
-				normalGravity = true;
-				this.raya.velocity.y = this.raya.JUMP_VELOCITY;
+			this.camera.position.y = this.yPosUpperWorld;
+			if (this.normalGravity == false){
+				this.normalGravity = true;
+				this.player.velocity.y = this.player.JUMP_VELOCITY;
 			}
 		}
 
 		// clamp the velocity to the maximum, x-axis only
-		if (Math.abs(this.raya.velocity.x) > this.raya.MAX_VELOCITY) {
-			this.raya.velocity.x = Math.signum(this.raya.velocity.x) * this.raya.MAX_VELOCITY;
+		if (Math.abs(this.player.velocity.x) > this.player.MAX_VELOCITY) {
+			this.player.velocity.x = Math.signum(this.player.velocity.x) * this.player.MAX_VELOCITY;
 		}
 
 		// clamp the velocity to 0 if it's < 1, and set the state to standign
-		if (Math.abs(this.raya.velocity.x) < 1) {
-			this.raya.velocity.x = 0;
-			if (this.raya.grounded && !this.raya.shooting)
-				this.raya.state = RayaMan.State.Standing;
+		if (Math.abs(this.player.velocity.x) < 1) {
+			this.player.velocity.x = 0;
+			if (this.player.grounded && !this.player.shooting)
+				this.player.state = Player.State.Standing;
 		}
 
-		this.raya.velocity.scl(deltaTime);
+		this.player.velocity.scl(deltaTime);
 
 		//collision detection
 		// perform collision detection & response, on each axis, separately
 		// if the raya is moving right, check the tiles to the right of it's
 		// right bounding box edge, otherwise check the ones to the left
-		this.rayaRect = this.rectPool.obtain();
+		this.playerRect = this.rectPool.obtain();
 
-		this.raya.desiredPosition.y = Math.round(this.raya.getY());
-		this.raya.desiredPosition.x = Math.round(this.raya.getX());
+		this.player.desiredPosition.y = Math.round(this.player.getY());
+		this.player.desiredPosition.x = Math.round(this.player.getX());
 
-		this.rayaRect.set(this.raya.desiredPosition.x, (this.raya.desiredPosition.y), this.raya.getWidth(), this.raya.getHeight());
+		this.playerRect.set(this.player.desiredPosition.x, (this.player.desiredPosition.y), this.player.getWidth(), this.player.getHeight());
 
 		int startX, startY, endX, endY;
 
-		if (this.raya.velocity.x > 0) {
-			startX = endX = (int)((this.raya.desiredPosition.x + this.raya.velocity.x + this.raya.getWidth()) / 16);
+		if (this.player.velocity.x > 0) {
+			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x + this.player.getWidth()) / this.TILED_SIZE);
 		}
 		else {
-			startX = endX = (int)((this.raya.desiredPosition.x + this.raya.velocity.x) / 16);
+			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x) / this.TILED_SIZE);
 		}
 
-		if (this.raya.grounded && normalGravity){
-			startY = (int)((this.raya.desiredPosition.y) / 16) + 1;
-			endY = (int)((this.raya.desiredPosition.y + this.raya.getHeight()) / 16) + 1;
+		if (this.player.grounded && this.normalGravity){
+			startY = (int)((this.player.desiredPosition.y) / this.TILED_SIZE) + 1;
+			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE) + 1;
 		}
-		else if (this.raya.grounded && !normalGravity){
-			startY = (int)((this.raya.desiredPosition.y) / 16) - 1;
-			endY = (int)((this.raya.desiredPosition.y + this.raya.getHeight()) / 16) - 1;
+		else if (this.player.grounded && !this.normalGravity){
+			startY = (int)((this.player.desiredPosition.y) / this.TILED_SIZE) - 1;
+			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE) - 1;
 		}
 		else{
-			startY = (int)((this.raya.desiredPosition.y) / 16);
-			endY = (int)((this.raya.desiredPosition.y + this.raya.getHeight()) / 16);
+			startY = (int)((this.player.desiredPosition.y) / this.TILED_SIZE);
+			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE);
 		}
 
 		this.getTiles(startX, startY, endX, endY, this.tiles);
 
-		this.rayaRect.x += this.raya.velocity.x;
+		this.playerRect.x += this.player.velocity.x;
 
 		for (Rectangle tile : this.tiles) {
-			if (this.rayaRect.overlaps(tile)) {
-				this.raya.velocity.x = 0;
+			if (this.playerRect.overlaps(tile)) {
+				this.player.velocity.x = 0;
 				break;
 				}
 		}
 
-		this.rayaRect.x = this.raya.desiredPosition.x;
+		this.playerRect.x = this.player.desiredPosition.x;
 
 		// if the koala is moving upwards, check the tiles to the top of it's
 		// top bounding box edge, otherwise check the ones to the bottom
 
-		if (normalGravity){
-			if (this.raya.velocity.y > 0) {
-				startY = endY = (int)((this.raya.desiredPosition.y + this.raya.velocity.y + this.raya.getHeight()) / 16f);
+		if (this.normalGravity){
+			if (this.player.velocity.y > 0) {
+				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y + this.player.getHeight()) / this.TILED_SIZE);
 			}
 			else {
-				startY = endY = (int)((this.raya.desiredPosition.y + this.raya.velocity.y) / 16f);
+				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y) / this.TILED_SIZE);
 			}
 		}
 		else{
-			if (this.raya.velocity.y < 0) {
-
-				startY = endY = (int)((this.raya.desiredPosition.y + this.raya.velocity.y) / 16f);
+			if (this.player.velocity.y < 0) {
+				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y) / this.TILED_SIZE);
 			}
 			else {
-				startY = endY = (int)((this.raya.desiredPosition.y + this.raya.velocity.y + this.raya.getHeight() ) / 16f);
+				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y + this.player.getHeight() ) / this.TILED_SIZE);
 			}
 		}
 
 
-		startX = (int)(this.raya.desiredPosition.x / 16);					//16 tile size
-		endX = (int)((this.raya.desiredPosition.x + this.raya.getWidth()) / 16);
+		startX = (int)(this.player.desiredPosition.x / this.TILED_SIZE);					//16 tile size
+		endX = (int)((this.player.desiredPosition.x + this.player.getWidth()) / this.TILED_SIZE);
 
 		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
 
 		this.getTiles(startX, startY, endX, endY, this.tiles);
 
-		this.rayaRect.y += (int)(this.raya.velocity.y);
+		this.playerRect.y += (int)(this.player.velocity.y);
 
 		for (Rectangle tile : this.tiles) {
-			// System.out.println(rayaRect.x + " " + rayaRect.y + " " + tile.x + " " + tile.y);
-			if (this.rayaRect.overlaps(tile)) {
+			// System.out.println(playerRect.x + " " + playerRect.y + " " + tile.x + " " + tile.y);
+			if (this.playerRect.overlaps(tile)) {
 				// we actually reset the koala y-position here
 				// so it is just below/above the tile we collided with
 				// this removes bouncing :)
 
-				if (normalGravity){
-					if (this.raya.velocity.y > 0) {
-						this.raya.desiredPosition.y = tile.y - this.raya.getHeight() - 1;
+				if (this.normalGravity){
+					if (this.player.velocity.y > 0) {
+						this.player.desiredPosition.y = tile.y - this.player.getHeight() - 1;
 						// we hit a block jumping upwards, let's destroy it!
 					}
 					else {
-						this.raya.desiredPosition.y = (tile.y + tile.height) - 1;
+						this.player.desiredPosition.y = (tile.y + tile.height) - 1;
 						// if we hit the ground, mark us as grounded so we can jump
-						this.raya.grounded = true;
+						this.player.grounded = true;
 					}
 				}
 				else{
-					if (this.raya.velocity.y > 0) {
-						//this.raya.desiredPosition.y = tile.y - tile.height- 1;
+					if (this.player.velocity.y > 0) {
+						//this.player.desiredPosition.y = tile.y - tile.height- 1;
 						// if we hit the ground, mark us as grounded so we can jump
-						this.raya.grounded = true;
+						this.player.grounded = true;
 					}
 					else {
-						this.raya.desiredPosition.y = tile.y + tile.height - 1;
+						this.player.desiredPosition.y = (tile.y + tile.height) - 1;
 						// we hit a block jumping upwards, let's destroy it!
 					}
 				}
 
-				this.raya.velocity.y = 0;
+				this.player.velocity.y = 0;
 				break;
 				}
 			}
 
 		if (this.tiles.size == 0)
-			this.raya.grounded = false;
+			this.player.grounded = false;
 
 		//goes together with get
-		this.rectPool.free(this.rayaRect);
+		this.rectPool.free(this.playerRect);
 
 		// unscale the velocity by the inverse delta time and set
 		// the latest position
-		this.raya.desiredPosition.add(this.raya.velocity);
-		this.raya.velocity.scl(1 / deltaTime);
+		this.player.desiredPosition.add(this.player.velocity);
+		this.player.velocity.scl(1 / deltaTime);
 
 		// Apply damping to the velocity on the x-axis so we don't
 		// walk infinitely once a key was pressed
-		this.raya.velocity.x *= 0;		//0 is totally stopped if not pressed
+		this.player.velocity.x *= 0;		//0 is totally stopped if not pressed
 
-		this.raya.setPosition(this.raya.desiredPosition.x, this.raya.desiredPosition.y);
+		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 	}
 
 	private void getTiles (int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
@@ -522,7 +633,7 @@ public class MainScreen extends BaseScreen {
 				Cell cell = layer.getCell(x, y);
 				if (cell != null) {
 					Rectangle rect = this.rectPool.obtain();
-					rect.set(x * 16, y  * 16, 16, 16);
+					rect.set(x * this.TILED_SIZE, y  * this.TILED_SIZE, this.TILED_SIZE, this.TILED_SIZE);
 					tiles.add(rect);
                 }
             }
