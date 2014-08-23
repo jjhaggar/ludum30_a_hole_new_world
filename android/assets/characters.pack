@@ -1,0 +1,82 @@
+
+characters.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+boss_gethit
+  rotate: false
+  xy: 1, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+boss_gethit
+  rotate: false
+  xy: 67, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+boss_standing
+  rotate: false
+  xy: 133, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+boss_standing
+  rotate: false
+  xy: 199, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+boss_standing
+  rotate: false
+  xy: 265, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
+char_gethit
+  rotate: false
+  xy: 1, 1
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 1
+char_gethit
+  rotate: false
+  xy: 331, 67
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 2
+char_standing
+  rotate: false
+  xy: 36, 1
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 1
+char_walking
+  rotate: false
+  xy: 366, 67
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 1
+char_walking
+  rotate: false
+  xy: 71, 1
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 2
+char_walking
+  rotate: false
+  xy: 401, 67
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 3
