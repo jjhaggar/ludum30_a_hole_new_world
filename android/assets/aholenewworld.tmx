@@ -3,14 +3,19 @@
  <tileset firstgid="1" name="tileset" tilewidth="16" tileheight="16">
   <image source="tileset.png" trans="ff00ff" width="160" height="80"/>
  </tileset>
- <layer name="plattforms" width="25" height="30" visible="0">
+ <layer name="plattforms" width="25" height="30">
   <data encoding="base64" compression="zlib">
-   eJxjZGBgYBzFo3iEYYlR84c9lsCBydVHSC8p6vHZgU8vPnXo4kpEYGx24FNHjJm4zCbHLaOYfmEz3OwZxaN4uGIA6xQLFA==
+   eJxjZGBgYKQzZgJiZiBmoaEdPEDMC8R8A+A/WvoXl1nk+hebedQOu8EUFzAsMWr+sMcSODC5+gjpJUU9Pjvw6cWnDl1ciQiMzQ586ogxE5fZ5LhlFNMvbIabPaN4FA9XDAB4zQu8
   </data>
  </layer>
  <layer name="collisions" width="25" height="30">
   <data encoding="base64" compression="zlib">
    eJxjYBgFo2DkAYlR84c9kMCBydVHSC8p6vHZgU8vPnXEmElPO0j18yjADugVNsPNnlEwCoYrAADsXwcJ
+  </data>
+ </layer>
+ <layer name="enemies" width="25" height="30">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2BwAZ2BdsAoGBKAknQymsaGLxiN21EwCkbBcAYA0aQAsQ==
   </data>
  </layer>
 </map>
