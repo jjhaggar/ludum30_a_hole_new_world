@@ -3,7 +3,7 @@ package com.blogspot.ludumdaresforfun.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.mygdx.ludum.LudumGame;
+import com.blogspot.ludumdaresforfun.LD;;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -14,6 +14,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener getApplicationListener () {
-                return new LudumGame();
+                return new LD();
         }
 }
