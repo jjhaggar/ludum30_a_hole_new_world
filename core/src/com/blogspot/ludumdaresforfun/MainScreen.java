@@ -37,6 +37,8 @@ public class MainScreen extends BaseScreen {
 	private Array<Shot> shotArray = new Array<Shot>();
 	private Array<Vector2> spawns = new Array<Vector2>();
 
+	private Boss boss;
+
 	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 		@Override
 		protected Rectangle newObject () {
@@ -49,6 +51,7 @@ public class MainScreen extends BaseScreen {
 	private final float yPosLowerWorld = 120;
 	final int DISTANCESPAWN = 410;
 	final int TILED_SIZE = 16;
+	final float activateBossXPosition = 420;
 
 
 	public MainScreen() {
@@ -71,20 +74,6 @@ public class MainScreen extends BaseScreen {
             }
         }
 
-        /*
-        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(1));
-        layerSpawn.setCell(0, 20, layerSpawn.getCell(10, 25));
-
-        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));
-        layerSpawn.setCell(0, 20, layerSpawn.getCell(10, 25));
-
-        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(1));
-        layerSpawn.setCell(0, 21, layerSpawn.getCell(10, 25));
-
-        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));
-        layerSpawn.setCell(0, 21, layerSpawn.getCell(10, 25));
-		*/
-
         this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
 		Gdx.graphics.setDisplayMode(400, 240, false);
@@ -94,7 +83,7 @@ public class MainScreen extends BaseScreen {
 		this.camera.update();
 
 		this.player = new Player(Assets.stand);
-		this.player.setPosition(0, 380);
+		this.player.setPosition(360, 380);
 
         this.configControllers = new ConfigControllers();
 		this.configControllers.init();
@@ -137,7 +126,132 @@ public class MainScreen extends BaseScreen {
 			if (shot != null)
 				this.renderShot(shot, delta);
 		}
+		if (boss != null){
+			this.updateBoss(delta);
+			this.renderBoss(delta);
+		}
+
 	}
+
+	private void updateBoss(float delta) {
+		if (this.player.getRect().overlaps(this.boss.getRect())) {
+            this.player.beingHit();
+        }
+
+		this.boss.desiredPosition.y = this.boss.getY();
+
+		this.boss.stateTime += delta;
+
+		if (this.normalGravity)
+			this.boss.velocity.add(0, this.GRAVITY);
+		else
+			this.boss.velocity.add(0, -this.GRAVITY);
+
+		this.boss.velocity.scl(delta);
+
+		collisionForBoss(this.boss);
+
+
+
+		// unscale the velocity by the inverse delta time and set the latest position
+		this.boss.desiredPosition.add(this.boss.velocity);
+		this.boss.velocity.scl(1 / delta);
+		flowBoss(delta);
+
+		this.boss.setPosition(this.boss.desiredPosition.x, this.boss.desiredPosition.y);
+	}
+
+
+	private void flowBoss(float delta) {
+
+		if (this.boss.flowState == Boss.FlowState.WalkingLeft){
+			this.boss.velocity.x = -100;
+			this.boss.flowState = Boss.FlowState.Transition;
+		}
+		else if (this.boss.flowState == Boss.FlowState.WalkingRight){
+			this.boss.velocity.x = 100;
+			this.boss.flowState = Boss.FlowState.Transition;
+		}
+		else if (this.boss.flowState == Boss.FlowState.Jumping){
+			if (this.boss.getX() - this.player.getX() > 0)
+				this.boss.velocity.x = -200;
+			else
+				this.boss.velocity.x = 200;
+
+			this.boss.velocity.y = 400;
+			this.boss.flowState = Boss.FlowState.Transition;
+		}
+		else if (this.boss.flowState == Boss.FlowState.Attack){
+			if (this.boss.getX() - this.player.getX() > 0)
+				this.boss.facesRight = false;
+			else
+				this.boss.facesRight = true;
+
+			this.boss.velocity.x = 0;
+			//attack to character(detect position and collision)
+			this.boss.flowState = Boss.FlowState.Transition;
+		}
+		else if (this.boss.flowState == Boss.FlowState.Summon){
+			this.boss.velocity.x = 0;
+			//summon
+			this.boss.flowTime = 0;
+			this.boss.velocity.y = 200;  //only to differentiate right now
+			this.boss.flowState = Boss.FlowState.Transition;
+		}
+		else if (this.boss.flowState == Boss.FlowState.Transition){
+			if (this.boss.getX() > 420 + 300)
+				this.boss.flowState = Boss.FlowState.WalkingLeft;
+			else if (this.boss.getX() < 420)
+				this.boss.flowState = Boss.FlowState.WalkingRight;
+			else if (this.boss.flowTime > 2){
+				int nextState = (int)Math.round(Math.random() * 3);
+
+				if ((Math.abs(this.boss.getX() - this.player.getX()) < 48) && nextState % 2 == 0)	//2 tiles
+					this.boss.flowState = Boss.FlowState.Attack;
+				else if (nextState == 0)
+					this.boss.flowState = Boss.FlowState.Jumping;
+				else if (nextState == 1)
+					this.boss.flowState = Boss.FlowState.Summon;
+				else{
+					if (this.boss.getX() - this.player.getX() > 0)
+						this.boss.flowState = Boss.FlowState.WalkingLeft;
+					else
+						this.boss.flowState = Boss.FlowState.WalkingRight;
+				}
+				this.boss.flowTime = 0;
+			}
+		}
+		this.boss.flowTime += delta;
+	}
+
+
+	private void renderBoss(float delta) {
+		TextureRegion frame = null;
+
+		if (this.boss.velocity.x > 0)
+			this.boss.facesRight = true;
+		else if (this.boss.velocity.x < 0)
+			this.boss.facesRight = false;
+
+		if (this.boss.state == boss.state.Standing)
+			frame = Assets.bossStanding.getKeyFrame(this.boss.stateTime);
+
+		Batch batch = this.renderer.getSpriteBatch();
+		batch.begin();
+		if (boss.facesRight) {
+			if (frame.isFlipX())
+				frame.flip(true, false);
+			batch.draw(frame, this.boss.getX(), this.boss.getY());
+		} else {
+			if (!frame.isFlipX())
+				frame.flip(true, false);
+			batch.draw(frame, this.boss.getX(), this.boss.getY());
+		}
+
+		batch.end();
+
+	}
+
 
 	private void renderShot(Shot shot, float deltaTime){
 		TextureRegion frame = null;
@@ -499,11 +613,14 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void activateBoss() {
-		if ((this.player.getX() > 430) && !this.bossActive){		//boss final trigger
-			this.bossActive = true;
+		if (this.player.getX() > activateBossXPosition && !bossActive){		//boss final trigger
+			bossActive = true;
 
-			this.camera.position.x = 600;		//boss final position camera
-			this.camera.update();
+			this.boss = new Boss(Assets.bossStanding);
+			boss.setPosition(600, 350);
+
+			camera.position.x = 600;		//boss final position camera
+			camera.update();
 
 			//close door
 			TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));
@@ -621,6 +738,130 @@ public class MainScreen extends BaseScreen {
 			if (toBeDeleted[j] && (this.shotArray.size >= (j + 1)))
 				this.shotArray.removeIndex(j);
 		}
+	}
+
+
+	private boolean collisionForBoss(Boss boss) {
+		//collision detection
+		// perform collision detection & response, on each axis, separately
+		// if the raya is moving right, check the tiles to the right of it's
+		// right bounding box edge, otherwise check the ones to the left
+		this.playerRect = this.rectPool.obtain();
+
+		boss.desiredPosition.y = Math.round(boss.getY());
+		boss.desiredPosition.x = Math.round(boss.getX());
+
+		this.playerRect.set(boss.desiredPosition.x, boss.desiredPosition.y, boss.getWidth(), boss.getHeight());
+
+		int startX, startY, endX, endY;
+
+		if (this.player.velocity.x > 0) {
+			startX = endX = (int)((boss.desiredPosition.x + boss.velocity.x + boss.getWidth()) / this.TILED_SIZE);
+		}
+		else {
+			startX = endX = (int)((boss.desiredPosition.x + boss.velocity.x) / this.TILED_SIZE);
+		}
+
+		if (boss.grounded && this.normalGravity){
+			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE) + 1;
+			endY = (int)((boss.desiredPosition.y + boss.getHeight()) / this.TILED_SIZE) + 1;
+		}
+		else if (boss.grounded && !this.normalGravity){
+			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE) - 1;
+			endY = (int)((boss.desiredPosition.y + boss.getHeight()) / this.TILED_SIZE) - 1;
+		}
+		else{
+			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE);
+			endY = (int)((boss.desiredPosition.y + boss.getHeight()) / this.TILED_SIZE);
+		}
+
+		this.getTiles(startX, startY, endX, endY, this.tiles);
+
+		this.playerRect.x += boss.velocity.x;
+
+		for (Rectangle tile : this.tiles) {
+			if (this.playerRect.overlaps(tile)) {
+				this.player.velocity.x = 0;
+				break;
+				}
+		}
+
+		this.playerRect.x = boss.desiredPosition.x;
+
+		// if the koala is moving upwards, check the tiles to the top of it's
+		// top bounding box edge, otherwise check the ones to the bottom
+
+		if (this.normalGravity){
+			if (boss.velocity.y > 0) {
+				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y + boss.getHeight()) / this.TILED_SIZE);
+			}
+			else {
+				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y) / this.TILED_SIZE);
+			}
+		}
+		else{
+			if (this.player.velocity.y < 0) {
+				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y) / this.TILED_SIZE);
+			}
+			else {
+				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y + boss.getHeight() ) / this.TILED_SIZE);
+			}
+		}
+
+
+		startX = (int)(boss.desiredPosition.x / this.TILED_SIZE);					//16 tile size
+		endX = (int)((boss.desiredPosition.x + boss.getWidth()) / this.TILED_SIZE);
+
+		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
+
+		this.getTiles(startX, startY, endX, endY, this.tiles);
+
+		this.playerRect.y += (int)(boss.velocity.y);
+
+		boolean grounded = boss.grounded;
+
+		for (Rectangle tile : this.tiles) {
+			// System.out.println(playerRect.x + " " + playerRect.y + " " + tile.x + " " + tile.y);
+			if (this.playerRect.overlaps(tile)) {
+				// we actually reset the koala y-position here
+				// so it is just below/above the tile we collided with
+				// this removes bouncing :)
+
+				if (this.normalGravity){
+					if (boss.velocity.y > 0) {
+						boss.desiredPosition.y = tile.y - boss.getHeight() - 1;
+						// we hit a block jumping upwards, let's destroy it!
+					}
+					else {
+						boss.desiredPosition.y = (tile.y + tile.height) - 4;	//in this way he is in the ground
+						// if we hit the ground, mark us as grounded so we can jump
+						grounded = true;
+					}
+				}
+				else{
+					if (boss.velocity.y > 0) {
+						//this.player.desiredPosition.y = tile.y - tile.height- 1;
+						// if we hit the ground, mark us as grounded so we can jump
+						grounded = true;
+					}
+					else {
+						boss.desiredPosition.y = (tile.y + tile.height) - 1;
+						// we hit a block jumping upwards, let's destroy it!
+					}
+				}
+
+				boss.velocity.y = 0;
+				break;
+				}
+			}
+
+		if (this.tiles.size == 0)
+			grounded = false;
+
+		//goes together with get
+		this.rectPool.free(this.playerRect);
+
+		return grounded;
 	}
 
 
@@ -742,6 +983,7 @@ public class MainScreen extends BaseScreen {
 		//goes together with get
 		this.rectPool.free(this.playerRect);
 	}
+
 
 	private void getTiles (int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
 

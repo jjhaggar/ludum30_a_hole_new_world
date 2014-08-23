@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -43,6 +44,7 @@ public class Assets {
 
 		regions = atlas.findRegions("boss_standing");
 		bossStanding = new Animation(0.15f, regions);
+		bossStanding.setPlayMode(PlayMode.LOOP);
 
 		regions = atlas.findRegions("boss_gethit");
 		bossGetHit = new Animation(0.15f, regions);

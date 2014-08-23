@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 public class Player extends Image {
     final float MAX_VELOCITY = 100f;
-    final float JUMP_VELOCITY = 255f; // 210f;
+    final float JUMP_VELOCITY = 270f; // 210f;
     enum State {
         Standing, Walking, Jumping, StandingShooting
     }
@@ -39,6 +39,11 @@ public class Player extends Image {
 
     }
 
+    @Override
+    public float getWidth(){
+    	return 24f;		//taken from picture
+    }
+
     public void beingHit() {
         if (!this.invincible) {
             this.invincible = true;
@@ -56,7 +61,7 @@ public class Player extends Image {
 
     }
 
-    private void die() {
+    public void die() {
         // TODO: animate, sound and reset game
         System.out.println("GAME OVER");
     }

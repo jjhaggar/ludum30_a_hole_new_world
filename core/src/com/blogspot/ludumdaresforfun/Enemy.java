@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-public class Enemy extends Image {
+public class Enemy extends Image{
     final float VELOCITY = 50f;
     final float ATTACK_VELOCITY = 120f;
     enum State {

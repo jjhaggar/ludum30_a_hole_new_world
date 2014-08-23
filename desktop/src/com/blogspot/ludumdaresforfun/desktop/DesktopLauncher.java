@@ -18,7 +18,7 @@ public class DesktopLauncher {
 
 	private static void createPacker() {
 	    /* Automatic packing */
-	    for (String folder: new String[]{"bunny", "rayaman"}) { // Added new folders here
+	    for (String folder: new String[]{}) { // Added new folders here
 	        // Remove old pack
 	        for (String ext : new String[]{".png", ".pack"}) {
                 File file = new File("../android/assets/" + folder + ext);

@@ -12,14 +12,21 @@ public class Boss extends Image {
     final float VELOCITY = 50f;
     final float ATTACK_VELOCITY = 120f;
     enum State {
-        Walking, Running, Hurting
+        Standing, Walking, Running, Hurting
     }
+
+    enum FlowState {
+    	WalkingLeft, WalkingRight, Jumping, Transition, Attack, Summon
+    }
+
     Vector2 desiredPosition = new Vector2();
     final Vector2 velocity = new Vector2();
-    State state = State.Walking;
+    State state = State.Standing;
+    FlowState flowState = FlowState.WalkingLeft;
     boolean facesRight = true;
     public boolean updateVelocity;
     public boolean setToDie = false;
+    public boolean grounded;
 
     public enum Direction {
         Left, Right
@@ -34,6 +41,7 @@ public class Boss extends Image {
 
     protected Animation animation = null;
     float stateTime = 0;
+    float flowTime = 0;
 
 	public Boss(Animation animation) {
 		super(animation.getKeyFrame(0));
@@ -55,6 +63,5 @@ public class Boss extends Image {
         ((TextureRegionDrawable)this.getDrawable()).setRegion(this.animation.getKeyFrame(this.stateTime+=delta, true));
         super.act(delta);
     }
-
 
 }
