@@ -12,9 +12,10 @@ import com.badlogic.gdx.utils.Array;
 
 public class Assets {
 	static AssetManager assetManager;
-	static Animation stand, walk, jump, standingShot;
-	static Animation shotAnim;
-	static Animation bossStanding, bossGetHit;
+    static Animation playerAttack, playerEmpty, playerIntro, playerStand, playerWalk, playerJump, playerStandShot;
+    static Animation playerShot;
+    static Animation enemyWalk, enemyRun, enemyHurt;
+    static Animation bossGethit, bossStanding,  bossWalking;
 	static Texture bg;
 
 	static void loadAnimation() {
@@ -26,28 +27,55 @@ public class Assets {
         TextureAtlas atlas = assetManager.get(TEXTURE_ATLAS_OBJECTS);
 		Array<AtlasRegion> regions;
 
-		regions = atlas.findRegions("char_walking");
-		walk = new Animation(0.15f, regions);
-		walk.setPlayMode(Animation.PlayMode.LOOP);
+		// Player
+		regions = atlas.findRegions("char_attack");
+		playerAttack = new Animation(0.15f, regions);
+
+		regions = atlas.findRegions("char_empty");
+		playerEmpty = new Animation(0, regions);
+
+		regions = atlas.findRegions("char_intro");
+		playerIntro = new Animation(0, regions);
 
 		regions = atlas.findRegions("char_standing");
-		stand = new Animation(0, regions);
+		playerStand = new Animation(0, regions);
+
+
+		regions = atlas.findRegions("char_walking");
+		playerWalk = new Animation(0.15f, regions);
+		playerWalk.setPlayMode(Animation.PlayMode.LOOP);
 
 		regions = atlas.findRegions("char_standing");  //change to jumping
-		jump = new Animation(0, regions);
+		playerJump = new Animation(0, regions);
 
 		regions = atlas.findRegions("char_standing");	//change to shooting
-		standingShot = new Animation(0.15f, regions);
+		playerStandShot = new Animation(0.15f, regions);
 
-		regions = atlas.findRegions("char_standing");
-		shotAnim = new Animation(0.15f, regions);
+		// Shot
+		regions = atlas.findRegions("char_attack_holy_water");
+		playerShot = new Animation(0, regions);
+
+		// Enemy
+		regions = atlas.findRegions("char_walking");//"enemy_walk"); // change
+		enemyWalk = new Animation(0.15f, regions);
+		enemyWalk.setPlayMode(Animation.PlayMode.LOOP);
+
+		regions = atlas.findRegions("char_intro");//"enemy_run"); // change
+		enemyRun = new Animation(0, regions);
+
+		regions = atlas.findRegions("char_gethit");//"enemy_hurt"); // change
+		enemyHurt = new Animation(0.15f, regions);
+
+		// Boss
+		regions = atlas.findRegions("boss_gethit");
+		bossGethit = new Animation(0.15f, regions);
 
 		regions = atlas.findRegions("boss_standing");
 		bossStanding = new Animation(0.15f, regions);
 		bossStanding.setPlayMode(PlayMode.LOOP);
 
-		regions = atlas.findRegions("boss_gethit");
-		bossGetHit = new Animation(0.15f, regions);
+		regions = atlas.findRegions("boss_walking");
+		bossWalking = new Animation(0.15f, regions);
 	}
 
 	static TextureRegion getBg() {

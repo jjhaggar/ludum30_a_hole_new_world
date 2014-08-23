@@ -46,8 +46,33 @@ public class Enemy extends Image{
     }
 
     public void die(){
-    	//animate, sound and set to die
-    	setToDie = true;
+    	// sound and set to die
+        this.state = State.Hurting;
+    	this.setToDie = true;
+    }
+
+    public void run() {
+        if (this.dir == Direction.Left) {
+            this.diffInitialPos -= 2;
+            this.velocity.x = -this.ATTACK_VELOCITY;
+        }
+        else {
+            this.diffInitialPos += 2;
+            this.velocity.x = this.ATTACK_VELOCITY;
+        }
+        this.state = Enemy.State.Running;
+    }
+
+    public void walk() {
+        if (this.dir == Direction.Left) {
+            this.diffInitialPos -= 1;
+            this.velocity.x = -this.VELOCITY;
+        }
+        else {
+            this.diffInitialPos += 1;
+            this.velocity.x = this.VELOCITY;
+        }
+        this.state = Enemy.State.Walking;
     }
 
     @Override

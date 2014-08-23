@@ -58,7 +58,7 @@ public class MainScreen extends BaseScreen {
 		this.shapeRenderer = new ShapeRenderer();
 		Assets.loadAnimation();
 
-		this.map = new TmxMapLoader().load("aholenewworld_enemy.tmx");
+		this.map = new TmxMapLoader().load("aholenewworld.tmx");
 
 		this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
@@ -82,7 +82,7 @@ public class MainScreen extends BaseScreen {
 		this.camera.position.y = this.yPosUpperWorld;
 		this.camera.update();
 
-		this.player = new Player(Assets.stand);
+		this.player = new Player(Assets.playerStand);
 		this.player.setPosition(360, 380);
 
         this.configControllers = new ConfigControllers();
@@ -106,7 +106,7 @@ public class MainScreen extends BaseScreen {
 		if (this.spawns.size > 0) {
             Vector2 auxNextSpawn = this.spawns.first();
             if ((this.camera.position.x + this.DISTANCESPAWN) >= auxNextSpawn.x) {
-                Enemy auxShadow = new Enemy(Assets.jump);
+                Enemy auxShadow = new Enemy(Assets.enemyWalk);
                 if (auxNextSpawn.y < 240) {
                     auxNextSpawn.y -= 5; // Offset fixed collision
                 }
@@ -126,7 +126,7 @@ public class MainScreen extends BaseScreen {
 			if (shot != null)
 				this.renderShot(shot, delta);
 		}
-		if (boss != null){
+		if (this.boss != null){
 			this.updateBoss(delta);
 			this.renderBoss(delta);
 		}
@@ -149,14 +149,14 @@ public class MainScreen extends BaseScreen {
 
 		this.boss.velocity.scl(delta);
 
-		collisionForBoss(this.boss);
+		this.collisionForBoss(this.boss);
 
 
 
 		// unscale the velocity by the inverse delta time and set the latest position
 		this.boss.desiredPosition.add(this.boss.velocity);
 		this.boss.velocity.scl(1 / delta);
-		flowBoss(delta);
+		this.flowBoss(delta);
 
 		this.boss.setPosition(this.boss.desiredPosition.x, this.boss.desiredPosition.y);
 	}
@@ -173,7 +173,7 @@ public class MainScreen extends BaseScreen {
 			this.boss.flowState = Boss.FlowState.Transition;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Jumping){
-			if (this.boss.getX() - this.player.getX() > 0)
+			if ((this.boss.getX() - this.player.getX()) > 0)
 				this.boss.velocity.x = -200;
 			else
 				this.boss.velocity.x = 200;
@@ -182,7 +182,7 @@ public class MainScreen extends BaseScreen {
 			this.boss.flowState = Boss.FlowState.Transition;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Attack){
-			if (this.boss.getX() - this.player.getX() > 0)
+			if ((this.boss.getX() - this.player.getX()) > 0)
 				this.boss.facesRight = false;
 			else
 				this.boss.facesRight = true;
@@ -199,21 +199,21 @@ public class MainScreen extends BaseScreen {
 			this.boss.flowState = Boss.FlowState.Transition;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Transition){
-			if (this.boss.getX() > 420 + 300)
+			if (this.boss.getX() > (420 + 300))
 				this.boss.flowState = Boss.FlowState.WalkingLeft;
 			else if (this.boss.getX() < 420)
 				this.boss.flowState = Boss.FlowState.WalkingRight;
 			else if (this.boss.flowTime > 2){
 				int nextState = (int)Math.round(Math.random() * 3);
 
-				if ((Math.abs(this.boss.getX() - this.player.getX()) < 48) && nextState % 2 == 0)	//2 tiles
+				if ((Math.abs(this.boss.getX() - this.player.getX()) < 48) && ((nextState % 2) == 0))	//2 tiles
 					this.boss.flowState = Boss.FlowState.Attack;
 				else if (nextState == 0)
 					this.boss.flowState = Boss.FlowState.Jumping;
 				else if (nextState == 1)
 					this.boss.flowState = Boss.FlowState.Summon;
 				else{
-					if (this.boss.getX() - this.player.getX() > 0)
+					if ((this.boss.getX() - this.player.getX()) > 0)
 						this.boss.flowState = Boss.FlowState.WalkingLeft;
 					else
 						this.boss.flowState = Boss.FlowState.WalkingRight;
@@ -233,12 +233,12 @@ public class MainScreen extends BaseScreen {
 		else if (this.boss.velocity.x < 0)
 			this.boss.facesRight = false;
 
-		if (this.boss.state == boss.state.Standing)
+		if (this.boss.state == this.boss.state.Standing)
 			frame = Assets.bossStanding.getKeyFrame(this.boss.stateTime);
 
 		Batch batch = this.renderer.getSpriteBatch();
 		batch.begin();
-		if (boss.facesRight) {
+		if (this.boss.facesRight) {
 			if (frame.isFlipX())
 				frame.flip(true, false);
 			batch.draw(frame, this.boss.getX(), this.boss.getY());
@@ -255,7 +255,7 @@ public class MainScreen extends BaseScreen {
 
 	private void renderShot(Shot shot, float deltaTime){
 		TextureRegion frame = null;
-		frame = Assets.shotAnim.getKeyFrame(shot.stateTime);
+		frame = Assets.playerShot.getKeyFrame(shot.stateTime);
 
 		Batch batch = this.renderer.getSpriteBatch();
 		batch.begin();
@@ -404,16 +404,22 @@ public class MainScreen extends BaseScreen {
 		TextureRegion frame = null;
 		switch (this.player.state) {
 		case Standing:
-			frame = Assets.stand.getKeyFrame(this.player.stateTime);
+			frame = Assets.playerStand.getKeyFrame(this.player.stateTime);
 			break;
 		case Walking:
-			frame = Assets.walk.getKeyFrame(this.player.stateTime);
+			frame = Assets.playerWalk.getKeyFrame(this.player.stateTime);
 			break;
 		case Jumping:
-			frame = Assets.jump.getKeyFrame(this.player.stateTime);
+			frame = Assets.playerJump.getKeyFrame(this.player.stateTime);
 			break;
 		case StandingShooting:
-			frame = Assets.standingShot.getKeyFrame(this.player.stateTime);
+			frame = Assets.playerStandShot.getKeyFrame(this.player.stateTime);
+			break;
+		case Intro:
+			frame = Assets.playerIntro.getKeyFrame(this.player.stateTime);
+			break;
+		case Attacking:
+			frame = Assets.playerAttack.getKeyFrame(this.player.stateTime);
 			break;
 		}
 		// draw the koala, depending on the current velocity
@@ -452,16 +458,15 @@ public class MainScreen extends BaseScreen {
 	private void renderEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
             TextureRegion frame = null;
-            frame = Assets.walk.getKeyFrame(enemy.stateTime);
             switch (enemy.state) {
             case Walking:
-                //frame = Assets.enemyWalk.getKeyFrame(enemy.stateTime);
+                frame = Assets.enemyWalk.getKeyFrame(enemy.stateTime);
                 break;
             case Running:
-                //frame = Assets.enemyRun.getKeyFrame(enemy.stateTime);
+                frame = Assets.enemyRun.getKeyFrame(enemy.stateTime);
                 break;
             case Hurting:
-                //frame = Assets.enemyHurt.getKeyFrame(enemy.stateTime);
+                frame = Assets.enemyHurt.getKeyFrame(enemy.stateTime);
                 break;
             }
 
@@ -499,36 +504,28 @@ public class MainScreen extends BaseScreen {
 	            if (enemy.getX() < this.player.getX()) {
                     if ((enemy.getX() - enemy.ATTACK_DISTANCE) <= (this.player.getX() + this.player.getHeight())) {
                         enemy.dir = Enemy.Direction.Right;
-                        enemy.diffInitialPos += 2;
-                        enemy.velocity.x = enemy.ATTACK_VELOCITY;
+                        enemy.run();
                     }
 	            }
 	            else {
                     if ((enemy.getX() + enemy.ATTACK_DISTANCE) >= this.player.getX()) {
                         enemy.dir = Enemy.Direction.Left;
-                        enemy.diffInitialPos -= 2;
-                        enemy.velocity.x = -enemy.ATTACK_VELOCITY;
+                        enemy.run();
                     }
 	            }
 	        }
 
             else if (enemy.dir == Enemy.Direction.Left) {
-                if (-enemy.RANGE < enemy.diffInitialPos) {
-                    enemy.diffInitialPos -= 1;
-                    enemy.velocity.x = -enemy.VELOCITY;
-                }
-                else {
+                if (-enemy.RANGE >= enemy.diffInitialPos) {
                     enemy.dir = Enemy.Direction.Right;
                 }
+                enemy.walk();
 	        }
 	        else if (enemy.dir == Enemy.Direction.Right) {
-                if (enemy.diffInitialPos < enemy.RANGE) {
-                    enemy.diffInitialPos += 1;
-                    enemy.velocity.x = enemy.VELOCITY;
-                }
-                else {
+                if (enemy.diffInitialPos >= enemy.RANGE) {
                     enemy.dir = Enemy.Direction.Left;
                 }
+                enemy.walk();
 	        }
 
             enemy.velocity.scl(deltaTime);
@@ -567,6 +564,7 @@ public class MainScreen extends BaseScreen {
         }
 
 	    int i = 0;
+	    // TODO: fix error here. the number 3 not have sense
 		boolean[] toBeDeleted = new boolean[3];
 		for (Enemy enemy : this.enemies){
 			if (enemy != null){
@@ -613,14 +611,14 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void activateBoss() {
-		if (this.player.getX() > activateBossXPosition && !bossActive){		//boss final trigger
-			bossActive = true;
+		if ((this.player.getX() > this.activateBossXPosition) && !this.bossActive){		//boss final trigger
+			this.bossActive = true;
 
 			this.boss = new Boss(Assets.bossStanding);
-			boss.setPosition(600, 350);
+			this.boss.setPosition(600, 350);
 
-			camera.position.x = 600;		//boss final position camera
-			camera.update();
+			this.camera.position.x = 600;		//boss final position camera
+			this.camera.update();
 
 			//close door
 			TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));
@@ -703,7 +701,7 @@ public class MainScreen extends BaseScreen {
 		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.D) && (this.shotArray.size < 3)){
-			Shot shot = new Shot(Assets.shotAnim);
+			Shot shot = new Shot(Assets.playerShot);
 			if (this.player.facesRight){
 				//-1 necessary to be exactly the same as the other facing
 				shot.Initialize((this.player.getX() + (this.player.getHeight() / 2)) - 1, (this.player.getY() + (this.player.getWidth() / 2)), this.player.facesRight, this.normalGravity);
@@ -720,7 +718,7 @@ public class MainScreen extends BaseScreen {
 			this.player.shooting = true;
 		}
 
-		if (Assets.standingShot.isAnimationFinished(this.player.stateTime))
+		if (Assets.playerStandShot.isAnimationFinished(this.player.stateTime))
 			this.player.shooting = false;
 
 		int i = 0;

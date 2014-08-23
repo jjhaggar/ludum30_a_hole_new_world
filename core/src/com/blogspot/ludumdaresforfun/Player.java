@@ -12,7 +12,7 @@ public class Player extends Image {
     final float MAX_VELOCITY = 100f;
     final float JUMP_VELOCITY = 270f; // 210f;
     enum State {
-        Standing, Walking, Jumping, StandingShooting
+        Standing, Walking, Jumping, StandingShooting, Attacking, Intro
     }
     Vector2 desiredPosition = new Vector2();
     final Vector2 velocity = new Vector2();
