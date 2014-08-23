@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="25" height="15" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="tiles_03" tilewidth="16" tileheight="16">
+  <image source="tiles_03.png" trans="ff00ff" width="160" height="80"/>
+ </tileset>
+ <layer name="plattform_tile_layer" width="25" height="15">
+  <data encoding="base64" compression="zlib">
+   eJzt0jsSgDAIBFASLcRf4x009z+h2zhjEYFBYmXxqpCdzScRURJk6KBX5rwmmGGBVZix5kX01TK0vhbejNbvEXG+3LDbvaPnf2gisy47HFA+uBeLARhGYY2FmSdstFW82furOwElkglG
+  </data>
+ </layer>
+ <objectgroup name="collissions_object_layer" width="25" height="15">
+  <object x="272" y="128" width="48" height="16"/>
+  <object x="0" y="176">
+   <polyline points="0,0 160,0 160,-16 240,-16 240,0 400,0"/>
+  </object>
+  <object x="48" y="160">
+   <polyline points="0,0 48,0"/>
+  </object>
+ </objectgroup>
+</map>
