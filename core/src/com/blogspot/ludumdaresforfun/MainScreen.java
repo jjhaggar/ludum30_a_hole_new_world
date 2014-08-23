@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Pool;
 public class MainScreen extends BaseScreen {
 
     public boolean pause = false;
+    public boolean toggle = false;
 	ConfigControllers configControllers;
 	Rectangle playerRect;
 	private OrthogonalTiledMapRenderer renderer;
@@ -400,7 +401,6 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void renderPlayer (float deltaTime) {
-		// based on the koala state, get the animation frame
 		TextureRegion frame = null;
 		switch (this.player.state) {
 		case Standing:
@@ -421,6 +421,16 @@ public class MainScreen extends BaseScreen {
 		case Attacking:
 			frame = Assets.playerAttack.getKeyFrame(this.player.stateTime);
 			break;
+		}
+		if (this.player.invincible && this.toggle) {
+			frame = Assets.playerEmpty.getKeyFrame(this.player.stateTime);
+		    this.toggle = !this.toggle;
+		}
+		else if (this.player.invincible && !this.toggle) {
+		    this.toggle = !this.toggle;
+		}
+		else if (!this.player.invincible) {
+		    this.toggle = false;
 		}
 		// draw the koala, depending on the current velocity
 		// on the x-axis, draw the koala facing either right
@@ -665,7 +675,7 @@ public class MainScreen extends BaseScreen {
 		// clamp the velocity to 0 if it's < 1, and set the state to standign
 		if (Math.abs(this.player.velocity.x) < 1) {
 			this.player.velocity.x = 0;
-			if (this.player.grounded && !this.player.shooting)
+			if (this.player.grounded && !this.player.shooting && !this.player.invincible)
 				this.player.state = Player.State.Standing;
 		}
 	}
