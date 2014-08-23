@@ -29,6 +29,7 @@ public class MainScreen extends BaseScreen {
 	private ShapeRenderer shapeRenderer;
 	private TiledMap map;
 	private boolean normalGravity = true;
+	private boolean bossActive = false;
 
 	private Array<Enemy> enemies = new Array<Enemy>();
 	private Array<Rectangle> tiles = new Array<Rectangle>();
@@ -53,7 +54,7 @@ public class MainScreen extends BaseScreen {
 		this.shapeRenderer = new ShapeRenderer();
 		Assets.loadAnimation();
 
-		this.map = new TmxMapLoader().load("aholenewworld.tmx");
+		this.map = new TmxMapLoader().load("aholenewworld_enemy.tmx");
 
 		this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
@@ -68,6 +69,22 @@ public class MainScreen extends BaseScreen {
                 }
             }
         }
+
+        /*
+        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(1));
+        layerSpawn.setCell(0, 20, layerSpawn.getCell(10, 25));
+
+        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));
+        layerSpawn.setCell(0, 20, layerSpawn.getCell(10, 25));
+
+        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(1));
+        layerSpawn.setCell(0, 21, layerSpawn.getCell(10, 25));
+
+        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));
+        layerSpawn.setCell(0, 21, layerSpawn.getCell(10, 25));
+		*/
+
+        this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
 		Gdx.graphics.setDisplayMode(400, 240, false);
 		this.camera = new OrthographicCamera();
@@ -91,8 +108,11 @@ public class MainScreen extends BaseScreen {
 		this.updatePlayer(delta);
 		this.player.act(delta);
 
-		this.camera.position.x = this.player.getX(); //200;//raya.position.x;
-		this.camera.update();
+		if (!bossActive){
+			this.camera.position.x = this.player.getX(); //200;//raya.position.x;
+			this.camera.update();
+		}
+
 		if (this.spawns.size > 0) {
             Vector2 auxNextSpawn = this.spawns.first();
             if ((this.camera.position.x + this.DISTANCESPAWN) >= auxNextSpawn.x) {
@@ -456,6 +476,86 @@ public class MainScreen extends BaseScreen {
 		this.player.desiredPosition.x = this.player.getX();
 		this.player.desiredPosition.y = this.player.getY();
 
+		movingShootingJumping(deltaTime);
+		gravityAndClamping();
+
+		this.player.velocity.scl(deltaTime);
+
+		collisionWalls();
+
+		// unscale the velocity by the inverse delta time and set
+		// the latest position
+		this.player.desiredPosition.add(this.player.velocity);
+		this.player.velocity.scl(1 / deltaTime);
+
+		// Apply damping to the velocity on the x-axis so we don't
+		// walk infinitely once a key was pressed
+		this.player.velocity.x *= 0;		//0 is totally stopped if not pressed
+		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
+
+		activateBoss();
+
+	}
+
+	private void activateBoss() {
+		if (this.player.getX() > 430 && !bossActive){		//boss final trigger
+			bossActive = true;
+
+			camera.position.x = 600;		//boss final position camera
+			camera.update();
+
+			//close door
+			TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));
+			Cell cell = layerSpawn.getCell(25, 16); //has to be solid block
+
+	        layerSpawn.setCell(25, 17, cell);
+	        layerSpawn.setCell(25, 18, cell);
+	        layerSpawn.setCell(25, 19, cell);
+
+	        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(1));
+	        layerSpawn.setCell(25, 17, cell);
+	        layerSpawn.setCell(25, 18, cell);
+	        layerSpawn.setCell(25, 19, cell);
+		}
+	}
+
+
+	private void gravityAndClamping() {
+		if (this.normalGravity)
+			this.player.velocity.add(0, this.GRAVITY);
+		else
+			this.player.velocity.add(0, -this.GRAVITY);
+
+		if (this.player.getY() < 240){
+			this.camera.position.y = this.yPosLowerWorld;
+			if (this.normalGravity == true){
+				this.normalGravity = false;
+				this.player.velocity.y = -this.player.JUMP_VELOCITY;
+			}
+		}
+		else{
+			this.camera.position.y = this.yPosUpperWorld;
+			if (this.normalGravity == false){
+				this.normalGravity = true;
+				this.player.velocity.y = this.player.JUMP_VELOCITY;
+			}
+		}
+
+		// clamp the velocity to the maximum, x-axis only
+		if (Math.abs(this.player.velocity.x) > this.player.MAX_VELOCITY) {
+			this.player.velocity.x = Math.signum(this.player.velocity.x) * this.player.MAX_VELOCITY;
+		}
+
+		// clamp the velocity to 0 if it's < 1, and set the state to standign
+		if (Math.abs(this.player.velocity.x) < 1) {
+			this.player.velocity.x = 0;
+			if (this.player.grounded && !this.player.shooting)
+				this.player.state = Player.State.Standing;
+		}
+	}
+
+
+	private void movingShootingJumping(float deltaTime) {
 		if ((Gdx.input.isKeyJustPressed(Keys.S) || this.configControllers.jumpPressed) && this.player.grounded){
 			if (this.normalGravity)
 				this.player.velocity.y = this.player.JUMP_VELOCITY;
@@ -520,42 +620,10 @@ public class MainScreen extends BaseScreen {
 			if (toBeDeleted[j] && (this.shotArray.size >= (j + 1)))
 				this.shotArray.removeIndex(j);
 		}
+	}
 
 
-		if (this.normalGravity)
-			this.player.velocity.add(0, this.GRAVITY);
-		else
-			this.player.velocity.add(0, -this.GRAVITY);
-
-		if (this.player.getY() < 240){
-			this.camera.position.y = this.yPosLowerWorld;
-			if (this.normalGravity == true){
-				this.normalGravity = false;
-				this.player.velocity.y = -this.player.JUMP_VELOCITY;
-			}
-		}
-		else{
-			this.camera.position.y = this.yPosUpperWorld;
-			if (this.normalGravity == false){
-				this.normalGravity = true;
-				this.player.velocity.y = this.player.JUMP_VELOCITY;
-			}
-		}
-
-		// clamp the velocity to the maximum, x-axis only
-		if (Math.abs(this.player.velocity.x) > this.player.MAX_VELOCITY) {
-			this.player.velocity.x = Math.signum(this.player.velocity.x) * this.player.MAX_VELOCITY;
-		}
-
-		// clamp the velocity to 0 if it's < 1, and set the state to standign
-		if (Math.abs(this.player.velocity.x) < 1) {
-			this.player.velocity.x = 0;
-			if (this.player.grounded && !this.player.shooting)
-				this.player.state = Player.State.Standing;
-		}
-
-		this.player.velocity.scl(deltaTime);
-
+	private void collisionWalls() {
 		//collision detection
 		// perform collision detection & response, on each axis, separately
 		// if the raya is moving right, check the tiles to the right of it's
@@ -672,17 +740,6 @@ public class MainScreen extends BaseScreen {
 
 		//goes together with get
 		this.rectPool.free(this.playerRect);
-
-		// unscale the velocity by the inverse delta time and set
-		// the latest position
-		this.player.desiredPosition.add(this.player.velocity);
-		this.player.velocity.scl(1 / deltaTime);
-
-		// Apply damping to the velocity on the x-axis so we don't
-		// walk infinitely once a key was pressed
-		this.player.velocity.x *= 0;		//0 is totally stopped if not pressed
-
-		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 	}
 
 	private void getTiles (int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {

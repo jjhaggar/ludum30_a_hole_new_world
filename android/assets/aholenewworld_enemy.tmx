@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="50" height="30" tilewidth="16" tileheight="16">
+ <tileset firstgid="1" name="tileset" tilewidth="16" tileheight="16">
+  <image source="tileset.png" trans="ff00ff" width="160" height="80"/>
+ </tileset>
+ <layer name="plattforms" width="50" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztlrEOgCAMBak6qrOz//+R1o0YJEXtozUdLiHGIOdBlFJKpMwGQNuBCs8ZmJGZlOZHeczMwqzOPaRIu1nxuFuvtFsPj9Ka3+6zHh5fn41eHh7nDw9b86MID1sg/t9Q5N8ljTHqfeXfJY3x6bELKO2X2n3X64geLet/4kugHggQPRBY7lHbR956SF0s92hxsd7jD+ejhegRPaJH9PDS4wD9SyCI
+  </data>
+ </layer>
+ <layer name="collisions" width="50" height="30">
+  <data encoding="base64" compression="zlib">
+   eJzt1sEJADAMA7GM0f0n7RAlxhQJ8jb3y8y+E7iE7R0dXTs6unZ0dO3o6NpJdWzT0SXxv6Uu4ZcOAADgzQUOHgtZ
+  </data>
+ </layer>
+ <layer name="enemies" width="50" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzgENAAAIwKAHsn8+Yzg3SEABAADw3VwHAABoAbzvAC0=
+  </data>
+ </layer>
+ <layer name="boss" width="50" height="30">
+  <data encoding="base64" compression="zlib">
+   eJztzzENAAAIBLH3g39/rAhgIKRNTsAlAHBXjT7wcYsPAAAANjV8UgEu
+  </data>
+ </layer>
+</map>
