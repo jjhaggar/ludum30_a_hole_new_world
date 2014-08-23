@@ -59,7 +59,7 @@ public class MainScreen extends BaseScreen {
 		this.shapeRenderer = new ShapeRenderer();
 		Assets.loadAnimation();
 
-		this.map = new TmxMapLoader().load("aholenewworld.tmx");
+		this.map = new TmxMapLoader().load("aholenewworld_enemy.tmx");
 
 		this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
@@ -324,6 +324,11 @@ public class MainScreen extends BaseScreen {
 				collided = true;
 				break;
 			}
+		}
+
+		if (this.playerRect.overlaps(this.boss.rect)) {
+		    this.boss.beingHit();
+		    collided = true;
 		}
 
 		return collided;

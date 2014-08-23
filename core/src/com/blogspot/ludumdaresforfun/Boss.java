@@ -5,8 +5,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.blogspot.ludumdaresforfun.Enemy.Direction;
-import com.blogspot.ludumdaresforfun.Enemy.State;
 
 public class Boss extends Image {
     final float VELOCITY = 50f;
@@ -27,6 +25,7 @@ public class Boss extends Image {
     public boolean updateVelocity;
     public boolean setToDie = false;
     public boolean grounded;
+    public HUDCounter counter = new HUDCounter(26);
 
     public enum Direction {
         Left, Right
@@ -55,7 +54,15 @@ public class Boss extends Image {
 
     public void die(){
     	//animate, sound and set to die
-    	setToDie = true;
+    	this.setToDie = true;
+    	System.out.println("YOU KILL THE BOSS");
+    }
+
+    public void beingHit() {
+        int lifes = this.counter.lostLife();
+        if (lifes <= 0) {
+            this.die();
+        }
     }
 
     @Override
