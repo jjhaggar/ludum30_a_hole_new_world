@@ -89,6 +89,7 @@ public class MainScreen extends BaseScreen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		this.updatePlayer(delta);
+		this.player.act(delta);
 
 		this.camera.position.x = this.player.getX(); //200;//raya.position.x;
 		this.camera.update();
@@ -353,7 +354,12 @@ public class MainScreen extends BaseScreen {
 	private void updateEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
 	        // Collision between player vs enemy
-	        if (((enemy.getY() - (enemy.getWidth() / 2)) <= this.player.getY()) &&
+	        if (this.player.getRect().overlaps(enemy.getRect())) {
+	            this.player.beingHit();
+	        }
+	        // Check if player is invincible and check distance to player for attack him.
+	        if (!this.player.invincible &&
+	                ((enemy.getY() - (enemy.getWidth() / 2)) <= this.player.getY()) &&
 	                (this.player.getY() <= (enemy.getY() + (enemy.getWidth() / 2)))) {
 	            if (enemy.getX() < this.player.getX()) {
                     if ((enemy.getX() - enemy.ATTACK_DISTANCE) <= (this.player.getX() + this.player.getHeight())) {
