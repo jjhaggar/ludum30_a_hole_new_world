@@ -11,6 +11,8 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 	    createPacker(); // Commented this line for not create packing.
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.height = 240;
+		config.width = 400;
 		new LwjglApplication(new LD(), config);
 	}
 

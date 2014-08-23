@@ -13,10 +13,7 @@ public abstract class BaseScreen implements Screen{
 
 	Stage stage;
 
-	//public LudumGame game;
-
 	public BaseScreen() {
-		//this.game = LudumGame.getInstance();
 		this.stage = new Stage(new ScreenViewport());
 
 		Gdx.input.setInputProcessor(this.stage);
@@ -24,8 +21,11 @@ public abstract class BaseScreen implements Screen{
 		this.stage.addListener(new InputListener(){
 			@Override
 			public boolean keyDown(InputEvent event, int keycode) {
-				if((keycode == Keys.BACK) || (keycode == Keys.ESCAPE)){
+				if((keycode == Keys.BACK) || (keycode == Keys.ESCAPE)) {
 					BaseScreen.this.backButtonPressed();
+				}
+				if(keycode == Keys.ENTER) {
+					BaseScreen.this.enterButtonPressed();
 				}
 				return super.keyDown(event, keycode);
 			}
@@ -71,4 +71,5 @@ public abstract class BaseScreen implements Screen{
 	}
 
 	public abstract void backButtonPressed();
+	public abstract void enterButtonPressed();
 }

@@ -21,6 +21,7 @@ import com.badlogic.gdx.utils.Pool;
 
 public class MainScreen extends BaseScreen {
 
+    public boolean pause = false;
 	ConfigControllers configControllers;
 	Rectangle playerRect;
 	private OrthogonalTiledMapRenderer renderer;
@@ -108,7 +109,7 @@ public class MainScreen extends BaseScreen {
 		this.updatePlayer(delta);
 		this.player.act(delta);
 
-		if (!bossActive){
+		if (!this.bossActive){
 			this.camera.position.x = this.player.getX(); //200;//raya.position.x;
 			this.camera.update();
 		}
@@ -476,12 +477,12 @@ public class MainScreen extends BaseScreen {
 		this.player.desiredPosition.x = this.player.getX();
 		this.player.desiredPosition.y = this.player.getY();
 
-		movingShootingJumping(deltaTime);
-		gravityAndClamping();
+		this.movingShootingJumping(deltaTime);
+		this.gravityAndClamping();
 
 		this.player.velocity.scl(deltaTime);
 
-		collisionWalls();
+		this.collisionWalls();
 
 		// unscale the velocity by the inverse delta time and set
 		// the latest position
@@ -493,16 +494,16 @@ public class MainScreen extends BaseScreen {
 		this.player.velocity.x *= 0;		//0 is totally stopped if not pressed
 		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 
-		activateBoss();
+		this.activateBoss();
 
 	}
 
 	private void activateBoss() {
-		if (this.player.getX() > 430 && !bossActive){		//boss final trigger
-			bossActive = true;
+		if ((this.player.getX() > 430) && !this.bossActive){		//boss final trigger
+			this.bossActive = true;
 
-			camera.position.x = 600;		//boss final position camera
-			camera.update();
+			this.camera.position.x = 600;		//boss final position camera
+			this.camera.update();
 
 			//close door
 			TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));
@@ -761,7 +762,29 @@ public class MainScreen extends BaseScreen {
 
     @Override
     public void backButtonPressed() {
+        LD.getInstance().MENU_SCREEN = new MenuScreen();
+        LD.getInstance().setScreen(LD.getInstance().MENU_SCREEN);
     }
 
+
+    @Override
+    public void enterButtonPressed() {
+        if (!this.pause) {
+            this.pause();
+        }
+        else {
+            this.resume();
+        }
+    }
+
+	@Override
+	public void pause() {
+		this.pause = true;
+	}
+
+	@Override
+	public void resume() {
+		this.pause = false;
+	}
 
 }

@@ -1,9 +1,12 @@
 package com.blogspot.ludumdaresforfun;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public class Assets {
@@ -11,6 +14,7 @@ public class Assets {
 	static Animation stand, walk, jump, standingShot;
 	static Animation shotAnim;
 	static Animation bossStanding, bossGetHit;
+	static Texture bg;
 
 	static void loadAnimation() {
         final String TEXTURE_ATLAS_OBJECTS = "characters.pack";
@@ -42,5 +46,15 @@ public class Assets {
 
 		regions = atlas.findRegions("boss_gethit");
 		bossGetHit = new Animation(0.15f, regions);
+	}
+
+	static TextureRegion getBg() {
+		bg = new Texture(Gdx.files.internal("bg.png"));
+		return new TextureRegion(bg, 0, 0, 400, 240);
+
+	}
+
+	static void dispose() {
+	    bg.dispose();
 	}
 }
