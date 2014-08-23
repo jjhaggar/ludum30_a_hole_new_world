@@ -150,7 +150,8 @@ public class MainScreen extends BaseScreen {
 		shot.velocity.scl(deltaTime);
 
 		//collision (destroy if necessary)
-		boolean collided = collisionShot(shot);
+		boolean collided = collisionShot(shot);		//agains a wall
+		collided = collisionShotEnemy(shot);
 
 		// unscale the velocity by the inverse delta time and set
 		// the latest position
@@ -169,6 +170,28 @@ public class MainScreen extends BaseScreen {
 
 		return collided;
     }
+
+
+	private boolean collisionShotEnemy(Shot shot) {
+		boolean collided = false;
+
+		this.playerRect = this.rectPool.obtain();
+
+		shot.desiredPosition.y = Math.round(shot.getY());
+		shot.desiredPosition.x = Math.round(shot.getX());
+
+		this.playerRect.set(shot.desiredPosition.x, (shot.desiredPosition.y), shot.getWidth(), shot.getHeight());
+
+		for (Enemy enemy : enemies){
+			if (this.playerRect.overlaps(enemy.rect)) {
+				enemy.die();
+				collided = true;
+				break;
+			}
+		}
+
+		return collided;
+	}
 
 
 	private boolean collisionShot(Shot shot) {
@@ -195,7 +218,7 @@ public class MainScreen extends BaseScreen {
 
 		this.playerRect.x += shot.velocity.x;
 
-		for (Rectangle tile : this.tiles) {
+		for (Rectangle tile : this.tiles){
 			if (this.playerRect.overlaps(tile)) {
 				shot = null;
 				return true;

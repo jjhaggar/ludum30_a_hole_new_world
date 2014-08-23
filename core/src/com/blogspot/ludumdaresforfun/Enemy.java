@@ -18,6 +18,7 @@ public class Enemy extends Image {
     State state = State.Walking;
     boolean facesRight = true;
     public boolean updateVelocity;
+    public boolean setToDie = false;
 
     public enum Direction {
         Left, Right
@@ -42,6 +43,11 @@ public class Enemy extends Image {
         this.rect.set(this.getX(), this.getY(), this.getWidth(), this.getHeight());
         return this.rect;
 
+    }
+
+    public void die(){
+    	//animate, sound and set to die
+    	setToDie = true;
     }
 
     @Override
