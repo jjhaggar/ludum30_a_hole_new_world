@@ -38,44 +38,156 @@ boss_standing
   orig: 64, 64
   offset: 0, 0
   index: 3
-char_gethit
+boss_walking
+  rotate: false
+  xy: 331, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 1
+boss_walking
+  rotate: false
+  xy: 397, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 2
+boss_walking
+  rotate: false
+  xy: 463, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 3
+boss_walking
+  rotate: false
+  xy: 529, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 4
+boss_walking
+  rotate: false
+  xy: 595, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 5
+boss_walking
+  rotate: false
+  xy: 661, 36
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: 6
+char_attack
   rotate: false
   xy: 1, 1
   size: 33, 33
   orig: 33, 33
   offset: 0, 0
   index: 1
-char_gethit
+char_attack
   rotate: false
-  xy: 331, 67
+  xy: 727, 67
   size: 33, 33
   orig: 33, 33
   offset: 0, 0
   index: 2
-char_standing
+char_attack
   rotate: false
   xy: 36, 1
   size: 33, 33
   orig: 33, 33
   offset: 0, 0
-  index: 1
-char_walking
+  index: 3
+char_attack_holy_water
   rotate: false
-  xy: 366, 67
+  xy: 762, 67
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+char_empty
+  rotate: false
+  xy: 71, 1
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: -1
+char_gethit
+  rotate: false
+  xy: 797, 67
   size: 33, 33
   orig: 33, 33
   offset: 0, 0
   index: 1
-char_walking
+char_gethit
   rotate: false
-  xy: 71, 1
+  xy: 106, 1
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 2
+char_intro
+  rotate: false
+  xy: 832, 67
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 1
+char_intro
+  rotate: false
+  xy: 141, 1
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 2
+char_intro
+  rotate: false
+  xy: 867, 67
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 3
+char_intro
+  rotate: false
+  xy: 176, 1
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 4
+char_standing
+  rotate: false
+  xy: 902, 67
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 1
+char_standing
+  rotate: false
+  xy: 211, 1
   size: 33, 33
   orig: 33, 33
   offset: 0, 0
   index: 2
 char_walking
   rotate: false
-  xy: 401, 67
+  xy: 937, 67
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 1
+char_walking
+  rotate: false
+  xy: 246, 1
+  size: 33, 33
+  orig: 33, 33
+  offset: 0, 0
+  index: 2
+char_walking
+  rotate: false
+  xy: 972, 67
   size: 33, 33
   orig: 33, 33
   offset: 0, 0
