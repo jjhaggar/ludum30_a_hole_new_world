@@ -125,7 +125,7 @@ public class MainScreen extends BaseScreen {
 
 	@Override
 	public void render(float delta) {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
+		Gdx.gl.glClearColor(.9f, .9f, .9f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		this.updatePlayer(delta);
@@ -270,9 +270,9 @@ public class MainScreen extends BaseScreen {
 			this.boss.velocity.y = 0;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Transition){ //door.x is the left side of the tiles
-			if (this.boss.getX() > (door.x + SCREEN_WIDTH - (TILED_SIZE * 4)))		 //if going to hit wall turns back
+			if (this.boss.getX() > ((this.door.x + this.SCREEN_WIDTH) - (this.TILED_SIZE * 4)))		 //if going to hit wall turns back
 				this.boss.flowState = Boss.FlowState.WalkingLeft;
-			else if (this.boss.getX() < (door.x + (TILED_SIZE * 4)))							//same for other wall
+			else if (this.boss.getX() < (this.door.x + (this.TILED_SIZE * 4)))							//same for other wall
 				this.boss.flowState = Boss.FlowState.WalkingRight;
 			else if (this.boss.flowTime > 2){							//takes pseudo-random action
 				int nextState = (int)Math.round(Math.random() * 7);
@@ -859,7 +859,7 @@ public class MainScreen extends BaseScreen {
 		if ((this.player.getX() >= (this.boss.getX() - this.boss.ACTIVATE_DISTANCE)) && !this.bossActive) {
 			this.bossActive = true;
 
-			this.camera.position.x = (MAP_WIDTH * TILED_SIZE) - (SCREEN_WIDTH / 2);
+			this.camera.position.x = (this.MAP_WIDTH * this.TILED_SIZE) - (this.SCREEN_WIDTH / 2);
 			this.camera.update();
 
 			Assets.musicStage.stop();
@@ -872,19 +872,19 @@ public class MainScreen extends BaseScreen {
 			//door = new Vector2(789 - 25, 61);
 
 			layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Platfs"));
-			cell = layerSpawn.getCell((int)door.x, (int)door.y); //has to be solid block
+			cell = layerSpawn.getCell((int)this.door.x, (int)this.door.y); //has to be solid block
 
-	        layerSpawn.setCell((int)door.x, (int)door.y + 1, cell);
-	        layerSpawn.setCell((int)door.x, (int)door.y + 2, cell);
-	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 1, cell);
-	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 2, cell);
+	        layerSpawn.setCell((int)this.door.x, (int)this.door.y + 1, cell);
+	        layerSpawn.setCell((int)this.door.x, (int)this.door.y + 2, cell);
+	        layerSpawn.setCell((int)this.door.x + 1, (int)this.door.y + 1, cell);
+	        layerSpawn.setCell((int)this.door.x + 1, (int)this.door.y + 2, cell);
 
 	        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Collisions"));
-	        cell = layerSpawn.getCell((int)door.x, (int)door.y);
-	        layerSpawn.setCell((int)door.x, (int)door.y + 1, cell);
-	        layerSpawn.setCell((int)door.x, (int)door.y + 2, cell);
-	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 1, cell);
-	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 2, cell);
+	        cell = layerSpawn.getCell((int)this.door.x, (int)this.door.y);
+	        layerSpawn.setCell((int)this.door.x, (int)this.door.y + 1, cell);
+	        layerSpawn.setCell((int)this.door.x, (int)this.door.y + 2, cell);
+	        layerSpawn.setCell((int)this.door.x + 1, (int)this.door.y + 1, cell);
+	        layerSpawn.setCell((int)this.door.x + 1, (int)this.door.y + 2, cell);
 
 
 		}
