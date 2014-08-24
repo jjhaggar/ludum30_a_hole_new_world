@@ -7,14 +7,14 @@ public class MenuScreen extends BaseScreen{
 
     BGAnimated bg;
 
-	public MenuScreen() {
-	    if (!Assets.musicStage.isPlaying()) {
-	    	Assets.musicStage.setLooping(true);
-	    	Assets.musicStage.play();
-	    }
-	    this.bg = new BGAnimated(Assets.Intro);
-	    this.stage.addActor(this.bg);
-	}
+    public MenuScreen() {
+
+    	Assets.musicStage.setLooping(true);
+    	Assets.musicStage.play();
+
+    	this.bg = new BGAnimated(Assets.Intro);
+    	this.stage.addActor(this.bg);
+    }
 
 	@Override
 	public void backButtonPressed() {

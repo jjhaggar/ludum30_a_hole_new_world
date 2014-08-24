@@ -432,9 +432,11 @@ public class MainScreen extends BaseScreen {
 
 		for (Enemy enemy : this.enemies){
 			if (this.playerRect.overlaps(enemy.rect)) {
-				enemy.die();
-				collided = true;
-				break;
+				if (!enemy.dying){
+					enemy.die();
+					collided = true;
+					break;
+				}
 			}
 		}
 

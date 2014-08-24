@@ -159,5 +159,8 @@ public class Assets {
     }
 
 	static void dispose() {
+		musicBoss.dispose();
+		musicStage.dispose();
+		assetManager.dispose();
 	}
 }
