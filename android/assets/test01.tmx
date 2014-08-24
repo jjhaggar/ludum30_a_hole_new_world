@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="800" height="120" tilewidth="16" tileheight="16">
  <tileset firstgid="1" name="tileset01b" tilewidth="16" tileheight="16">
-  <image source="tileset01b.png" trans="ff00ff" width="400" height="240"/>
+  <image source="tileset01btrans.png" trans="ff00ff" width="400" height="240"/>
   <tile id="157">
    <properties>
     <property name="type" value="pollo"/>
