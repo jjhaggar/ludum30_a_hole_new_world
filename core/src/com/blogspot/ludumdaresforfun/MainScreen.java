@@ -49,6 +49,7 @@ public class MainScreen extends BaseScreen {
             return new Rectangle();
 		}
     };
+    HUD hud;
 
 	private final float GRAVITY = -10f;
 	final int SCREEN_HEIGHT = 240;
@@ -122,6 +123,7 @@ public class MainScreen extends BaseScreen {
                 }
             }
         }
+        this.hud = new HUD(Assets.hudBase);
         //this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
 	}
 
@@ -186,6 +188,7 @@ public class MainScreen extends BaseScreen {
 			if (this.boss != null)
 				this.renderBoss(delta);
 		}
+		this.renderHUD(delta);
 
 	}
 
@@ -275,9 +278,9 @@ public class MainScreen extends BaseScreen {
 		}
 		else if (this.boss.flowState == Boss.FlowState.Transition){ //door.x is the left side of the tiles
 
-			if (this.boss.getX() > xRightBossWall)		 //if going to hit wall turns back
+			if (this.boss.getX() > this.xRightBossWall)		 //if going to hit wall turns back
 				this.boss.flowState = Boss.FlowState.WalkingLeft;
-			else if (this.boss.getX() < xLeftBossWall)							//same for other wall
+			else if (this.boss.getX() < this.xLeftBossWall)							//same for other wall
 				this.boss.flowState = Boss.FlowState.WalkingRight;
 			else if (this.boss.flowTime > 2){							//takes pseudo-random action
 				int nextState = (int)Math.round(Math.random() * 7);
@@ -361,13 +364,13 @@ public class MainScreen extends BaseScreen {
 		if (this.boss.facesRight) {
 			if (this.boss.actualFrame.isFlipX())
 				this.boss.actualFrame.flip(true, false);
-			batch.draw(this.boss.actualFrame, this.boss.getX() + this.boss.actualFrame.offsetX - this.boss.offSetX,
-					this.boss.getY() + this.boss.actualFrame.offsetY - this.boss.offSetY);
+			batch.draw(this.boss.actualFrame, (this.boss.getX() + this.boss.actualFrame.offsetX) - this.boss.offSetX,
+					(this.boss.getY() + this.boss.actualFrame.offsetY) - this.boss.offSetY);
 		} else {
 			if (!this.boss.actualFrame.isFlipX())
 				this.boss.actualFrame.flip(true, false);
-			batch.draw(this.boss.actualFrame, this.boss.getX() + this.boss.actualFrame.offsetX - this.boss.offSetX,
-					this.boss.getY() + this.boss.actualFrame.offsetY - this.boss.offSetY);
+			batch.draw(this.boss.actualFrame, (this.boss.getX() + this.boss.actualFrame.offsetX) - this.boss.offSetX,
+					(this.boss.getY() + this.boss.actualFrame.offsetY) - this.boss.offSetY);
 		}
 
 		batch.end();
@@ -607,7 +610,7 @@ public class MainScreen extends BaseScreen {
 		}
 
 		//batch.draw(frame, this.player.getX() + frame.offsetX, this.player.getY() + frame.offsetY + this.UpOffset);
-		batch.draw(frame, this.player.getX() + this.player.actualFrame.offsetX - this.player.offSetX, this.player.getY() + this.player.actualFrame.offsetY - this.player.offSetY);
+		batch.draw(frame, (this.player.getX() + this.player.actualFrame.offsetX) - this.player.offSetX, (this.player.getY() + this.player.actualFrame.offsetY) - this.player.offSetY);
 
 		batch.end();
 		this.shapeRenderer.begin(ShapeType.Filled);
@@ -658,6 +661,53 @@ public class MainScreen extends BaseScreen {
             this.shapeRenderer.setColor(Color.RED);
             this.shapeRenderer.end();
 	    }
+	}
+
+	private void renderHUD(float deltaTime) {
+        AtlasRegion frame = null;
+        AtlasRegion playerLife = null;
+        AtlasRegion bossLife = null;
+        AtlasRegion bossHead = null;
+        frame = (AtlasRegion)Assets.hudBase.getKeyFrame(this.hud.stateTime);
+        playerLife = (AtlasRegion)Assets.hudLifePlayer.getKeyFrame(this.hud.stateTime);
+        bossLife = (AtlasRegion)Assets.hudLifeBoss.getKeyFrame(this.hud.stateTime);
+        bossHead = (AtlasRegion)Assets.hudBossHead.getKeyFrame(this.hud.stateTime);
+
+        Batch batch = this.renderer.getSpriteBatch();
+        batch.begin();
+        if (this.normalGravity) {
+            batch.draw(frame, (this.camera.position.x - (this.SCREEN_WIDTH / 2)),
+                    (this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE);
+            for (int pl=0; pl < this.player.getLifes(); pl++) {
+                batch.draw(playerLife,
+                        ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetLifePlayer.x + (pl * (playerLife.getRegionWidth() + this.hud.OFFSET_LIFES_PLAYER))),
+                        (((this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE - Assets.offsetLifePlayer.y) + playerLife.getRegionHeight()));
+            }
+            if (this.bossActive) {
+                batch.draw(bossHead, ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetBoosHead),
+                    (this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE);
+                for (int bl=0; bl < this.boss.getLifes(); bl++) {
+                    batch.draw(bossLife,
+                            ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetLifeBoss.x + (bl * (bossLife.getRegionWidth() + this.hud.OFFSET_LIFES_BOSS))),
+                            (((this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE - Assets.offsetLifeBoss.y) + bossLife.getRegionHeight()));
+                }
+            }
+        } else {
+            batch.draw(frame, this.camera.position.x - (this.SCREEN_WIDTH / 2),
+                    this.camera.position.y - (this.SCREEN_HEIGHT / 2));
+            for (int pl=0; pl < this.player.getLifes(); pl++) {
+                batch.draw(playerLife,
+                        ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetLifePlayer.x + (pl * (playerLife.getRegionWidth() + this.hud.OFFSET_LIFES_PLAYER))),
+                        (((this.camera.position.y - (this.SCREEN_HEIGHT / 2)) + Assets.offsetLifePlayer.y)));
+            }
+        }
+        batch.end();
+
+        this.shapeRenderer.begin(ShapeType.Filled);
+        this.shapeRenderer.setColor(Color.BLACK);
+        this.getTiles(0, 0, 25, 15, this.tiles);
+        this.shapeRenderer.setColor(Color.RED);
+        this.shapeRenderer.end();
 	}
 
 	private void collisionLifes(float deltaTime) {
@@ -862,8 +912,8 @@ public class MainScreen extends BaseScreen {
 			this.camera.position.x = (this.MAP_WIDTH * this.TILED_SIZE) - (this.SCREEN_WIDTH / 2);
 			this.camera.update();
 
-			xRightBossWall = (door.x * TILED_SIZE + SCREEN_WIDTH - (TILED_SIZE * 4));
-			xLeftBossWall = (door.x * TILED_SIZE + (TILED_SIZE * 2));
+			this.xRightBossWall = (((this.door.x * this.TILED_SIZE) + this.SCREEN_WIDTH) - (this.TILED_SIZE * 4));
+			this.xLeftBossWall = ((this.door.x * this.TILED_SIZE) + (this.TILED_SIZE * 2));
 
 			Assets.musicStage.stop();
 			Assets.musicBoss.setLooping(true);
@@ -969,10 +1019,10 @@ public class MainScreen extends BaseScreen {
 				Shot shot = new Shot(Assets.playerShot);
 				if (this.player.facesRight){
 					//-1 necessary to be exactly the same as the other facing
-					shot.Initialize((this.player.getCenterX()), (this.player.getY() + (this.player.getHeight() / 2) - 10), this.player.facesRight, this.normalGravity);
+					shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
 				}
 				else {
-					shot.Initialize((this.player.getCenterX()), (this.player.getY() + (this.player.getHeight() / 2) - 10), this.player.facesRight, this.normalGravity);
+					shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
 				}
 				this.shotArray.add(shot);
 
@@ -1144,7 +1194,7 @@ public class MainScreen extends BaseScreen {
 			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x + this.player.actualFrame.getRegionWidth()) / this.TILED_SIZE);
 		}
 		else {
-			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x - 1) / this.TILED_SIZE);
+			startX = endX = (int)(((this.player.desiredPosition.x + this.player.velocity.x) - 1) / this.TILED_SIZE);
 		}
 
 		if (this.player.grounded && this.normalGravity){

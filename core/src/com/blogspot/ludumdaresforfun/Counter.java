@@ -2,12 +2,12 @@ package com.blogspot.ludumdaresforfun;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-public class HUDCounter extends Image {
+public class Counter extends Image {
 
     final int LIFES;
     public int currentLifes;
 
-    public HUDCounter(int lifes) {
+    public Counter(int lifes) {
         this.LIFES =  lifes;
         this.currentLifes = lifes;
     }

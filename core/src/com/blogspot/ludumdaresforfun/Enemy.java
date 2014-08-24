@@ -38,7 +38,7 @@ public class Enemy extends Image{
 
     protected Animation animation = null;
     float stateTime = 0;
-	private float offSetX;
+	float offSetX;
 	public boolean dying = false;
 	public boolean inScreen = false;
 	public AtlasRegion actualFrame;
@@ -46,7 +46,7 @@ public class Enemy extends Image{
     public Enemy(Animation animation) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
-        actualFrame = ((AtlasRegion)animation.getKeyFrame(0));
+        this.actualFrame = ((AtlasRegion)animation.getKeyFrame(0));
     }
 
     public Rectangle getRect() {

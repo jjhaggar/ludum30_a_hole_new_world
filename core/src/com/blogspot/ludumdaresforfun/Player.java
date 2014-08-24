@@ -27,7 +27,7 @@ public class Player extends Image {
     public boolean noControl = false;
     public boolean dead = false;
 
-    public HUDCounter counter = new HUDCounter(this.MAX_LIFES);
+    public Counter counter = new Counter(this.MAX_LIFES);
 
 
     public Rectangle rect = new Rectangle();

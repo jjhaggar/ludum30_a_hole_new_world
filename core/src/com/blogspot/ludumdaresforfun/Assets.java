@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 public class Assets {
@@ -21,8 +22,10 @@ public class Assets {
     static Animation enemyWalk, enemyRun, enemyHurt;
     static Animation bossGethit, bossStanding,  bossWalking, bossJumping, bossFalling, bossAttack, bossSummon, bossDie;
     static Animation GameOver, Intro;
+    static Animation hudBase, hudBossHead, hudLifeBoss, hudLifePlayer;
 	static Texture bg;
-	static float offsetPlayer, offsetBoss, offsetShot, offsetEnemy;
+	static float offsetPlayer, offsetBoss, offsetShot, offsetEnemy, offsetBoosHead;
+	static Vector2 offsetLifeBoss, offsetLifePlayer;
 
 	// Music and Sounds
 	public static Music musicBoss, musicStage;
@@ -119,6 +122,22 @@ public class Assets {
 
 		regions = atlas.findRegions("boss_dying");
 		bossDie = new Animation(0.30f, regions);
+
+		// HUD
+		regions = atlas.findRegions("hud_base");
+		hudBase = new Animation(0, regions);
+
+		regions = atlas.findRegions("hud_boss_head");
+		hudBossHead = new Animation(0, regions);
+		offsetBoosHead = regions.first().offsetX;
+
+		regions = atlas.findRegions("hud_life_counter_boss");
+		hudLifeBoss = new Animation(0, regions);
+		offsetLifeBoss = new Vector2(regions.first().offsetX, regions.first().offsetY);
+
+		regions = atlas.findRegions("hud_life_counter_player");
+		hudLifePlayer = new Animation(0, regions);
+		offsetLifePlayer = new Vector2(regions.first().offsetX, regions.first().offsetY);
 	}
 
 	static TextureRegion getBg() {

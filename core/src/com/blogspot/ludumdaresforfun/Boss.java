@@ -29,7 +29,7 @@ public class Boss extends Image {
     public boolean updateVelocity;
     public boolean setToDie = false;
     public boolean grounded;
-    public HUDCounter counter = new HUDCounter(24);  //the same as megaman enemies
+    public Counter counter = new Counter(24);  //the same as megaman enemies
 
     public enum Direction {
         Left, Right
@@ -55,12 +55,12 @@ public class Boss extends Image {
 	public Boss(Animation animation) {
 		super(animation.getKeyFrame(0));
 		this.animation = animation;
-		actualFrame = ((AtlasRegion)animation.getKeyFrame(0));
-		offSetX = actualFrame.offsetX;
-		offSetY = actualFrame.offsetY;
+		this.actualFrame = ((AtlasRegion)animation.getKeyFrame(0));
+		this.offSetX = this.actualFrame.offsetX;
+		this.offSetY = this.actualFrame.offsetY;
 	}
 	public Rectangle getRect() {
-        this.rect.set(this.getX() + actualFrame.offsetX - offSetX, this.getY() + actualFrame.offsetY - offSetY , this.actualFrame.packedWidth, this.actualFrame.packedHeight);
+        this.rect.set((this.getX() + this.actualFrame.offsetX) - this.offSetX, (this.getY() + this.actualFrame.offsetY) - this.offSetY , this.actualFrame.packedWidth, this.actualFrame.packedHeight);
         return this.rect;
 
     }
@@ -84,6 +84,10 @@ public class Boss extends Image {
                 Boss.this.invincible = false;
             }
         }, 1);
+    }
+
+    public int getLifes() {
+        return this.counter.currentLifes;
     }
 
     @Override
