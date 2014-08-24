@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 public class HUDCounter extends Image {
 
     final int LIFES;
-    private int currentLifes;
+    public int currentLifes;
 
     public HUDCounter(int lifes) {
         this.LIFES =  lifes;

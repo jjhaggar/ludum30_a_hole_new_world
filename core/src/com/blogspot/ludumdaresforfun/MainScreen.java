@@ -38,6 +38,7 @@ public class MainScreen extends BaseScreen {
 	private Array<Rectangle> spikes = new Array<Rectangle>();
 	private Array<Shot> shotArray = new Array<Shot>();
 	private Array<Vector2> spawns = new Array<Vector2>();
+	private Array<Vector2> lifes = new Array<Vector2>();
 
 	private Boss boss;
 
@@ -99,12 +100,15 @@ public class MainScreen extends BaseScreen {
 				if (cell != null) {
 				    String type = (String) cell.getTile().getProperties().get("type");
 				    if (type != null) {
-				        if (type.equals("player")) {
-                            this.player.setPosition(x * this.TILED_SIZE, y * this.TILED_SIZE);
-				        }
-				        else if (type.equals("enemy")) {
+				        if (type.equals("enemy")) {
                             this.spawns.add(new Vector2(x * this.TILED_SIZE, y * this.TILED_SIZE));
                         }
+				        else if (type.equals("pollo")) {
+                            this.lifes.add(new Vector2(x * this.TILED_SIZE, y * this.TILED_SIZE));
+                        }
+				        else if (type.equals("player")) {
+                            this.player.setPosition(x * this.TILED_SIZE, y * this.TILED_SIZE);
+				        }
 				        else if (type.equals("boss")) {
                             this.boss.setPosition(x * this.TILED_SIZE, y * this.TILED_SIZE);
                         }
@@ -143,7 +147,6 @@ public class MainScreen extends BaseScreen {
 			else
                 this.camera.position.y = this.player.getY();
 
-
 			this.camera.update();
 		}
 
@@ -160,6 +163,7 @@ public class MainScreen extends BaseScreen {
             }
 		}
 
+		this.collisionLifes(delta);
 		this.updateEnemies(delta);
 		this.renderer.setView(this.camera);
 		this.renderer.render(new int[]{0, 1, 3});
@@ -633,6 +637,21 @@ public class MainScreen extends BaseScreen {
             this.shapeRenderer.setColor(Color.RED);
             this.shapeRenderer.end();
 	    }
+	}
+
+	private void collisionLifes(float deltaTime) {
+        Array<Vector2> obtainLifes = new Array<Vector2>();
+	    for (Vector2 life : this.lifes) {
+	        if ((life.dst(this.player.getX(), this.player.getY()) < this.player.getWidth()) &&
+	                (this.player.getLifes() < this.player.MAX_LIFES)) {
+	            this.player.counter.gainLife(1);
+	            obtainLifes.add(life);
+	            // Remove life in map
+                TiledMapTileLayer layerPlantfs = (TiledMapTileLayer)(this.map.getLayers().get("Platfs"));
+                layerPlantfs.setCell((int)life.x / this.TILED_SIZE, (int)life.y / this.TILED_SIZE, null);
+	        }
+	    }
+	    this.lifes.removeAll(obtainLifes, false);
 	}
 
 	private void updateEnemies(float deltaTime) {

@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 public class Player extends Image {
     final float MAX_VELOCITY = 120f;
     final float JUMP_VELOCITY = 300f; // 210f;
+    final int MAX_LIFES = 5;
     enum State {
         Standing, Walking, Jumping, StandingShooting, Attacking, Intro, BeingHit, Die
     }
@@ -26,7 +27,7 @@ public class Player extends Image {
     public boolean noControl = false;
     public boolean dead = false;
 
-    public HUDCounter counter = new HUDCounter(5);
+    public HUDCounter counter = new HUDCounter(this.MAX_LIFES);
 
 
     public Rectangle rect = new Rectangle();
@@ -38,7 +39,7 @@ public class Player extends Image {
     public Player(Animation animation) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
-        offSetX = ((AtlasRegion)Assets.playerWalk.getKeyFrame(0)).offsetX;
+        this.offSetX = ((AtlasRegion)Assets.playerWalk.getKeyFrame(0)).offsetX;
     }
 
     public Rectangle getRect() {
@@ -58,7 +59,7 @@ public class Player extends Image {
 
             this.state = Player.State.BeingHit;
             this.stateTime = 0;
-            velocity.y = 150;
+            this.velocity.y = 150;
             this.noControl = true;
 
             int lifes = this.counter.lostLife();
@@ -81,6 +82,10 @@ public class Player extends Image {
         this.stateTime = 0;
         this.noControl = true;
         this.dead = true;
+    }
+
+    public int getLifes() {
+        return this.counter.currentLifes;
     }
 
     @Override
