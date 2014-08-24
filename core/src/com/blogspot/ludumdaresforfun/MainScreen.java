@@ -69,11 +69,11 @@ public class MainScreen extends BaseScreen {
 	public MainScreen() {
 		this.shapeRenderer = new ShapeRenderer();
 
-		this.map = new TmxMapLoader().load("aholenewworld_enemy.tmx");
+		this.map = new TmxMapLoader().load("newtiles.tmx");
 		this.MAP_HEIGHT = (Integer) this.map.getProperties().get("height");
 		this.MAP_WIDTH = (Integer) this.map.getProperties().get("width");
 		this.TILED_SIZE = (Integer) this.map.getProperties().get("tileheight");
-		this.POS_LOWER_WORLD = (this.MAP_HEIGHT / 2) * this.TILED_SIZE - this.TILED_SIZE;
+		this.POS_LOWER_WORLD = ((this.MAP_HEIGHT / 2) * this.TILED_SIZE) - this.TILED_SIZE;
 		this.POS_UPPER_WORLD = this.MAP_HEIGHT  * this.TILED_SIZE ;
 
 		this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
@@ -85,7 +85,6 @@ public class MainScreen extends BaseScreen {
 
 		this.player = new Player(Assets.playerStand);
         this.boss = new Boss(Assets.bossStanding);
-        this.boss.setPosition(700*16, 63*16);
 
         this.configControllers = new ConfigControllers();
 		this.configControllers.init();
@@ -93,8 +92,8 @@ public class MainScreen extends BaseScreen {
 		TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Spawns"));
 		this.rectPool.freeAll(this.tiles);
 		this.tiles.clear();
-        for (int x = 0; x <= layerSpawn.getHeight(); x++) {
-            for (int y = 0; y <= layerSpawn.getWidth(); y++) {
+        for (int x = 0; x <= layerSpawn.getWidth(); x++) {
+            for (int y = 0; y <= layerSpawn.getHeight(); y++) {
 				Cell cell = layerSpawn.getCell(x, y);
 				if (cell != null) {
 				    String type = (String) cell.getTile().getProperties().get("type");
@@ -106,8 +105,7 @@ public class MainScreen extends BaseScreen {
                             this.spawns.add(new Vector2(x * this.TILED_SIZE, y * this.TILED_SIZE));
                         }
 				        else if (type.equals("boss")) {
-				            // TODO: Problem when try load x more big than y
-                            //this.boss.setPosition(x * this.TILED_SIZE, y * this.TILED_SIZE);
+                            this.boss.setPosition(x * this.TILED_SIZE, y * this.TILED_SIZE);
                         }
 				    }
                 }
@@ -127,20 +125,20 @@ public class MainScreen extends BaseScreen {
 
 		if (!this.bossActive){
             //update x
-            if ((this.player.getX() - (SCREEN_WIDTH / 2)) < TILED_SIZE)
-            	this.camera.position.x = (SCREEN_WIDTH / 2) + TILED_SIZE;
-            else if ((this.player.getX() + (SCREEN_WIDTH / 2)) > MAP_WIDTH * TILED_SIZE)
-            	this.camera.position.x =  MAP_WIDTH * 16 - (SCREEN_WIDTH / 2);
+            if ((this.player.getX() - (this.SCREEN_WIDTH / 2)) < this.TILED_SIZE)
+            	this.camera.position.x = (this.SCREEN_WIDTH / 2) + this.TILED_SIZE;
+            else if ((this.player.getX() + (this.SCREEN_WIDTH / 2)) > (this.MAP_WIDTH * this.TILED_SIZE))
+            	this.camera.position.x =  (this.MAP_WIDTH * 16) - (this.SCREEN_WIDTH / 2);
             else
             	this.camera.position.x = this.player.getX();
 
             //update y
-			if ((this.player.getY() - (SCREEN_HEIGHT / 2)) >= this.POS_LOWER_WORLD)
+			if ((this.player.getY() - (this.SCREEN_HEIGHT / 2)) >= this.POS_LOWER_WORLD)
                 this.camera.position.y = this.player.getY();
             else if (this.player.getY() > this.POS_LOWER_WORLD)
-                this.camera.position.y = this.POS_LOWER_WORLD + (SCREEN_HEIGHT / 2);
-            else if ((this.player.getY() + (SCREEN_HEIGHT / 2)) >= this.POS_LOWER_WORLD)
-				this.camera.position.y = this.POS_LOWER_WORLD - (SCREEN_HEIGHT / 2);
+                this.camera.position.y = this.POS_LOWER_WORLD + (this.SCREEN_HEIGHT / 2);
+            else if ((this.player.getY() + (this.SCREEN_HEIGHT / 2)) >= this.POS_LOWER_WORLD)
+				this.camera.position.y = this.POS_LOWER_WORLD - (this.SCREEN_HEIGHT / 2);
 			else
                 this.camera.position.y = this.player.getY();
 
@@ -245,7 +243,7 @@ public class MainScreen extends BaseScreen {
 		}
 		else if (this.boss.flowState == Boss.FlowState.Summon){
 			this.boss.velocity.x = 0;
-			Summon();
+			this.Summon();
 			this.boss.velocity.y = 200;  //only to differentiate right now
 			this.boss.flowState = Boss.FlowState.Transition;
 			this.boss.state = Boss.State.Summon;
@@ -293,11 +291,11 @@ public class MainScreen extends BaseScreen {
 
 
 	private void Summon() {
-		spawns.add(new Vector2(this.boss.getX(), this.boss.getY() + 50));
-		if (this.boss.getX() + 30 < xRightBossWall)
-			spawns.add(new Vector2(this.boss.getX() + 30, this.boss.getY() + 5));
-		if (this.boss.getX() - 30 > xLeftBossWall)
-			spawns.add(new Vector2(this.boss.getX() - 30, this.boss.getY() + 5));
+		this.spawns.add(new Vector2(this.boss.getX(), this.boss.getY() + 50));
+		if ((this.boss.getX() + 30) < this.xRightBossWall)
+			this.spawns.add(new Vector2(this.boss.getX() + 30, this.boss.getY() + 5));
+		if ((this.boss.getX() - 30) > this.xLeftBossWall)
+			this.spawns.add(new Vector2(this.boss.getX() - 30, this.boss.getY() + 5));
 	}
 
 	private void changeOfStatesInCaseOfAnimationFinish() {
@@ -405,11 +403,11 @@ public class MainScreen extends BaseScreen {
 			shot.velocity.scl(1 / deltaTime);
 
 			shot.setPosition(shot.desiredPosition.x, shot.desiredPosition.y);
-			if (shot.normalGravity && (shot.getY() < POS_LOWER_WORLD))
+			if (shot.normalGravity && (shot.getY() < this.POS_LOWER_WORLD))
 				collided = true;	//dont traspass to the other world
-			else if (!shot.normalGravity && (shot.getY() >= POS_LOWER_WORLD))
+			else if (!shot.normalGravity && (shot.getY() >= this.POS_LOWER_WORLD))
 				collided = true;
-			else if ((shot.getY() > MAP_HEIGHT * TILED_SIZE) || (shot.getY() < 0))
+			else if ((shot.getY() > (this.MAP_HEIGHT * this.TILED_SIZE)) || (shot.getY() < 0))
 				collided = true;
 		}
 
@@ -565,23 +563,23 @@ public class MainScreen extends BaseScreen {
 		batch.begin();
 		if (this.player.facesRight && frame.isFlipX()) {
             frame.flip(true, false);
-            RightOffset = 1;	//fix differences
+            this.RightOffset = 1;	//fix differences
 		}
 		else if (!this.player.facesRight && !frame.isFlipX()) {
 			frame.flip(true, false);
-			RightOffset = -4;   //fix differences
+			this.RightOffset = -4;   //fix differences
 		}
 
 		if (this.normalGravity && frame.isFlipY()) {
 			frame.flip(false, true);
-			UpOffset = 0;
+			this.UpOffset = 0;
 		}
 		else if (!this.normalGravity && !frame.isFlipY()){
 			frame.flip(false, true);
-			UpOffset = -2;
+			this.UpOffset = -2;
 		}
 
-		batch.draw(frame, this.player.getX() + frame.offsetX + RightOffset, this.player.getY() + frame.offsetY + UpOffset);
+		batch.draw(frame, this.player.getX() + frame.offsetX + this.RightOffset, this.player.getY() + frame.offsetY + this.UpOffset);
 
 		batch.end();
 		this.shapeRenderer.begin(ShapeType.Filled);
@@ -760,9 +758,9 @@ public class MainScreen extends BaseScreen {
 		if (this.player.noControl == false)
 			this.player.velocity.x *= 0;		//0 is totally stopped if not pressed
 
-		if (((this.player.desiredPosition.x - this.player.offSetX + this.player.velocity.x) < 0 )
+		if ((((this.player.desiredPosition.x - this.player.offSetX) + this.player.velocity.x) < 0 )
 				|| ((this.player.desiredPosition.x + this.player.getWidth() + this.player.velocity.x)
-						> MAP_WIDTH * TILED_SIZE))
+						> (this.MAP_WIDTH * this.TILED_SIZE)))
 			this.player.desiredPosition.x = 1;
 
 		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
@@ -1123,7 +1121,7 @@ public class MainScreen extends BaseScreen {
 				}
 				else{	//upside down
 					if (this.player.velocity.y > 0) {
-						this.player.desiredPosition.y = tile.y - this.player.getHeight() + 1;
+						this.player.desiredPosition.y = (tile.y - this.player.getHeight()) + 1;
 						this.player.grounded = true;
 					}
 					else
@@ -1145,6 +1143,7 @@ public class MainScreen extends BaseScreen {
 
 	private void getTiles (int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
 		TiledMapTileLayer layer = (TiledMapTileLayer)(this.map.getLayers().get("Collisions"));
+		//TiledMapTileLayer layer2 = (TiledMapTileLayer)(this.map.getLayers().get("Spikes"));
 		this.rectPool.freeAll(tiles);
 		tiles.clear();
 		for (int y = startY; y <= endY; y++) {
@@ -1155,6 +1154,12 @@ public class MainScreen extends BaseScreen {
 					rect.set(x * this.TILED_SIZE, y  * this.TILED_SIZE, this.TILED_SIZE, this.TILED_SIZE);
 					tiles.add(rect);
                 }
+				//Cell cell2 = layer2.getCell(x, y);
+				//if (cell2 != null) {
+				//	Rectangle rect = this.rectPool.obtain();
+				//	rect.set(x * this.TILED_SIZE, y  * this.TILED_SIZE, this.TILED_SIZE, this.TILED_SIZE);
+				//	tiles.add(rect);
+                //}
             }
         }
     }
