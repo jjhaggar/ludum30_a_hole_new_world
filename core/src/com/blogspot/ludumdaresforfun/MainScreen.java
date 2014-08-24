@@ -81,6 +81,8 @@ public class MainScreen extends BaseScreen {
 
 		this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
+		//Assets.dispose(); //TODO: for debugging
+
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
 		this.camera.position.y = this.POS_UPPER_WORLD - this.MAP_HEIGHT;
@@ -114,13 +116,13 @@ public class MainScreen extends BaseScreen {
                             this.boss.setPosition(x * this.TILED_SIZE, y * this.TILED_SIZE);
                         }
 				        else if (type.equals("door")) {
-                            this.door = new Vector2(x * this.TILED_SIZE, y * this.TILED_SIZE);
+                            this.door = new Vector2(x, y);
                         }
 				    }
                 }
             }
         }
-        //this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
+        this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
 	}
 
 	@Override
@@ -181,7 +183,8 @@ public class MainScreen extends BaseScreen {
 		}
 		if (this.bossActive) {
 			this.updateBoss(delta);
-			this.renderBoss(delta);
+			if (this.boss != null)
+				this.renderBoss(delta);
 		}
 
 	}
@@ -217,6 +220,7 @@ public class MainScreen extends BaseScreen {
 
 
 	private void flowBoss(float delta) {
+
 
 		this.changeOfStatesInCaseOfAnimationFinish();
 
@@ -270,9 +274,10 @@ public class MainScreen extends BaseScreen {
 			this.boss.velocity.y = 0;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Transition){ //door.x is the left side of the tiles
-			if (this.boss.getX() > ((this.door.x + this.SCREEN_WIDTH) - (this.TILED_SIZE * 4)))		 //if going to hit wall turns back
+
+			if (this.boss.getX() > xRightBossWall)		 //if going to hit wall turns back
 				this.boss.flowState = Boss.FlowState.WalkingLeft;
-			else if (this.boss.getX() < (this.door.x + (this.TILED_SIZE * 4)))							//same for other wall
+			else if (this.boss.getX() < xLeftBossWall)							//same for other wall
 				this.boss.flowState = Boss.FlowState.WalkingRight;
 			else if (this.boss.flowTime > 2){							//takes pseudo-random action
 				int nextState = (int)Math.round(Math.random() * 7);
@@ -861,6 +866,9 @@ public class MainScreen extends BaseScreen {
 
 			this.camera.position.x = (this.MAP_WIDTH * this.TILED_SIZE) - (this.SCREEN_WIDTH / 2);
 			this.camera.update();
+
+			xRightBossWall = (door.x * TILED_SIZE + SCREEN_WIDTH - (TILED_SIZE * 4));
+			xLeftBossWall = (door.x * TILED_SIZE + (TILED_SIZE * 4));
 
 			Assets.musicStage.stop();
 			Assets.musicBoss.setLooping(true);
