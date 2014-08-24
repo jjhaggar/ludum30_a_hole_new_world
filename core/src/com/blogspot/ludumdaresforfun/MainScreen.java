@@ -126,12 +126,16 @@ public class MainScreen extends BaseScreen {
 			this.camera.position.x = this.player.getX(); //200;//raya.position.x;
             this.camera.position.y = this.player.getY();
 
-			if ((this.player.getY() + this.player.getHeight()) >= this.POS_UPPER_WORLD) {
+			if ((this.player.getY() - (SCREEN_HEIGHT / 2)) >= this.POS_LOWER_WORLD)
                 this.camera.position.y = this.player.getY();
-			}
-			else if (this.player.getY() <= (this.POS_LOWER_WORLD + (this.MAP_HEIGHT / 2))) {
+            else if (this.player.getY() > this.POS_LOWER_WORLD)
+                this.camera.position.y = this.POS_LOWER_WORLD + (SCREEN_HEIGHT / 2);
+            else if ((this.player.getY() + (SCREEN_HEIGHT / 2)) >= this.POS_LOWER_WORLD)
+				this.camera.position.y = this.POS_LOWER_WORLD - (SCREEN_HEIGHT / 2);
+			else
                 this.camera.position.y = this.player.getY();
-			}
+
+
 			this.camera.update();
 		}
 
@@ -392,11 +396,11 @@ public class MainScreen extends BaseScreen {
 			shot.velocity.scl(1 / deltaTime);
 
 			shot.setPosition(shot.desiredPosition.x, shot.desiredPosition.y);
-			if (shot.normalGravity && (shot.getY() < 240))
+			if (shot.normalGravity && (shot.getY() < POS_LOWER_WORLD))
 				collided = true;	//dont traspass to the other world
-			else if (!shot.normalGravity && (shot.getY() >= 240))
+			else if (!shot.normalGravity && (shot.getY() >= POS_LOWER_WORLD))
 				collided = true;
-			else if ((shot.getY() > 480) || (shot.getY() < 0))
+			else if ((shot.getY() > MAP_HEIGHT * TILED_SIZE) || (shot.getY() < 0))
 				collided = true;
 		}
 
