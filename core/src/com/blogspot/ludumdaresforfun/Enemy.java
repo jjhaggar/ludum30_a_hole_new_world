@@ -41,15 +41,16 @@ public class Enemy extends Image{
 	private float offSetX;
 	public boolean dying = false;
 	public boolean inScreen = false;
+	public AtlasRegion actualFrame;
 
     public Enemy(Animation animation) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
-        this.offSetX = ((AtlasRegion)Assets.enemyRun.getKeyFrame(0)).offsetX;
+        actualFrame = ((AtlasRegion)animation.getKeyFrame(0));
     }
 
     public Rectangle getRect() {
-        this.rect.set(this.getX() + this.offSetX, this.getY(), this.getWidth(), this.getHeight());
+        this.rect.set(this.getX(), this.getY(),this.actualFrame.packedWidth, this.actualFrame.packedHeight);
         return this.rect;
 
     }

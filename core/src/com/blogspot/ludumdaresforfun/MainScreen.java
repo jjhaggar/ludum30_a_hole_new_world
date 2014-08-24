@@ -321,7 +321,7 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void renderBoss(float delta) {
-		AtlasRegion frame = null;
+		this.boss.actualFrame = null;
 
 		if (this.boss.velocity.x > 0)
 			this.boss.facesRight = true;
@@ -329,24 +329,24 @@ public class MainScreen extends BaseScreen {
 			this.boss.facesRight = false;
 
 		if (this.boss.state == Boss.State.Standing)
-			frame = (AtlasRegion)Assets.bossStanding.getKeyFrame(this.boss.stateTime);
+			this.boss.actualFrame = (AtlasRegion)Assets.bossStanding.getKeyFrame(this.boss.stateTime);
 		else if (this.boss.state == Boss.State.Walking)
-			frame = (AtlasRegion)Assets.bossWalking.getKeyFrame(this.boss.stateTime);
+			this.boss.actualFrame = (AtlasRegion)Assets.bossWalking.getKeyFrame(this.boss.stateTime);
 		else if (this.boss.state == Boss.State.Attack)
-			frame = (AtlasRegion)Assets.bossAttack.getKeyFrame(this.boss.stateTime);
+			this.boss.actualFrame = (AtlasRegion)Assets.bossAttack.getKeyFrame(this.boss.stateTime);
 		else if (this.boss.state == Boss.State.Jumping)
-			frame = (AtlasRegion)Assets.bossJumping.getKeyFrame(this.boss.stateTime);
+			this.boss.actualFrame = (AtlasRegion)Assets.bossJumping.getKeyFrame(this.boss.stateTime);
 		else if (this.boss.state == Boss.State.Falling)
-			frame = (AtlasRegion)Assets.bossFalling.getKeyFrame(this.boss.stateTime);
+			this.boss.actualFrame = (AtlasRegion)Assets.bossFalling.getKeyFrame(this.boss.stateTime);
 		else if (this.boss.state == Boss.State.Hurting)
-			frame = (AtlasRegion)Assets.bossGethit.getKeyFrame(this.boss.stateTime);
+			this.boss.actualFrame = (AtlasRegion)Assets.bossGethit.getKeyFrame(this.boss.stateTime);
 		else if (this.boss.state == Boss.State.Die)
-			frame = (AtlasRegion)Assets.bossDie.getKeyFrame(this.boss.stateTime);
+			this.boss.actualFrame = (AtlasRegion)Assets.bossDie.getKeyFrame(this.boss.stateTime);
 		else if (this.boss.state == Boss.State.Summon)
-			frame = (AtlasRegion)Assets.bossSummon.getKeyFrame(this.boss.stateTime);
+			this.boss.actualFrame = (AtlasRegion)Assets.bossSummon.getKeyFrame(this.boss.stateTime);
 
 		if (this.boss.invincible && this.boss.toggle) {
-			frame = (AtlasRegion)Assets.bossGethit.getKeyFrame(this.player.stateTime);
+			this.boss.actualFrame = (AtlasRegion)Assets.bossGethit.getKeyFrame(this.player.stateTime);
 		    this.boss.toggle = !this.boss.toggle;
 		}
 		else if (this.boss.invincible && !this.boss.toggle) {
@@ -359,13 +359,15 @@ public class MainScreen extends BaseScreen {
 		Batch batch = this.renderer.getSpriteBatch();
 		batch.begin();
 		if (this.boss.facesRight) {
-			if (frame.isFlipX())
-				frame.flip(true, false);
-			batch.draw(frame, this.boss.getX() + frame.offsetX, this.boss.getY() + frame.offsetY);
+			if (this.boss.actualFrame.isFlipX())
+				this.boss.actualFrame.flip(true, false);
+			batch.draw(this.boss.actualFrame, this.boss.getX() + this.boss.actualFrame.offsetX - this.boss.offSetX,
+					this.boss.getY() + this.boss.actualFrame.offsetY - this.boss.offSetY);
 		} else {
-			if (!frame.isFlipX())
-				frame.flip(true, false);
-			batch.draw(frame, this.boss.getX() + frame.offsetX, this.boss.getY() + frame.offsetY);
+			if (!this.boss.actualFrame.isFlipX())
+				this.boss.actualFrame.flip(true, false);
+			batch.draw(this.boss.actualFrame, this.boss.getX() + this.boss.actualFrame.offsetX - this.boss.offSetX,
+					this.boss.getY() + this.boss.actualFrame.offsetY - this.boss.offSetY);
 		}
 
 		batch.end();
@@ -389,11 +391,11 @@ public class MainScreen extends BaseScreen {
 		if (shot.shotGoesRight) {
 			if (frame.isFlipX())
 				frame.flip(true, false);
-			batch.draw(frame, shot.getX() + frame.offsetX, shot.getY() + frame.offsetY);
+			batch.draw(frame, shot.getX(), shot.getY());
 		} else {
 			if (!frame.isFlipX())
 				frame.flip(true, false);
-			batch.draw(frame, shot.getX() + frame.offsetX, shot.getY() + frame.offsetY);
+			batch.draw(frame, shot.getX(), shot.getY());
 		}
 
 		batch.end();
@@ -446,10 +448,10 @@ public class MainScreen extends BaseScreen {
 		shot.desiredPosition.y = Math.round(shot.getY());
 		shot.desiredPosition.x = Math.round(shot.getX());
 
-		this.playerRect.set(shot.desiredPosition.x, (shot.desiredPosition.y), shot.getWidth(), shot.getHeight());
+		this.playerRect = shot.getRect();
 
 		for (Enemy enemy : this.enemies){
-			if (this.playerRect.overlaps(enemy.rect)) {
+			if (this.playerRect.overlaps(enemy.getRect())) {
 				if (!enemy.dying){
 					enemy.die();
 					collided = true;
@@ -458,7 +460,7 @@ public class MainScreen extends BaseScreen {
 			}
 		}
 
-		if ((this.boss != null) && this.playerRect.overlaps(this.boss.rect)) {
+		if ((this.boss != null) && this.playerRect.overlaps(this.boss.getRect())) {
 		    this.boss.beingHit();
 
 		    if (!this.boss.setToDie){
@@ -482,19 +484,19 @@ public class MainScreen extends BaseScreen {
 		shot.desiredPosition.y = Math.round(shot.getY());
 		shot.desiredPosition.x = Math.round(shot.getX());
 
-		this.playerRect.set(shot.desiredPosition.x + shot.offSetX, (shot.desiredPosition.y), shot.getWidth(), shot.getHeight());
+		this.playerRect = shot.getRect();
 
 		int startX, startY, endX, endY;
 
 		if (shot.velocity.x > 0) {	//this.raya.velocity.x > 0
-			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x + shot.getWidth() + shot.offSetX) / 16);
+			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x + shot.actualFrame.packedWidth) / 16);
 		}
 		else {
-			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x + shot.offSetX) / 16);
+			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x) / 16);
 		}
 
 		startY = (int)((shot.desiredPosition.y) / 16);
-		endY = (int)((shot.desiredPosition.y + shot.getHeight()) / 16);
+		endY = (int)((shot.desiredPosition.y + shot.actualFrame.packedHeight) / 16);
 
 		this.getTiles(startX, startY, endX, endY, this.tiles);
 
@@ -511,7 +513,7 @@ public class MainScreen extends BaseScreen {
 
 		if (this.normalGravity){
 			if (shot.velocity.y > 0) {
-				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y + shot.getHeight()) / 16f);
+				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y + shot.actualFrame.packedHeight) / 16f);
 			}
 			else {
 				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y) / 16f);
@@ -523,12 +525,12 @@ public class MainScreen extends BaseScreen {
 				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y) / 16f);
 			}
 			else {
-				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y + shot.getHeight() ) / 16f);
+				startY = endY = (int)((shot.desiredPosition.y + shot.velocity.y + shot.actualFrame.packedHeight ) / 16f);
 			}
 		}
 
 		startX = (int)((shot.desiredPosition.x + shot.offSetX) / 16);					//16 tile size
-		endX = (int)((shot.desiredPosition.x + shot.getWidth() + shot.offSetX) / 16);
+		endX = (int)((shot.desiredPosition.x + shot.actualFrame.packedWidth) / 16);
 
 
 		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
@@ -625,29 +627,29 @@ public class MainScreen extends BaseScreen {
 
 	private void renderEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
-            AtlasRegion frame = null;
+	    		enemy.actualFrame = null;
             switch (enemy.state) {
             case Walking:
-                frame = (AtlasRegion)Assets.enemyWalk.getKeyFrame(enemy.stateTime);
+            	enemy.actualFrame = (AtlasRegion)Assets.enemyWalk.getKeyFrame(enemy.stateTime);
                 break;
             case Running:
-                frame = (AtlasRegion)Assets.enemyRun.getKeyFrame(enemy.stateTime);
+            	enemy.actualFrame = (AtlasRegion)Assets.enemyRun.getKeyFrame(enemy.stateTime);
                 break;
             case Hurting:
-                frame = (AtlasRegion)Assets.enemyHurt.getKeyFrame(enemy.stateTime);
+            	enemy.actualFrame = (AtlasRegion)Assets.enemyHurt.getKeyFrame(enemy.stateTime);
                 break;
             }
 
             Batch batch = this.renderer.getSpriteBatch();
             batch.begin();
             if (enemy.facesRight) {
-                if (frame.isFlipX())
-                    frame.flip(true, false);
-                batch.draw(frame, enemy.getX() + frame.offsetX, enemy.getY() + frame.offsetY);
+                if (enemy.actualFrame.isFlipX())
+                	enemy.actualFrame.flip(true, false);
+                batch.draw(enemy.actualFrame, enemy.getX(), enemy.getY());
             } else {
-                if (!frame.isFlipX())
-                    frame.flip(true, false);
-                batch.draw(frame, enemy.getX() + frame.offsetX, enemy.getY() + frame.offsetY);
+                if (!enemy.actualFrame.isFlipX())
+                	enemy.actualFrame.flip(true, false);
+                batch.draw(enemy.actualFrame, enemy.getX(), enemy.getY());
             }
             batch.end();
 
@@ -686,9 +688,8 @@ public class MainScreen extends BaseScreen {
 	    				this.player.beingHit();
 	    			}
 	    		}
-	    		else{ //tricking because it doesnt work ok. only in the left side
-	    			Rectangle enemyRect = new Rectangle(enemy.getRect().x + 20, enemy.getY(), enemy.getWidth(), enemy.getHeight());
-	    			if (this.player.getRect().overlaps(enemyRect)) {
+	    		else{
+	    			if (this.player.getRect().overlaps(enemy.getRect())) {
 	    				this.player.beingHit();
 	    			}
 	    		}
@@ -868,7 +869,7 @@ public class MainScreen extends BaseScreen {
 			this.camera.update();
 
 			xRightBossWall = (door.x * TILED_SIZE + SCREEN_WIDTH - (TILED_SIZE * 4));
-			xLeftBossWall = (door.x * TILED_SIZE + (TILED_SIZE * 4));
+			xLeftBossWall = (door.x * TILED_SIZE + (TILED_SIZE * 2));
 
 			Assets.musicStage.stop();
 			Assets.musicBoss.setLooping(true);
@@ -974,10 +975,10 @@ public class MainScreen extends BaseScreen {
 				Shot shot = new Shot(Assets.playerShot);
 				if (this.player.facesRight){
 					//-1 necessary to be exactly the same as the other facing
-					shot.Initialize((this.player.getX() + (this.player.getHeight() / 2)) - 1, (this.player.getY() + (this.player.getWidth() / 2)), this.player.facesRight, this.normalGravity);
+					shot.Initialize((this.player.getCenterX()), (this.player.getY() + (this.player.getHeight() / 2) - 10), this.player.facesRight, this.normalGravity);
 				}
 				else {
-					shot.Initialize(this.player.getX(), (this.player.getY() + (this.player.getWidth() / 2)), this.player.facesRight, this.normalGravity);
+					shot.Initialize((this.player.getCenterX()), (this.player.getY() + (this.player.getHeight() / 2) - 10), this.player.facesRight, this.normalGravity);
 				}
 				this.shotArray.add(shot);
 
@@ -1017,12 +1018,12 @@ public class MainScreen extends BaseScreen {
 		boss.desiredPosition.y = Math.round(boss.getY());
 		boss.desiredPosition.x = Math.round(boss.getX());
 
-		this.playerRect.set(boss.desiredPosition.x, boss.desiredPosition.y, boss.getWidth(), boss.getHeight());
+		this.playerRect = this.boss.getRect();
 
 		int startX, startY, endX, endY;
 
 		if (this.player.velocity.x > 0) {
-			startX = endX = (int)((boss.desiredPosition.x + boss.velocity.x + boss.getWidth()) / this.TILED_SIZE);
+			startX = endX = (int)((boss.desiredPosition.x + boss.velocity.x + this.boss.actualFrame.getRegionWidth()) / this.TILED_SIZE);
 		}
 		else {
 			startX = endX = (int)((boss.desiredPosition.x + boss.velocity.x) / this.TILED_SIZE);
@@ -1030,15 +1031,15 @@ public class MainScreen extends BaseScreen {
 
 		if (boss.grounded && this.normalGravity){
 			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE) + 1;
-			endY = (int)((boss.desiredPosition.y + boss.getHeight()) / this.TILED_SIZE) + 1;
+			endY = (int)((boss.desiredPosition.y + this.boss.actualFrame.getRegionHeight()) / this.TILED_SIZE) + 1;
 		}
 		else if (boss.grounded && !this.normalGravity){
 			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE) - 1;
-			endY = (int)((boss.desiredPosition.y + boss.getHeight()) / this.TILED_SIZE) - 1;
+			endY = (int)((boss.desiredPosition.y + this.boss.actualFrame.getRegionHeight()) / this.TILED_SIZE) - 1;
 		}
 		else{
 			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE);
-			endY = (int)((boss.desiredPosition.y + boss.getHeight()) / this.TILED_SIZE);
+			endY = (int)((boss.desiredPosition.y + this.boss.actualFrame.getRegionHeight()) / this.TILED_SIZE);
 		}
 
 		this.getTiles(startX, startY, endX, endY, this.tiles);
@@ -1059,7 +1060,7 @@ public class MainScreen extends BaseScreen {
 
 		if (this.normalGravity){
 			if (boss.velocity.y > 0) {
-				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y + boss.getHeight()) / this.TILED_SIZE);
+				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y + this.boss.actualFrame.getRegionHeight()) / this.TILED_SIZE);
 			}
 			else {
 				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y) / this.TILED_SIZE);
@@ -1070,13 +1071,13 @@ public class MainScreen extends BaseScreen {
 				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y) / this.TILED_SIZE);
 			}
 			else {
-				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y + boss.getHeight() ) / this.TILED_SIZE);
+				startY = endY = (int)((boss.desiredPosition.y + boss.velocity.y + this.boss.actualFrame.getRegionHeight() ) / this.TILED_SIZE);
 			}
 		}
 
 
 		startX = (int)(boss.desiredPosition.x / this.TILED_SIZE);					//16 tile size
-		endX = (int)((boss.desiredPosition.x + boss.getWidth()) / this.TILED_SIZE);
+		endX = (int)((boss.desiredPosition.x + this.boss.actualFrame.getRegionWidth()) / this.TILED_SIZE);
 
 		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
 
@@ -1095,11 +1096,11 @@ public class MainScreen extends BaseScreen {
 
 				if (this.normalGravity){
 					if (boss.velocity.y > 0) {
-						boss.desiredPosition.y = tile.y - boss.getHeight() - 1;
+						boss.desiredPosition.y = tile.y - this.boss.actualFrame.getRegionHeight() - 1;
 						// we hit a block jumping upwards, let's destroy it!
 					}
 					else {
-						boss.desiredPosition.y = (tile.y + tile.height) - 4;	//in this way he is in the ground
+						boss.desiredPosition.y = (tile.y + tile.height) - 1;	//in this way he is in the ground
 						// if we hit the ground, mark us as grounded so we can jump
 						grounded = true;
 					}

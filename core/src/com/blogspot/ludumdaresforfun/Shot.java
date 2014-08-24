@@ -8,7 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Shot extends Image {
-    float SHOT_VELOCITY = 200f;
+    float SHOT_VELOCITY_X = 210f;
+    float SHOT_VELOCITY_Y = 150f;
     float stateTime = 0;
     boolean shotGoesRight;
     boolean normalGravity;
@@ -18,15 +19,17 @@ public class Shot extends Image {
 
     protected Animation animation = null;
     public float offSetX;
+    public AtlasRegion actualFrame;
 
     public Shot(Animation animation) {
     	super(animation.getKeyFrame(0));
     	this.animation = animation;
-    	this.offSetX = ((AtlasRegion)animation.getKeyFrame(0)).offsetX;
+    	actualFrame = ((AtlasRegion)animation.getKeyFrame(0));
+    	this.offSetX = actualFrame.offsetX;
     }
 
     public Rectangle getRect() {
-        this.rect.set(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        this.rect.set(this.getX(), this.getY(),this.actualFrame.packedWidth, this.actualFrame.packedHeight);
         return this.rect;
 
     }
@@ -35,14 +38,14 @@ public class Shot extends Image {
         this.setPosition(x, y);
         this.shotGoesRight = facesRight;
         if (facesRight)
-        	this.velocity.x = this.SHOT_VELOCITY;
+        	this.velocity.x = this.SHOT_VELOCITY_X;
         else
-        	this.velocity.x = -this.SHOT_VELOCITY;
+        	this.velocity.x = -this.SHOT_VELOCITY_X;
 
         if (normalGravity)
-        	this.velocity.y = 100;
+        	this.velocity.y = this.SHOT_VELOCITY_Y;
         else
-        	this.velocity.y = -100;
+        	this.velocity.y = -this.SHOT_VELOCITY_Y;
 
         this.normalGravity = normalGravity;
     }

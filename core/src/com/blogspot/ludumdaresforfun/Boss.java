@@ -48,16 +48,19 @@ public class Boss extends Image {
     public float offSetX;
 	public boolean invincible = false;
 	public boolean toggle = false;
-	private float offSetY;
+	public float offSetY;
+	//public AtlasRegion actualFrame;
+	public AtlasRegion actualFrame;
 
 	public Boss(Animation animation) {
 		super(animation.getKeyFrame(0));
 		this.animation = animation;
-		offSetX = ((AtlasRegion)animation.getKeyFrame(0)).offsetX;
-		offSetY  = ((AtlasRegion)animation.getKeyFrame(0)).offsetY;
+		actualFrame = ((AtlasRegion)animation.getKeyFrame(0));
+		offSetX = actualFrame.offsetX;
+		offSetY = actualFrame.offsetY;
 	}
 	public Rectangle getRect() {
-        this.rect.set(this.getX() + offSetX , this.getY() + offSetY, this.getWidth(), this.getHeight() - 10);
+        this.rect.set(this.getX() + actualFrame.offsetX - offSetX, this.getY() + actualFrame.offsetY - offSetY , this.actualFrame.packedWidth, this.actualFrame.packedHeight);
         return this.rect;
 
     }
