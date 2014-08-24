@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Enemy extends Image{
     final float VELOCITY = 50f;
-    final float ATTACK_VELOCITY = 120f;
+    final float ATTACK_VELOCITY = 130f;
     enum State {
         Walking, Running, Hurting
     }
@@ -45,11 +45,11 @@ public class Enemy extends Image{
     public Enemy(Animation animation) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
-        offSetX = ((AtlasRegion)Assets.enemyRun.getKeyFrame(0)).offsetX;
+        this.offSetX = ((AtlasRegion)Assets.enemyRun.getKeyFrame(0)).offsetX;
     }
 
     public Rectangle getRect() {
-        this.rect.set(this.getX() + offSetX, this.getY(), this.getWidth(), this.getHeight());
+        this.rect.set(this.getX() + this.offSetX, this.getY(), this.getWidth(), this.getHeight());
         return this.rect;
 
     }
