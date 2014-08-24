@@ -48,45 +48,63 @@ public class MainScreen extends BaseScreen {
     };
 
 	private final float GRAVITY = -10f;
-	private final float yPosUpperWorld = 360;
-	private final float yPosLowerWorld = 120;
+	final int SCREEN_HEIGHT = 240;
+	final int SCREEN_WIDTH = 400;
+	final int MAP_HEIGHT;
+	final int MAP_WIDTH;
+	final int POS_UPPER_WORLD;
+	final int POS_LOWER_WORLD;
 	final int DISTANCESPAWN = 410;
-	final int TILED_SIZE = 16;
-	final float activateBossXPosition = 420;
+	final int TILED_SIZE;
 
 
 	public MainScreen() {
 		this.shapeRenderer = new ShapeRenderer();
 
-		this.map = new TmxMapLoader().load("aholenewworld_enemy.tmx");
+		this.map = new TmxMapLoader().load("newtiles.tmx");
+		this.MAP_HEIGHT = (Integer) this.map.getProperties().get("height");
+		this.MAP_WIDTH = (Integer) this.map.getProperties().get("width");
+		this.TILED_SIZE = (Integer) this.map.getProperties().get("tileheight");
+		this.POS_LOWER_WORLD = (this.MAP_HEIGHT / 2) * this.TILED_SIZE;
+		this.POS_UPPER_WORLD = this.MAP_HEIGHT  * this.TILED_SIZE;
 
 		this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
-		TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(2));
+		this.camera = new OrthographicCamera();
+		this.camera.setToOrtho(false, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
+		this.camera.position.y = this.POS_UPPER_WORLD - this.MAP_HEIGHT;
+		this.camera.update();
+
+		this.player = new Player(Assets.playerStand);
+        this.boss = new Boss(Assets.bossStanding);
+        this.boss.setPosition(700*16, 63*16);
+
+        this.configControllers = new ConfigControllers();
+		this.configControllers.init();
+
+		TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Spawns"));
 		this.rectPool.freeAll(this.tiles);
 		this.tiles.clear();
         for (int x = 0; x <= layerSpawn.getHeight(); x++) {
             for (int y = 0; y <= layerSpawn.getWidth(); y++) {
 				Cell cell = layerSpawn.getCell(x, y);
 				if (cell != null) {
-                    this.spawns.add(new Vector2(x * this.TILED_SIZE, y * this.TILED_SIZE));
+				    String type = (String) cell.getTile().getProperties().get("type");
+				    if (type != null) {
+				        if (type.equals("player")) {
+                            this.player.setPosition(x * this.TILED_SIZE, y * this.TILED_SIZE);
+				        }
+				        else if (type.equals("enemy")) {
+                            this.spawns.add(new Vector2(x * this.TILED_SIZE, y * this.TILED_SIZE));
+                        }
+				        else if (type.equals("boss")) {
+				            // TODO: Problem when try load x more big than y
+                            //this.boss.setPosition(x * this.TILED_SIZE, y * this.TILED_SIZE);
+                        }
+				    }
                 }
             }
         }
-
-        this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
-
-		//Gdx.graphics.setDisplayMode(400, 240, false);
-		this.camera = new OrthographicCamera();
-		this.camera.setToOrtho(false, 400, 240);
-		this.camera.position.y = this.yPosUpperWorld;
-		this.camera.update();
-
-		this.player = new Player(Assets.playerStand);
-		this.player.setPosition(360, 380);
-
-        this.configControllers = new ConfigControllers();
-		this.configControllers.init();
 	}
 
 	@Override
@@ -97,8 +115,18 @@ public class MainScreen extends BaseScreen {
 		this.updatePlayer(delta);
 		this.player.act(delta);
 
+		this.activateBoss();
+
 		if (!this.bossActive){
 			this.camera.position.x = this.player.getX(); //200;//raya.position.x;
+            this.camera.position.y = this.player.getY();
+
+			if ((this.player.getY() + this.player.getHeight()) >= this.POS_UPPER_WORLD) {
+                this.camera.position.y = this.player.getY();
+			}
+			else if (this.player.getY() <= (this.POS_LOWER_WORLD + (this.MAP_HEIGHT / 2))) {
+                this.camera.position.y = this.player.getY();
+			}
 			this.camera.update();
 		}
 
@@ -117,7 +145,7 @@ public class MainScreen extends BaseScreen {
 
 		this.updateEnemies(delta);
 		this.renderer.setView(this.camera);
-		this.renderer.render(new int[]{0,1});
+		this.renderer.render(new int[]{0, 1, 3});
 
 		this.renderEnemies(delta);
 		this.renderPlayer(delta);
@@ -125,10 +153,10 @@ public class MainScreen extends BaseScreen {
 			if (shot != null)
 				this.renderShot(shot, delta);
 		}
-		if (this.boss != null)
-			this.updateBoss(delta); //update can put boss to null so two checks
-		if (this.boss != null)
+		if (this.bossActive) {
+			this.updateBoss(delta);
 			this.renderBoss(delta);
+		}
 
 	}
 
@@ -164,7 +192,7 @@ public class MainScreen extends BaseScreen {
 
 	private void flowBoss(float delta) {
 
-		changeOfStatesInCaseOfAnimationFinish();
+		this.changeOfStatesInCaseOfAnimationFinish();
 
 		if (this.boss.flowState == Boss.FlowState.WalkingLeft){
 			this.boss.velocity.x = -100;
@@ -224,11 +252,11 @@ public class MainScreen extends BaseScreen {
 				if ((Math.abs(this.boss.getX() -
 						this.player.getX()) < 48) && ((nextState % 2) == 0))	//3 tiles far: attacks 50% time
 					this.boss.flowState = Boss.FlowState.Attack;
-				else if (nextState == 0 || nextState == 1)										//one possibility is jump
+				else if ((nextState == 0) || (nextState == 1))										//one possibility is jump
 					this.boss.flowState = Boss.FlowState.Jumping;
-				else if (nextState == 2 || nextState == 3)
+				else if ((nextState == 2) || (nextState == 3))
 					this.boss.flowState = Boss.FlowState.Summon;				//another summon
-				else if (nextState == 4 || nextState == 5){															//or move in your direction
+				else if ((nextState == 4) || (nextState == 5)){															//or move in your direction
 					if ((this.boss.getX() - this.player.getX()) > 0)
 						this.boss.flowState = Boss.FlowState.WalkingLeft;
 					else
@@ -245,8 +273,8 @@ public class MainScreen extends BaseScreen {
 
 
 	private void changeOfStatesInCaseOfAnimationFinish() {
-		if (this.boss.state == Boss.State.Jumping && this.boss.velocity.y < 0)
-			boss.state = Boss.State.Falling;
+		if ((this.boss.state == Boss.State.Jumping) && (this.boss.velocity.y < 0))
+			this.boss.state = Boss.State.Falling;
 		if (this.boss.setToDie)
 			this.boss.flowState = Boss.FlowState.Die;
 	}
@@ -382,12 +410,12 @@ public class MainScreen extends BaseScreen {
 		if ((this.boss != null) && this.playerRect.overlaps(this.boss.rect)) {
 		    this.boss.beingHit();
 
-		    if (!boss.setToDie){
-		    	boss.invincible = true;		//activates also the flickering
+		    if (!this.boss.setToDie){
+		    	this.boss.invincible = true;		//activates also the flickering
 		    }
 		    else {
-		    	boss.state = Boss.State.Die;
-		    	boss.stateTime = 0;
+		    	this.boss.state = Boss.State.Die;
+		    	this.boss.stateTime = 0;
 		    }
 		    collided = true;
 		}
@@ -688,7 +716,7 @@ public class MainScreen extends BaseScreen {
 		this.player.desiredPosition.add(this.player.velocity);
 		this.player.velocity.scl(1 / deltaTime);
 
-		if (Assets.playerBeingHit.isAnimationFinished(this.player.stateTime) && !player.dead)
+		if (Assets.playerBeingHit.isAnimationFinished(this.player.stateTime) && !this.player.dead)
 			this.player.noControl = false;
 
 		if (this.player.noControl == false)
@@ -696,12 +724,9 @@ public class MainScreen extends BaseScreen {
 
 		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 
-		activateBoss();
-
-		if (Assets.playerDie.isAnimationFinished(this.player.stateTime) && player.dead){
-			gameOver();
+		if (Assets.playerDie.isAnimationFinished(this.player.stateTime) && this.player.dead){
+			this.gameOver();
 		}
-
 	}
 
 	private void gameOver() {
@@ -710,13 +735,10 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void activateBoss() {
-		if ((this.player.getX() > this.activateBossXPosition) && !this.bossActive){		//boss final trigger
+		if ((this.player.getX() >= (this.boss.getX() - this.boss.ACTIVATE_DISTANCE)) && !this.bossActive) {
 			this.bossActive = true;
 
-			this.boss = new Boss(Assets.bossStanding);
-			this.boss.setPosition(600, 260);
-
-			this.camera.position.x = 600;		//boss final position camera
+			this.camera.position.x = this.boss.getX();
 			this.camera.update();
 
 			//close door
@@ -741,15 +763,15 @@ public class MainScreen extends BaseScreen {
 		else
 			this.player.velocity.add(0, -this.GRAVITY);
 
-		if (this.player.getY() < 240){
-			this.camera.position.y = this.yPosLowerWorld;
+		if (this.player.getY() < this.POS_LOWER_WORLD){
+			//this.camera.position.y = this.POS_LOWER_WORLD;
 			if (this.normalGravity == true){
 				this.normalGravity = false;
 				this.player.velocity.y = -this.player.JUMP_VELOCITY;
 			}
 		}
-		else{
-			this.camera.position.y = this.yPosUpperWorld;
+		else {
+			//this.camera.position.y = 0;//this.yPosUpperWorld;
 			if (this.normalGravity == false){
 				this.normalGravity = true;
 				this.player.velocity.y = this.player.JUMP_VELOCITY;
@@ -1079,8 +1101,7 @@ public class MainScreen extends BaseScreen {
 
 
 	private void getTiles (int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
-
-		TiledMapTileLayer layer = (TiledMapTileLayer)(this.map.getLayers().get(1));
+		TiledMapTileLayer layer = (TiledMapTileLayer)(this.map.getLayers().get("Collisions"));
 		this.rectPool.freeAll(tiles);
 		tiles.clear();
 		for (int y = startY; y <= endY; y++) {

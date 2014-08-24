@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Timer.Task;
 public class Boss extends Image {
     final float VELOCITY = 50f;
     final float ATTACK_VELOCITY = 120f;
+    final int ACTIVATE_DISTANCE = 20;
     enum State {
         Standing, Walking, Jumping, Falling, Attack, Summon, Hurting, Die
     }
@@ -39,7 +40,7 @@ public class Boss extends Image {
 
     public int diffInitialPos = 0;
     public final int RANGE = 100;
-    public final int ATTACK_DISTANCE = 50;
+    public final int ATTACK_DISTANCE = 15 * 16;
 
     protected Animation animation = null;
     float stateTime = 0;
