@@ -688,8 +688,8 @@ public class MainScreen extends BaseScreen {
 	        // Check if player is invincible and check distance to player for attack him.
 	        if (!enemy.running && !enemy.dying && enemy.inScreen){
 	        	if (!this.player.invincible &&
-	        			((enemy.getY() - (enemy.getWidth() / 2)) <= this.player.getY()) &&
-	        			(this.player.getY() <= (enemy.getY() + (enemy.getWidth() / 2)))) {
+	        	        (Math.abs(((enemy.getY() + (enemy.getHeight() / 2))
+                        - (this.player.getY() + (this.player.getHeight() / 2)))) <= this.player.getHeight())) {
 	        		if (enemy.getX() < this.player.getX()) {
 	        			if ((enemy.getX() + enemy.ATTACK_DISTANCE) >= (this.player.getX() + this.player.getWidth())) {
 	        				enemy.dir = Enemy.Direction.Right;
