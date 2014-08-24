@@ -67,9 +67,11 @@ public class Boss extends Image {
 
     public void die(){
     	//animate, sound and set to die
-        Assets.playSound("bossDead");
-    	this.setToDie = true;
-    	System.out.println("YOU KILL THE BOSS");
+    	if (!this.setToDie == true){
+    		Assets.playSound("bossDead");
+    		this.setToDie = true;
+    		System.out.println("YOU KILL THE BOSS");
+    	}
     }
 
     public void beingHit() {

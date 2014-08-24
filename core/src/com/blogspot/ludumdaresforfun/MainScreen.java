@@ -123,8 +123,10 @@ public class MainScreen extends BaseScreen {
                 }
             }
         }
+
         this.hud = new HUD(Assets.hudBase);
-        //this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
+        this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
+
 	}
 
 	@Override
@@ -167,6 +169,9 @@ public class MainScreen extends BaseScreen {
                     auxNextSpawn.y -= 5; // Offset fixed collision
                 }
                 auxShadow.setPosition(auxNextSpawn.x, auxNextSpawn.y);
+                auxShadow.state = Enemy.State.BeingInvoked;
+                auxShadow.stateTime = 0;
+                auxShadow.beingInvoked = true;
                 this.enemies.add(auxShadow);
                 this.spawns.removeIndex(0);
             }
@@ -183,7 +188,7 @@ public class MainScreen extends BaseScreen {
 			if (shot != null)
 				this.renderShot(shot, delta);
 		}
-		if (this.bossActive) {
+		if (this.bossActive && this.boss != null) {
 			this.updateBoss(delta);
 			if (this.boss != null)
 				this.renderBoss(delta);
@@ -257,13 +262,14 @@ public class MainScreen extends BaseScreen {
 			//attack to character(detect position and collision)
 			this.boss.flowState = Boss.FlowState.Transition;
 			this.boss.state = Boss.State.Attack;
+			this.boss.stateTime = 0;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Summon){
 			this.boss.velocity.x = 0;
 			this.Summon();
-			this.boss.velocity.y = 200;  //only to differentiate right now
 			this.boss.flowState = Boss.FlowState.Transition;
 			this.boss.state = Boss.State.Summon;
+			this.boss.stateTime = 0;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Standing){
 			this.boss.velocity.x = 0;
@@ -309,9 +315,9 @@ public class MainScreen extends BaseScreen {
 
 
 	private void Summon() {
-		this.spawns.add(new Vector2(this.boss.getX(), this.boss.getY() + 50));
+		this.spawns.add(new Vector2(this.boss.getX(), this.boss.getY() + 60));
 		if ((this.boss.getX() + 30) < this.xRightBossWall)
-			this.spawns.add(new Vector2(this.boss.getX() + 30, this.boss.getY() + 5));
+			this.spawns.add(new Vector2(this.boss.getX() + 10 + this.boss.getWidth(), this.boss.getY() + 5));
 		if ((this.boss.getX() - 30) > this.xLeftBossWall)
 			this.spawns.add(new Vector2(this.boss.getX() - 30, this.boss.getY() + 5));
 	}
@@ -464,14 +470,15 @@ public class MainScreen extends BaseScreen {
 		}
 
 		if ((this.boss != null) && this.playerRect.overlaps(this.boss.getRect())) {
-		    this.boss.beingHit();
+
+			if (!boss.invincible)
+				this.boss.beingHit();
 
 		    if (!this.boss.setToDie){
 		    	this.boss.invincible = true;		//activates also the flickering
 		    }
-		    else {
+		    else if (this.boss.state != Boss.State.Die){
 		    	this.boss.state = Boss.State.Die;
-		    	this.boss.stateTime = 0;
 		    }
 		    collided = true;
 		}
@@ -640,6 +647,9 @@ public class MainScreen extends BaseScreen {
             case Hurting:
             	enemy.actualFrame = (AtlasRegion)Assets.enemyHurt.getKeyFrame(enemy.stateTime);
                 break;
+            case BeingInvoked:
+            	enemy.actualFrame = (AtlasRegion)Assets.enemyAppearing.getKeyFrame(enemy.stateTime);
+                break;
             }
 
             Batch batch = this.renderer.getSpriteBatch();
@@ -728,7 +738,8 @@ public class MainScreen extends BaseScreen {
 	private void updateEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
 
-	    	this.isEnemyInScreen(enemy);
+	    	isEnemyInScreen(enemy);
+	    	isEnemyFinishedInvoking(enemy);
 
 	        // Collision between player vs enemy
 	    	if (!enemy.dying){
@@ -746,7 +757,7 @@ public class MainScreen extends BaseScreen {
 
 	        enemy.stateTime += deltaTime;
 	        // Check if player is invincible and check distance to player for attack him.
-	        if (!enemy.running && !enemy.dying && enemy.inScreen){
+	        if (!enemy.running && !enemy.dying && !enemy.beingInvoked && enemy.inScreen){
 	        	if (!this.player.invincible &&
 	        	        (Math.abs(((enemy.getY() + (enemy.getHeight() / 2))
                         - (this.player.getY() + (this.player.getHeight() / 2)))) <= this.player.getHeight())) {
@@ -846,6 +857,15 @@ public class MainScreen extends BaseScreen {
 		}
 	}
 
+	private void isEnemyFinishedInvoking(Enemy enemy) {
+
+		if (Assets.enemyAppearing.isAnimationFinished(enemy.stateTime) && enemy.state.equals(Enemy.State.BeingInvoked)){
+			enemy.beingInvoked = false;
+			enemy.state = Enemy.State.Walking;
+		}
+
+	}
+
 	private void isEnemyInScreen(Enemy enemy) {
 		//TODO: Maybe change so that they activate a little bit before they enter the screen
 		if ((enemy.getX() > (this.camera.position.x - (this.SCREEN_WIDTH / 2)))
@@ -906,6 +926,8 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void activateBoss() {
+		if (this.boss == null)
+			return;
 		if ((this.player.getX() >= (this.boss.getX() - this.boss.ACTIVATE_DISTANCE)) && !this.bossActive) {
 			this.bossActive = true;
 

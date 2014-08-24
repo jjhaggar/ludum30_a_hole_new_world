@@ -12,7 +12,7 @@ public class Enemy extends Image{
     final float VELOCITY = 50f;
     final float ATTACK_VELOCITY = 130f;
     enum State {
-        Walking, Running, Hurting
+        Walking, Running, Hurting, BeingInvoked
     }
     Vector2 desiredPosition = new Vector2();
     final Vector2 velocity = new Vector2();
@@ -42,6 +42,7 @@ public class Enemy extends Image{
 	public boolean dying = false;
 	public boolean inScreen = false;
 	public AtlasRegion actualFrame;
+	public boolean beingInvoked = false;
 
     public Enemy(Animation animation) {
         super(animation.getKeyFrame(0));

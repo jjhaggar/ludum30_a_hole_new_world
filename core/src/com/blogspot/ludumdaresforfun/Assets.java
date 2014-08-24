@@ -19,7 +19,7 @@ public class Assets {
 	static AssetManager assetManager;
     static Animation playerAttack, playerEmpty, playerIntro, playerStand, playerWalk, playerJump, playerBeingHit, playerDie;
     static Animation playerShot;
-    static Animation enemyWalk, enemyRun, enemyHurt;
+    static Animation enemyWalk, enemyRun, enemyHurt, enemyAppearing;
     static Animation bossGethit, bossStanding,  bossWalking, bossJumping, bossFalling, bossAttack, bossSummon, bossDie;
     static Animation GameOver, Intro;
     static Animation hudBase, hudBossHead, hudLifeBoss, hudLifePlayer;
@@ -91,6 +91,9 @@ public class Assets {
 		regions = atlas.findRegions("enemy_dying");//"enemy_hurt"); // change
 		enemyHurt = new Animation(0.15f, regions);
 
+		regions = atlas.findRegions("enemy_appearing");//"enemy_hurt"); // change
+		enemyAppearing = new Animation(0.20f, regions);
+
 		// Boss
 		//regions = atlas.findRegions("boss_gethit");
 		regions = atlas.findRegions("boss_empty");
@@ -115,7 +118,7 @@ public class Assets {
 		bossFalling.setPlayMode(PlayMode.LOOP);
 
 		regions = atlas.findRegions("boss_attack_close");
-		bossAttack = new Animation(0.15f, regions);
+		bossAttack = new Animation(0.08f, regions);
 
 		regions = atlas.findRegions("boss_attack_distance");
 		bossSummon = new Animation(0.15f, regions);
@@ -138,6 +141,7 @@ public class Assets {
 		regions = atlas.findRegions("hud_life_counter_player");
 		hudLifePlayer = new Animation(0, regions);
 		offsetLifePlayer = new Vector2(regions.first().offsetX, regions.first().offsetY);
+
 	}
 
 	static TextureRegion getBg() {
