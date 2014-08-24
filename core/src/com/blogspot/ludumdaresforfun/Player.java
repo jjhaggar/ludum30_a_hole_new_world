@@ -34,16 +34,20 @@ public class Player extends Image {
     protected Animation animation = null;
     float stateTime = 0;
     public float offSetX;
+    public float offSetY;
     public float rightOffset = 0;
+    public AtlasRegion actualFrame;
 
     public Player(Animation animation) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
-        this.offSetX = ((AtlasRegion)Assets.playerWalk.getKeyFrame(0)).offsetX;
+        actualFrame = ((AtlasRegion)Assets.playerWalk.getKeyFrame(0));
+		offSetX = actualFrame.offsetX;
+		offSetY = actualFrame.offsetY;
     }
 
     public Rectangle getRect() {
-        this.rect.set(this.getX() + this.offSetX, this.getY(), this.getWidth(), this.getHeight());		//tener cuidado con width
+    	this.rect.set(this.getX() + actualFrame.offsetX - offSetX, this.getY() + actualFrame.offsetY - offSetY , this.actualFrame.packedWidth, this.actualFrame.packedHeight);
         return this.rect;
     }
 

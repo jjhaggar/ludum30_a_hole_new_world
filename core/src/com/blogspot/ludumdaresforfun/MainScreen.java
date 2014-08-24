@@ -122,7 +122,7 @@ public class MainScreen extends BaseScreen {
                 }
             }
         }
-        this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
+        //this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
 	}
 
 	@Override
@@ -607,8 +607,7 @@ public class MainScreen extends BaseScreen {
 		}
 
 		//batch.draw(frame, this.player.getX() + frame.offsetX, this.player.getY() + frame.offsetY + this.UpOffset);
-		batch.draw(frame, this.player.getX() + frame.offsetX + this.player.rightOffset, this.player.getY() + frame.offsetY + this.UpOffset);
-
+		batch.draw(frame, this.player.getX() + this.player.actualFrame.offsetX - this.player.offSetX, this.player.getY() + this.player.actualFrame.offsetY - this.player.offSetY);
 
 		batch.end();
 		this.shapeRenderer.begin(ShapeType.Filled);
@@ -841,11 +840,6 @@ public class MainScreen extends BaseScreen {
 		if (this.player.noControl == false)
 			this.player.velocity.x *= 0;		//0 is totally stopped if not pressed
 
-		if ((((this.player.desiredPosition.x - this.player.offSetX) + this.player.velocity.x) < 0 )
-				|| ((this.player.desiredPosition.x + this.player.getWidth() + this.player.velocity.x)
-						> (this.MAP_WIDTH * this.TILED_SIZE)))
-			this.player.desiredPosition.x = 1;
-
         this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 
 		if (Assets.playerDie.isAnimationFinished(this.player.stateTime) && this.player.dead){
@@ -910,14 +904,14 @@ public class MainScreen extends BaseScreen {
 			//this.camera.position.y = this.POS_LOWER_WORLD;
 			if (this.normalGravity == true){
 				this.normalGravity = false;
-				this.player.velocity.y = -this.player.JUMP_VELOCITY * 1.01f;
+				this.player.velocity.y = -this.player.JUMP_VELOCITY * 1.01f;	//3 tiles in both
 			}
 		}
 		else {
 			//this.camera.position.y = 0;//this.yPosUpperWorld;
 			if (this.normalGravity == false){
 				this.normalGravity = true;
-				this.player.velocity.y = this.player.JUMP_VELOCITY / 1.3f;
+				this.player.velocity.y = this.player.JUMP_VELOCITY / 1.3f;		//3 tiles in both
 			}
 		}
 
@@ -1142,37 +1136,42 @@ public class MainScreen extends BaseScreen {
 		this.player.desiredPosition.y = Math.round(this.player.getY());
 		this.player.desiredPosition.x = Math.round(this.player.getX());
 
-		this.playerRect.set(this.player.desiredPosition.x + this.player.offSetX, this.player.desiredPosition.y
-				, this.player.getWidth(), this.player.getHeight());
+		this.playerRect.set(this.player.getRect());
 
 		int startX, startY, endX, endY;
 
 		if (this.player.velocity.x > 0) {
-			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x + this.player.getWidth() + this.player.offSetX) / this.TILED_SIZE);
+			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x + this.player.actualFrame.getRegionWidth()) / this.TILED_SIZE);
 		}
 		else {
-			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x + this.player.offSetX) / this.TILED_SIZE);
+			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x - 1) / this.TILED_SIZE);
 		}
 
 		if (this.player.grounded && this.normalGravity){
 			startY = (int)((this.player.desiredPosition.y) / this.TILED_SIZE) + 1;
-			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE) + 1;
+			endY = (int)((this.player.desiredPosition.y + this.player.actualFrame.getRegionHeight()) / this.TILED_SIZE) + 1;
 		}
 		else if (this.player.grounded && !this.normalGravity){
 			startY = (int)((this.player.desiredPosition.y) / this.TILED_SIZE) - 1;
-			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE) - 1;
+			endY = (int)((this.player.desiredPosition.y + this.player.actualFrame.getRegionHeight()) / this.TILED_SIZE) - 1;
 		}
 		else{
-			startY = (int)((this.player.desiredPosition.y) / this.TILED_SIZE) + 1;
-			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE) + 1;
+			startY = (int)((this.player.desiredPosition.y) / this.TILED_SIZE);
+			endY = (int)((this.player.desiredPosition.y + this.player.actualFrame.getRegionHeight()) / this.TILED_SIZE);
 		}
 
-		this.getTiles(startX, startY, endX, endY, this.tiles);
+		this.getTiles(startX, startY, endX, endY, this.tiles, this.spikes);
 
 		this.playerRect.x += this.player.velocity.x;
 
 		for (Rectangle tile : this.tiles) {
 			if (this.playerRect.overlaps(tile)) {
+				this.player.velocity.x = 0;
+				break;
+            }
+		}
+		for (Rectangle spike : this.spikes) {
+			if (this.playerRect.overlaps(spike)) {
 				this.player.velocity.x = 0;
 				break;
             }
@@ -1185,7 +1184,7 @@ public class MainScreen extends BaseScreen {
 
 		if (this.normalGravity){
 			if (this.player.velocity.y > 0) {
-				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y + this.player.getHeight()) / this.TILED_SIZE);
+				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y + this.player.actualFrame.getRegionHeight()) / this.TILED_SIZE);
 			}
 			else {
 				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y) / this.TILED_SIZE);
@@ -1196,12 +1195,16 @@ public class MainScreen extends BaseScreen {
 				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y) / this.TILED_SIZE);
 			}
 			else {
-				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y + this.player.getHeight() ) / this.TILED_SIZE);
+				startY = endY = (int)((this.player.desiredPosition.y + this.player.velocity.y + this.player.actualFrame.getRegionHeight() ) / this.TILED_SIZE);
 			}
 		}
 
-		startX = (int)((this.player.desiredPosition.x + this.player.offSetX)/ this.TILED_SIZE);					//16 tile size
-		endX = (int)((this.player.desiredPosition.x + this.player.getWidth() + this.player.offSetX) / this.TILED_SIZE);
+		if (!this.player.facesRight)
+			startX = (int)((this.player.desiredPosition.x + 2)/ this.TILED_SIZE);					//16 tile size
+		else
+			startX =  (int)((this.player.desiredPosition.x)/ this.TILED_SIZE);					//16 tile size
+
+		endX = (int)((this.player.desiredPosition.x + this.player.actualFrame.getRegionWidth()) / this.TILED_SIZE);
 
 		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
 
@@ -1215,16 +1218,16 @@ public class MainScreen extends BaseScreen {
 			if (this.playerRect.overlaps(spike)) {
 				if (this.normalGravity){
 					if (this.player.velocity.y > 0) // we hit a block jumping upwards
-						this.player.desiredPosition.y = spike.y - this.player.getHeight() - 2;
+						this.player.desiredPosition.y = spike.y - this.player.actualFrame.getRegionHeight();
 					else {
 						// if we hit the ground, mark us as grounded so we can jump
-						this.player.desiredPosition.y = (spike.y + spike.height) - 2;
+						this.player.desiredPosition.y = (spike.y + spike.height);
 						this.player.grounded = true;
 					}
 				}
 				else{	//upside down
 					if (this.player.velocity.y > 0) {
-						this.player.desiredPosition.y = (spike.y - this.player.getHeight()) + 1;
+						this.player.desiredPosition.y = (spike.y - this.player.actualFrame.getRegionHeight());
 						this.player.grounded = true;
 					}
 					else
@@ -1239,16 +1242,16 @@ public class MainScreen extends BaseScreen {
 			if (this.playerRect.overlaps(tile)) {
 				if (this.normalGravity){
 					if (this.player.velocity.y > 0) // we hit a block jumping upwards
-						this.player.desiredPosition.y = tile.y - this.player.getHeight() - 2;
+						this.player.desiredPosition.y = tile.y - this.player.actualFrame.getRegionHeight() ;
 					else {
 						// if we hit the ground, mark us as grounded so we can jump
-						this.player.desiredPosition.y = (tile.y + tile.height) - 2;
+						this.player.desiredPosition.y = (tile.y + tile.height) - 1;
 						this.player.grounded = true;
 					}
 				}
 				else{	//upside down
 					if (this.player.velocity.y > 0) {
-						this.player.desiredPosition.y = (tile.y - this.player.getHeight()) + 1;
+						this.player.desiredPosition.y = (tile.y - this.player.actualFrame.getRegionHeight()) + 3;
 						this.player.grounded = true;
 					}
 					else
