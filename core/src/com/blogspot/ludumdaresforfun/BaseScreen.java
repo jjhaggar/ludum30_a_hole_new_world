@@ -35,7 +35,7 @@ public abstract class BaseScreen implements Screen{
 
 	@Override
 	public void resize (int width, int height) {
-		//this.stage.setViewport(new FitViewport(LudumGame.getInstance().WIDTH, LudumGame.getInstance().HEIGHT, this.stage.getCamera()));
+		//this.stage.setViewport(new FitViewport(400, 240, this.stage.getCamera()));
 		this.stage.getViewport().update(width, height, true);
 	}
 

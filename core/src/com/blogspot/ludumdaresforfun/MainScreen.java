@@ -472,14 +472,17 @@ public class MainScreen extends BaseScreen {
 		case Jumping:
 			frame = (AtlasRegion)Assets.playerJump.getKeyFrame(this.player.stateTime);
 			break;
-		case StandingShooting:
-			frame = (AtlasRegion)Assets.playerStandShot.getKeyFrame(this.player.stateTime);
-			break;
 		case Intro:
 			frame = (AtlasRegion)Assets.playerIntro.getKeyFrame(this.player.stateTime);
 			break;
 		case Attacking:
 			frame = (AtlasRegion)Assets.playerAttack.getKeyFrame(this.player.stateTime);
+			break;
+		case Die:
+			frame = (AtlasRegion)Assets.playerDie.getKeyFrame(this.player.stateTime);
+			break;
+		case BeingHit:
+			frame = (AtlasRegion)Assets.playerBeingHit.getKeyFrame(this.player.stateTime);
 			break;
 		}
 		if (this.player.invincible && this.toggle) {
@@ -664,16 +667,29 @@ public class MainScreen extends BaseScreen {
 
 		this.player.velocity.scl(deltaTime);
 
+		//retreat if noControl //velocity y is changed in beingHit
+		if (this.player.noControl){
+			if (this.player.facesRight)
+				this.player.velocity.x = -120f * deltaTime;
+			else
+				this.player.velocity.x = 120 * deltaTime;
+		}
 		this.collisionWalls();
 
-		// unscale the velocity by the inverse delta time and set
-		// the latest position
+
+			// unscale the velocity by the inverse delta time and set
+			// the latest position
 		this.player.desiredPosition.add(this.player.velocity);
 		this.player.velocity.scl(1 / deltaTime);
 
 		// Apply damping to the velocity on the x-axis so we don't
 		// walk infinitely once a key was pressed
-		this.player.velocity.x *= 0;		//0 is totally stopped if not pressed
+		if (Assets.playerBeingHit.isAnimationFinished(this.player.stateTime))
+			this.player.noControl = false;
+
+		if (this.player.noControl == false)
+			this.player.velocity.x *= 0;		//0 is totally stopped if not pressed
+
 		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 
 		this.activateBoss();
@@ -735,60 +751,66 @@ public class MainScreen extends BaseScreen {
 		// clamp the velocity to 0 if it's < 1, and set the state to standign
 		if (Math.abs(this.player.velocity.x) < 1) {
 			this.player.velocity.x = 0;
-			if (this.player.grounded && Assets.playerAttack.isAnimationFinished(this.player.stateTime) && !this.player.invincible)
+			if (this.player.grounded && Assets.playerAttack.isAnimationFinished(this.player.stateTime) &&
+					Assets.playerBeingHit.isAnimationFinished(this.player.stateTime) && !this.player.invincible)
 				this.player.state = Player.State.Standing;
 		}
 	}
 
 
 	private void movingShootingJumping(float deltaTime) {
-		if ((Gdx.input.isKeyJustPressed(Keys.S) || this.configControllers.jumpPressed) && this.player.grounded){
-            Assets.playSound("playerJump");
-			if (this.normalGravity)
-				this.player.velocity.y = this.player.JUMP_VELOCITY;
-			else
-				this.player.velocity.y = -this.player.JUMP_VELOCITY;
-			this.player.grounded = false;
-			this.player.state = Player.State.Jumping;
-			//this.player.stateTime = 0;
-		}
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT) || this.configControllers.leftPressed){
-			this.player.velocity.x = -this.player.MAX_VELOCITY;
-			if (this.player.grounded && Assets.playerAttack.isAnimationFinished(this.player.stateTime)){
-				this.player.state = Player.State.Walking;
+		if (this.player.noControl == false){
+			if ((Gdx.input.isKeyJustPressed(Keys.S) || this.configControllers.jumpPressed) && this.player.grounded){
+				Assets.playSound("playerJump");
+				if (this.normalGravity)
+					this.player.velocity.y = this.player.JUMP_VELOCITY;
+				else
+					this.player.velocity.y = -this.player.JUMP_VELOCITY;
+				this.player.grounded = false;
+				this.player.state = Player.State.Jumping;
 				//this.player.stateTime = 0;
 			}
-			this.player.facesRight = false;
+
+			if (Gdx.input.isKeyPressed(Keys.LEFT) || this.configControllers.leftPressed){
+				this.player.velocity.x = -this.player.MAX_VELOCITY;
+				if (this.player.grounded && Assets.playerAttack.isAnimationFinished(this.player.stateTime)
+						&& Assets.playerBeingHit.isAnimationFinished(this.player.stateTime)){
+					this.player.state = Player.State.Walking;
+					//this.player.stateTime = 0;
+				}
+				this.player.facesRight = false;
+			}
+
+			if (Gdx.input.isKeyPressed(Keys.RIGHT) || this.configControllers.rightPressed){
+				this.player.velocity.x = this.player.MAX_VELOCITY;
+				if (this.player.grounded && Assets.playerAttack.isAnimationFinished(this.player.stateTime)
+						&& Assets.playerBeingHit.isAnimationFinished(this.player.stateTime)){
+					this.player.state = Player.State.Walking;
+					//this.player.stateTime = 0;
+				}
+				this.player.facesRight = true;
+			}
+
+			if (Gdx.input.isKeyJustPressed(Keys.D) && (this.shotArray.size < 3)){
+				Assets.playSound("playerAttack");
+				Shot shot = new Shot(Assets.playerShot);
+				if (this.player.facesRight){
+					//-1 necessary to be exactly the same as the other facing
+					shot.Initialize((this.player.getX() + (this.player.getHeight() / 2)) - 1, (this.player.getY() + (this.player.getWidth() / 2)), this.player.facesRight, this.normalGravity);
+				}
+				else {
+					shot.Initialize(this.player.getX(), (this.player.getY() + (this.player.getWidth() / 2)), this.player.facesRight, this.normalGravity);
+				}
+				this.shotArray.add(shot);
+
+				this.player.state = Player.State.Attacking;
+				this.player.stateTime = 0;
+				this.player.shooting = true;
+			}
 		}
 
-		if (Gdx.input.isKeyPressed(Keys.RIGHT) || this.configControllers.rightPressed){
-			this.player.velocity.x = this.player.MAX_VELOCITY;
-			if (this.player.grounded && Assets.playerAttack.isAnimationFinished(this.player.stateTime)){
-				this.player.state = Player.State.Walking;
-				//this.player.stateTime = 0;
-			}
-			this.player.facesRight = true;
-		}
-
-		if (Gdx.input.isKeyJustPressed(Keys.D) && (this.shotArray.size < 3)){
-            Assets.playSound("playerAttack");
-			Shot shot = new Shot(Assets.playerShot);
-			if (this.player.facesRight){
-				//-1 necessary to be exactly the same as the other facing
-				shot.Initialize((this.player.getX() + (this.player.getHeight() / 2)) - 1, (this.player.getY() + (this.player.getWidth() / 2)), this.player.facesRight, this.normalGravity);
-			}
-			else {
-				shot.Initialize(this.player.getX(), (this.player.getY() + (this.player.getWidth() / 2)), this.player.facesRight, this.normalGravity);
-			}
-			this.shotArray.add(shot);
-
-			this.player.state = Player.State.Attacking;
-			this.player.stateTime = 0;
-			this.player.shooting = true;
-		}
-
-		if (Assets.playerStandShot.isAnimationFinished(this.player.stateTime))
+		if (Assets.playerAttack.isAnimationFinished(this.player.stateTime))
 			this.player.shooting = false;
 
 		int i = 0;
@@ -807,7 +829,6 @@ public class MainScreen extends BaseScreen {
 				this.shotArray.removeIndex(j);
 		}
 	}
-
 
 	private boolean collisionForBoss(Boss boss) {
 		//collision detection

@@ -16,7 +16,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class Assets {
 	static AssetManager assetManager;
-    static Animation playerAttack, playerEmpty, playerIntro, playerStand, playerWalk, playerJump, playerStandShot;
+    static Animation playerAttack, playerEmpty, playerIntro, playerStand, playerWalk, playerJump, playerBeingHit, playerDie;
     static Animation playerShot;
     static Animation enemyWalk, enemyRun, enemyHurt;
     static Animation bossGethit, bossStanding,  bossWalking, bossJumping, bossFalling, bossAttack, bossSummon, bossDie;
@@ -44,10 +44,10 @@ public class Assets {
 		playerEmpty = new Animation(0, regions);
 
 		regions = atlas.findRegions("char_intro");
-		playerIntro = new Animation(0, regions);
+		playerIntro = new Animation(0.25f, regions);
 
 		regions = atlas.findRegions("char_standing");
-		playerStand = new Animation(0, regions);
+		playerStand = new Animation(0.15f, regions);
 
 		regions = atlas.findRegions("char_walking");
 		playerWalk = new Animation(0.15f, regions);
@@ -56,8 +56,11 @@ public class Assets {
 		regions = atlas.findRegions("char_jumping");  //change to jumping
 		playerJump = new Animation(0, regions.get(1));
 
-		regions = atlas.findRegions("char_standing");	//change to shooting
-		playerStandShot = new Animation(0.15f, regions);
+		regions = atlas.findRegions("char_gethit");  //change to jumping
+		playerBeingHit = new Animation(0.8f, regions);
+
+		regions = atlas.findRegions("char_dying");  //change to jumping
+		playerDie = new Animation(0.25f, regions);
 
 		// Shot
 		regions = atlas.findRegions("char_attack_holy_water");

@@ -15,7 +15,7 @@ public class DesktopLauncher {
 		config.height = 240;
 		config.width = 400;
 		new LwjglApplication(new LD(), config);
-		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height,true);
+		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height, true);
 	}
 
 	private static void createPacker() {

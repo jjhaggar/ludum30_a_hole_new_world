@@ -13,7 +13,7 @@ public class Player extends Image {
     final float MAX_VELOCITY = 120f;
     final float JUMP_VELOCITY = 300f; // 210f;
     enum State {
-        Standing, Walking, Jumping, StandingShooting, Attacking, Intro
+        Standing, Walking, Jumping, StandingShooting, Attacking, Intro, BeingHit, Die
     }
     Vector2 desiredPosition = new Vector2();
     final Vector2 velocity = new Vector2();
@@ -23,7 +23,9 @@ public class Player extends Image {
     public boolean updateVelocity;
     public boolean shooting = false;
     public boolean invincible = false;
+    public boolean noControl = false;
     public HUDCounter counter = new HUDCounter(5);
+
 
     public Rectangle rect = new Rectangle();
     protected Animation animation = null;
@@ -50,6 +52,12 @@ public class Player extends Image {
         if (!this.invincible) {
             Assets.playSound("playerHurt");
             this.invincible = true;
+
+            this.state = Player.State.BeingHit;
+            this.stateTime = 0;
+            velocity.y = 150;
+            this.noControl = true;
+
             int lifes = this.counter.lostLife();
             if (lifes <= 0) {
                 this.die();
@@ -59,7 +67,7 @@ public class Player extends Image {
                 public void run() {
                     Player.this.invincible = false;
                 }
-            }, 1);
+            }, 1.8f);
         }
 
     }
