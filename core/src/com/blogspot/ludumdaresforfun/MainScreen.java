@@ -39,6 +39,7 @@ public class MainScreen extends BaseScreen {
 	private Array<Shot> shotArray = new Array<Shot>();
 	private Array<Vector2> spawns = new Array<Vector2>();
 	private Array<Vector2> lifes = new Array<Vector2>();
+	Vector2 door;
 
 	private Boss boss;
 
@@ -111,6 +112,9 @@ public class MainScreen extends BaseScreen {
 				        }
 				        else if (type.equals("boss")) {
                             this.boss.setPosition(x * this.TILED_SIZE, y * this.TILED_SIZE);
+                        }
+				        else if (type.equals("door")) {
+                            this.door = new Vector2(x * this.TILED_SIZE, y * this.TILED_SIZE);
                         }
 				    }
                 }
