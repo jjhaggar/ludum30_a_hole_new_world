@@ -39,9 +39,9 @@ public class MainScreen extends BaseScreen {
 	private Array<Shot> shotArray = new Array<Shot>();
 	private Array<Vector2> spawns = new Array<Vector2>();
 	private Array<Vector2> lifes = new Array<Vector2>();
-	Vector2 door;
 
 	private Boss boss;
+	private Vector2 door;
 
 	private Pool<Rectangle> rectPool = new Pool<Rectangle>() {
 		@Override
@@ -268,10 +268,10 @@ public class MainScreen extends BaseScreen {
 			this.boss.velocity.x = 0;
 			this.boss.velocity.y = 0;
 		}
-		else if (this.boss.flowState == Boss.FlowState.Transition){
-			if (this.boss.getX() > (420 + 300))							//if going to hit wall turns back
+		else if (this.boss.flowState == Boss.FlowState.Transition){ //door.x is the left side of the tiles
+			if (this.boss.getX() > (door.x + SCREEN_WIDTH - (TILED_SIZE * 4)))		 //if going to hit wall turns back
 				this.boss.flowState = Boss.FlowState.WalkingLeft;
-			else if (this.boss.getX() < 420)							//same for other wall
+			else if (this.boss.getX() < (door.x + (TILED_SIZE * 4)))							//same for other wall
 				this.boss.flowState = Boss.FlowState.WalkingRight;
 			else if (this.boss.flowTime > 2){							//takes pseudo-random action
 				int nextState = (int)Math.round(Math.random() * 7);
@@ -858,7 +858,7 @@ public class MainScreen extends BaseScreen {
 		if ((this.player.getX() >= (this.boss.getX() - this.boss.ACTIVATE_DISTANCE)) && !this.bossActive) {
 			this.bossActive = true;
 
-			this.camera.position.x = this.boss.getX();
+			this.camera.position.x = (MAP_WIDTH * TILED_SIZE) - (SCREEN_WIDTH / 2);
 			this.camera.update();
 
 			Assets.musicStage.stop();
@@ -866,17 +866,26 @@ public class MainScreen extends BaseScreen {
 			Assets.musicBoss.play();
 
 			//close door
-			TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));
-			Cell cell = layerSpawn.getCell(25, 16); //has to be solid block
+			TiledMapTileLayer layerSpawn = null;
+			Cell cell = null;
+			//door = new Vector2(789 - 25, 61);
 
-	        layerSpawn.setCell(25, 17, cell);
-	        layerSpawn.setCell(25, 18, cell);
-	        layerSpawn.setCell(25, 19, cell);
+			layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Platfs"));
+			cell = layerSpawn.getCell((int)door.x, (int)door.y - 1); //has to be solid block
 
-	        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(1));
-	        layerSpawn.setCell(25, 17, cell);
-	        layerSpawn.setCell(25, 18, cell);
-	        layerSpawn.setCell(25, 19, cell);
+	        layerSpawn.setCell((int)door.x, (int)door.y, cell);
+	        layerSpawn.setCell((int)door.x, (int)door.y + 1, cell);
+	        layerSpawn.setCell((int)door.x + 1, (int)door.y, cell);
+	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 1, cell);
+
+	        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Collisions"));
+	        cell = layerSpawn.getCell((789 -25), 70);
+	        layerSpawn.setCell((int)door.x, (int)door.y, cell);
+	        layerSpawn.setCell((int)door.x, (int)door.y + 1, cell);
+	        layerSpawn.setCell((int)door.x + 1, (int)door.y, cell);
+	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 1, cell);
+
+
 		}
 	}
 
