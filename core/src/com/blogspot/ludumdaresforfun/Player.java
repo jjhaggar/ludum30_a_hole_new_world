@@ -34,15 +34,14 @@ public class Player extends Image {
     }
 
     public Rectangle getRect() {
-        this.rect.set(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        this.rect.set(this.getX(), this.getY(), this.getWidth(), this.getHeight());		//tener cuidado con width
         return this.rect;
-
     }
 
-    @Override
-    public float getWidth(){
-    	return 24f;		//taken from picture
-    }
+ //   @Override
+ //   public float getWidth(){
+ //   	return 24f;		//taken from picture
+ //   }
 
     public void beingHit() {
         if (!this.invincible) {

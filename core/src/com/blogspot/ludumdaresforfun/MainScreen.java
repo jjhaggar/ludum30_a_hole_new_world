@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -90,7 +91,6 @@ public class MainScreen extends BaseScreen {
 		this.configControllers.init();
 	}
 
-
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(1, 0, 0, 1);
@@ -151,8 +151,6 @@ public class MainScreen extends BaseScreen {
 		this.boss.velocity.scl(delta);
 
 		this.collisionForBoss(this.boss);
-
-
 
 		// unscale the velocity by the inverse delta time and set the latest position
 		this.boss.desiredPosition.add(this.boss.velocity);
@@ -227,7 +225,7 @@ public class MainScreen extends BaseScreen {
 
 
 	private void renderBoss(float delta) {
-		TextureRegion frame = null;
+		AtlasRegion frame = null;
 
 		if (this.boss.velocity.x > 0)
 			this.boss.facesRight = true;
@@ -235,18 +233,19 @@ public class MainScreen extends BaseScreen {
 			this.boss.facesRight = false;
 
 		if (this.boss.state == Boss.State.Standing)
-			frame = Assets.bossStanding.getKeyFrame(this.boss.stateTime);
+			frame = (AtlasRegion)Assets.bossStanding.getKeyFrame(this.boss.stateTime);
 
 		Batch batch = this.renderer.getSpriteBatch();
 		batch.begin();
 		if (this.boss.facesRight) {
 			if (frame.isFlipX())
 				frame.flip(true, false);
-			batch.draw(frame, this.boss.getX(), this.boss.getY());
+			batch.draw(frame, this.boss.getX() + frame.offsetX, this.boss.getY() + frame.offsetY);
+			System.out.println(this.boss.getX() + "");
 		} else {
 			if (!frame.isFlipX())
 				frame.flip(true, false);
-			batch.draw(frame, this.boss.getX(), this.boss.getY());
+			batch.draw(frame, this.boss.getX() + frame.offsetX, this.boss.getY() + frame.offsetY);
 		}
 
 		batch.end();
@@ -255,19 +254,19 @@ public class MainScreen extends BaseScreen {
 
 
 	private void renderShot(Shot shot, float deltaTime){
-		TextureRegion frame = null;
-		frame = Assets.playerShot.getKeyFrame(shot.stateTime);
+		AtlasRegion frame = null;
+		frame = (AtlasRegion) Assets.playerShot.getKeyFrame(shot.stateTime);
 
 		Batch batch = this.renderer.getSpriteBatch();
 		batch.begin();
 		if (shot.shotGoesRight) {
 			if (frame.isFlipX())
 				frame.flip(true, false);
-			batch.draw(frame, shot.getX(), shot.getY());
+			batch.draw(frame, shot.getX() + frame.offsetX, shot.getY() + frame.offsetY);
 		} else {
 			if (!frame.isFlipX())
 				frame.flip(true, false);
-			batch.draw(frame, shot.getX(), shot.getY());
+			batch.draw(frame, shot.getX() + frame.offsetX, shot.getY() + frame.offsetY);
 		}
 
 		batch.end();
@@ -286,8 +285,11 @@ public class MainScreen extends BaseScreen {
 		shot.velocity.scl(deltaTime);
 
 		//collision (destroy if necessary)
-		boolean collided = this.collisionShot(shot);
-		collided = this.collisionShotEnemy(shot);
+		boolean collided = this.collisionShotEnemy(shot);
+		if (collided == false)
+			collided = this.collisionShot(shot);
+
+
 
 		// unscale the velocity by the inverse delta time and set
 		// the latest position
@@ -326,10 +328,11 @@ public class MainScreen extends BaseScreen {
 			}
 		}
 
-		if (this.playerRect.overlaps(this.boss.rect)) {
-		    this.boss.beingHit();
-		    collided = true;
+		if (boss != null && this.playerRect.overlaps(this.boss.rect)) {
+			this.boss.beingHit();
+			collided = true;
 		}
+
 
 		return collided;
 	}
@@ -406,29 +409,29 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void renderPlayer (float deltaTime) {
-		TextureRegion frame = null;
+		AtlasRegion frame = null;
 		switch (this.player.state) {
 		case Standing:
-			frame = Assets.playerStand.getKeyFrame(this.player.stateTime);
+			frame = (AtlasRegion)Assets.playerStand.getKeyFrame(this.player.stateTime);
 			break;
 		case Walking:
-			frame = Assets.playerWalk.getKeyFrame(this.player.stateTime);
+			frame = (AtlasRegion)Assets.playerWalk.getKeyFrame(this.player.stateTime);
 			break;
 		case Jumping:
-			frame = Assets.playerJump.getKeyFrame(this.player.stateTime);
+			frame = (AtlasRegion)Assets.playerJump.getKeyFrame(this.player.stateTime);
 			break;
 		case StandingShooting:
-			frame = Assets.playerStandShot.getKeyFrame(this.player.stateTime);
+			frame = (AtlasRegion)Assets.playerStandShot.getKeyFrame(this.player.stateTime);
 			break;
 		case Intro:
-			frame = Assets.playerIntro.getKeyFrame(this.player.stateTime);
+			frame = (AtlasRegion)Assets.playerIntro.getKeyFrame(this.player.stateTime);
 			break;
 		case Attacking:
-			frame = Assets.playerAttack.getKeyFrame(this.player.stateTime);
+			frame = (AtlasRegion)Assets.playerAttack.getKeyFrame(this.player.stateTime);
 			break;
 		}
 		if (this.player.invincible && this.toggle) {
-			frame = Assets.playerEmpty.getKeyFrame(this.player.stateTime);
+			frame = (AtlasRegion)Assets.playerEmpty.getKeyFrame(this.player.stateTime);
 		    this.toggle = !this.toggle;
 		}
 		else if (this.player.invincible && !this.toggle) {
@@ -453,7 +456,8 @@ public class MainScreen extends BaseScreen {
 			frame.flip(false, true);
 		else if (!this.normalGravity && !frame.isFlipY())
 			frame.flip(false, true);
-        batch.draw(frame, this.player.getX(), this.player.getY());
+
+		batch.draw(frame, this.player.getX() + frame.offsetX, this.player.getY() + frame.offsetY);
 
 		batch.end();
 		this.shapeRenderer.begin(ShapeType.Filled);
@@ -472,16 +476,16 @@ public class MainScreen extends BaseScreen {
 
 	private void renderEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
-            TextureRegion frame = null;
+            AtlasRegion frame = null;
             switch (enemy.state) {
             case Walking:
-                frame = Assets.enemyWalk.getKeyFrame(enemy.stateTime);
+                frame = (AtlasRegion)Assets.enemyWalk.getKeyFrame(enemy.stateTime);
                 break;
             case Running:
-                frame = Assets.enemyRun.getKeyFrame(enemy.stateTime);
+                frame = (AtlasRegion)Assets.enemyRun.getKeyFrame(enemy.stateTime);
                 break;
             case Hurting:
-                frame = Assets.enemyHurt.getKeyFrame(enemy.stateTime);
+                frame = (AtlasRegion)Assets.enemyHurt.getKeyFrame(enemy.stateTime);
                 break;
             }
 
@@ -490,11 +494,11 @@ public class MainScreen extends BaseScreen {
             if (enemy.facesRight) {
                 if (frame.isFlipX())
                     frame.flip(true, false);
-                batch.draw(frame, enemy.getX(), enemy.getY());
+                batch.draw(frame, enemy.getX() + frame.offsetX, enemy.getY() + frame.offsetY);
             } else {
                 if (!frame.isFlipX())
                     frame.flip(true, false);
-                batch.draw(frame, enemy.getX(), enemy.getY());
+                batch.draw(frame, enemy.getX() + frame.offsetX, enemy.getY() + frame.offsetY);
             }
             batch.end();
 

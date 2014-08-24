@@ -17,6 +17,7 @@ public class Assets {
     static Animation enemyWalk, enemyRun, enemyHurt;
     static Animation bossGethit, bossStanding,  bossWalking;
 	static Texture bg;
+	static float offsetPlayer, offsetBoss, offsetShot, offsetEnemy;
 
 	static void loadAnimation() {
         final String TEXTURE_ATLAS_OBJECTS = "characters.pack";
@@ -40,7 +41,6 @@ public class Assets {
 		regions = atlas.findRegions("char_standing");
 		playerStand = new Animation(0, regions);
 
-
 		regions = atlas.findRegions("char_walking");
 		playerWalk = new Animation(0.15f, regions);
 		playerWalk.setPlayMode(Animation.PlayMode.LOOP);
@@ -54,6 +54,7 @@ public class Assets {
 		// Shot
 		regions = atlas.findRegions("char_attack_holy_water");
 		playerShot = new Animation(0, regions);
+		offsetShot = regions.first().offsetX;
 
 		// Enemy
 		regions = atlas.findRegions("char_walking");//"enemy_walk"); // change

@@ -3,192 +3,374 @@ characters.png
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-boss_gethit
+boss_attack_close
   rotate: false
-  xy: 1, 36
-  size: 64, 64
+  xy: 1, 69
+  size: 58, 58
   orig: 64, 64
-  offset: 0, 0
-  index: 1
-boss_gethit
-  rotate: false
-  xy: 67, 36
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
+  offset: 5, 3
   index: 2
 boss_standing
   rotate: false
-  xy: 133, 36
-  size: 64, 64
+  xy: 1, 9
+  size: 52, 58
   orig: 64, 64
-  offset: 0, 0
+  offset: 3, 3
+  index: 3
+boss_standing
+  rotate: false
+  xy: 61, 69
+  size: 50, 58
+  orig: 64, 64
+  offset: 5, 3
+  index: 2
+boss_dying
+  rotate: false
+  xy: 55, 9
+  size: 49, 58
+  orig: 64, 64
+  offset: 9, 3
+  index: 2
+boss_dying
+  rotate: false
+  xy: 113, 69
+  size: 47, 58
+  orig: 64, 64
+  offset: 9, 3
   index: 1
 boss_standing
   rotate: false
-  xy: 199, 36
-  size: 64, 64
+  xy: 106, 9
+  size: 47, 58
   orig: 64, 64
-  offset: 0, 0
-  index: 2
-boss_standing
+  offset: 9, 3
+  index: 1
+boss_attack_close
   rotate: false
-  xy: 265, 36
-  size: 64, 64
+  xy: 162, 67
+  size: 45, 60
   orig: 64, 64
-  offset: 0, 0
+  offset: 2, 3
+  index: 1
+boss_walking
+  rotate: false
+  xy: 209, 69
+  size: 45, 58
+  orig: 64, 64
+  offset: 1, 3
   index: 3
 boss_walking
   rotate: false
-  xy: 331, 36
-  size: 64, 64
+  xy: 256, 69
+  size: 44, 58
   orig: 64, 64
-  offset: 0, 0
-  index: 1
-boss_walking
-  rotate: false
-  xy: 397, 36
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: 2
-boss_walking
-  rotate: false
-  xy: 463, 36
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: 3
-boss_walking
-  rotate: false
-  xy: 529, 36
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: 4
-boss_walking
-  rotate: false
-  xy: 595, 36
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: 5
-boss_walking
-  rotate: false
-  xy: 661, 36
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
+  offset: 1, 3
   index: 6
-char_attack
+boss_gethit
   rotate: false
-  xy: 1, 1
-  size: 33, 33
+  xy: 302, 69
+  size: 43, 58
+  orig: 64, 64
+  offset: 9, 3
+  index: 1
+boss_gethit
+  rotate: false
+  xy: 347, 69
+  size: 43, 58
+  orig: 64, 64
+  offset: 9, 3
+  index: 2
+boss_jump_d
+  rotate: false
+  xy: 392, 68
+  size: 41, 59
+  orig: 64, 64
+  offset: 0, 3
+  index: 1
+boss_attack_distance
+  rotate: false
+  xy: 435, 70
+  size: 40, 57
+  orig: 64, 64
+  offset: 10, 2
+  index: 2
+boss_jump_d
+  rotate: false
+  xy: 477, 68
+  size: 38, 59
+  orig: 64, 64
+  offset: 3, 3
+  index: 2
+boss_walking
+  rotate: false
+  xy: 517, 69
+  size: 38, 58
+  orig: 64, 64
+  offset: 3, 3
+  index: 2
+boss_walking
+  rotate: false
+  xy: 557, 69
+  size: 38, 58
+  orig: 64, 64
+  offset: 3, 3
+  index: 5
+boss_attack_distance
+  rotate: false
+  xy: 597, 70
+  size: 37, 57
+  orig: 64, 64
+  offset: 10, 3
+  index: 1
+boss_jump_a
+  rotate: false
+  xy: 636, 68
+  size: 34, 59
+  orig: 64, 64
+  offset: 7, 3
+  index: 1
+boss_walking
+  rotate: false
+  xy: 672, 69
+  size: 34, 58
+  orig: 64, 64
+  offset: 7, 3
+  index: 1
+boss_walking
+  rotate: false
+  xy: 708, 69
+  size: 34, 58
+  orig: 64, 64
+  offset: 7, 3
+  index: 4
+boss_jump_a
+  rotate: false
+  xy: 744, 68
+  size: 31, 59
+  orig: 64, 64
+  offset: 10, 3
+  index: 2
+enemy_attack
+  rotate: false
+  xy: 777, 93
+  size: 37, 34
+  orig: 46, 50
+  offset: 8, 0
+  index: 3
+enemy_attack
+  rotate: false
+  xy: 816, 98
+  size: 31, 29
+  orig: 46, 50
+  offset: 11, 0
+  index: 4
+enemy_dying02
+  rotate: false
+  xy: 849, 92
+  size: 26, 35
+  orig: 46, 50
+  offset: 11, 0
+  index: -1
+enemy_dying01
+  rotate: false
+  xy: 877, 92
+  size: 25, 35
+  orig: 46, 50
+  offset: 11, 0
+  index: -1
+enemy_attack
+  rotate: false
+  xy: 904, 90
+  size: 24, 37
+  orig: 46, 50
+  offset: 10, 0
+  index: 1
+enemy_walking
+  rotate: false
+  xy: 904, 90
+  size: 24, 37
+  orig: 46, 50
+  offset: 10, 0
+  index: 1
+enemy_walking
+  rotate: false
+  xy: 930, 92
+  size: 23, 35
+  orig: 46, 50
+  offset: 11, 0
+  index: 2
+char_jumping_d
+  rotate: false
+  xy: 955, 94
+  size: 24, 33
   orig: 33, 33
-  offset: 0, 0
+  offset: 1, 0
+  index: 1
+char_dying
+  rotate: false
+  xy: 981, 95
+  size: 24, 32
+  orig: 33, 33
+  offset: 6, 0
+  index: 2
+enemy_appearing
+  rotate: false
+  xy: 1007, 111
+  size: 16, 16
+  orig: 46, 50
+  offset: 17, 0
+  index: 2
+enemy_attack
+  rotate: false
+  xy: 155, 30
+  size: 22, 35
+  orig: 46, 50
+  offset: 1, 0
+  index: 2
+enemy_appearing
+  rotate: false
+  xy: 155, 1
+  size: 18, 27
+  orig: 46, 50
+  offset: 15, 0
+  index: 3
+char_intro
+  rotate: false
+  xy: 179, 33
+  size: 24, 32
+  orig: 33, 33
+  offset: 3, 0
   index: 1
 char_attack
   rotate: false
-  xy: 727, 67
-  size: 33, 33
+  xy: 777, 59
+  size: 23, 32
   orig: 33, 33
-  offset: 0, 0
+  offset: 5, 0
   index: 2
 char_attack
   rotate: false
-  xy: 36, 1
-  size: 33, 33
+  xy: 802, 59
+  size: 23, 32
   orig: 33, 33
-  offset: 0, 0
+  offset: 5, 0
   index: 3
+char_intro
+  rotate: false
+  xy: 827, 63
+  size: 20, 33
+  orig: 33, 33
+  offset: 4, 0
+  index: 2
+char_attack
+  rotate: false
+  xy: 849, 62
+  size: 21, 28
+  orig: 33, 33
+  offset: 6, 0
+  index: 1
+char_dying
+  rotate: false
+  xy: 872, 58
+  size: 19, 32
+  orig: 33, 33
+  offset: 6, 0
+  index: 1
+char_jumping_a
+  rotate: false
+  xy: 893, 55
+  size: 19, 33
+  orig: 33, 33
+  offset: 6, 0
+  index: 1
+char_intro
+  rotate: false
+  xy: 914, 55
+  size: 17, 33
+  orig: 33, 33
+  offset: 6, 0
+  index: 3
+char_walking
+  rotate: false
+  xy: 933, 57
+  size: 18, 33
+  orig: 33, 33
+  offset: 7, 0
+  index: 1
+enemy_appearing
+  rotate: false
+  xy: 1007, 100
+  size: 16, 9
+  orig: 46, 50
+  offset: 17, 0
+  index: 1
+char_gethit
+  rotate: false
+  xy: 205, 33
+  size: 17, 32
+  orig: 33, 33
+  offset: 2, 0
+  index: 1
+char_walking
+  rotate: false
+  xy: 224, 34
+  size: 18, 33
+  orig: 33, 33
+  offset: 7, 0
+  index: 3
+char_gethit
+  rotate: false
+  xy: 244, 35
+  size: 17, 32
+  orig: 33, 33
+  offset: 2, 0
+  index: 2
+char_intro
+  rotate: false
+  xy: 263, 35
+  size: 17, 32
+  orig: 33, 33
+  offset: 7, 0
+  index: 4
+char_standing
+  rotate: false
+  xy: 263, 35
+  size: 17, 32
+  orig: 33, 33
+  offset: 7, 0
+  index: 1
+char_standing
+  rotate: false
+  xy: 263, 35
+  size: 17, 32
+  orig: 33, 33
+  offset: 7, 0
+  index: 2
+char_walking
+  rotate: false
+  xy: 282, 35
+  size: 17, 32
+  orig: 33, 33
+  offset: 7, 0
+  index: 2
 char_attack_holy_water
   rotate: false
-  xy: 762, 67
-  size: 33, 33
+  xy: 1, 1
+  size: 5, 6
   orig: 33, 33
+  offset: 18, 11
+  index: -1
+boss_empty
+  rotate: false
+  xy: 175, 27
+  size: 1, 1
+  orig: 1, 1
   offset: 0, 0
   index: -1
 char_empty
   rotate: false
-  xy: 71, 1
-  size: 33, 33
-  orig: 33, 33
+  xy: 175, 27
+  size: 1, 1
+  orig: 1, 1
   offset: 0, 0
   index: -1
-char_gethit
-  rotate: false
-  xy: 797, 67
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 1
-char_gethit
-  rotate: false
-  xy: 106, 1
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 2
-char_intro
-  rotate: false
-  xy: 832, 67
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 1
-char_intro
-  rotate: false
-  xy: 141, 1
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 2
-char_intro
-  rotate: false
-  xy: 867, 67
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 3
-char_intro
-  rotate: false
-  xy: 176, 1
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 4
-char_standing
-  rotate: false
-  xy: 902, 67
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 1
-char_standing
-  rotate: false
-  xy: 211, 1
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 2
-char_walking
-  rotate: false
-  xy: 937, 67
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 1
-char_walking
-  rotate: false
-  xy: 246, 1
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 2
-char_walking
-  rotate: false
-  xy: 972, 67
-  size: 33, 33
-  orig: 33, 33
-  offset: 0, 0
-  index: 3
