@@ -735,7 +735,7 @@ public class MainScreen extends BaseScreen {
 		// clamp the velocity to 0 if it's < 1, and set the state to standign
 		if (Math.abs(this.player.velocity.x) < 1) {
 			this.player.velocity.x = 0;
-			if (this.player.grounded && !this.player.state.equals(Player.State.Attacking) && !this.player.invincible)
+			if (this.player.grounded && Assets.playerAttack.isAnimationFinished(this.player.stateTime) && !this.player.invincible)
 				this.player.state = Player.State.Standing;
 		}
 	}
@@ -755,7 +755,7 @@ public class MainScreen extends BaseScreen {
 
 		if (Gdx.input.isKeyPressed(Keys.LEFT) || this.configControllers.leftPressed){
 			this.player.velocity.x = -this.player.MAX_VELOCITY;
-			if (this.player.grounded){
+			if (this.player.grounded && Assets.playerAttack.isAnimationFinished(this.player.stateTime)){
 				this.player.state = Player.State.Walking;
 				//this.player.stateTime = 0;
 			}
@@ -764,7 +764,7 @@ public class MainScreen extends BaseScreen {
 
 		if (Gdx.input.isKeyPressed(Keys.RIGHT) || this.configControllers.rightPressed){
 			this.player.velocity.x = this.player.MAX_VELOCITY;
-			if (this.player.grounded){
+			if (this.player.grounded && Assets.playerAttack.isAnimationFinished(this.player.stateTime)){
 				this.player.state = Player.State.Walking;
 				//this.player.stateTime = 0;
 			}
@@ -783,10 +783,8 @@ public class MainScreen extends BaseScreen {
 			}
 			this.shotArray.add(shot);
 
-			if (this.player.grounded){	//&& raya.velocity.x == 0)
-				this.player.state = Player.State.Attacking;
-				this.player.stateTime = 0;
-			}
+			this.player.state = Player.State.Attacking;
+			this.player.stateTime = 0;
 			this.player.shooting = true;
 		}
 
