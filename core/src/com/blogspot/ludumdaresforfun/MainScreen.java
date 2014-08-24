@@ -343,15 +343,15 @@ public class MainScreen extends BaseScreen {
 		shot.desiredPosition.y = Math.round(shot.getY());
 		shot.desiredPosition.x = Math.round(shot.getX());
 
-		this.playerRect.set(shot.desiredPosition.x, (shot.desiredPosition.y), shot.getWidth(), shot.getHeight());
+		this.playerRect.set(shot.desiredPosition.x + shot.offSetX, (shot.desiredPosition.y), shot.getWidth(), shot.getHeight());
 
 		int startX, startY, endX, endY;
 
 		if (shot.velocity.x > 0) {	//this.raya.velocity.x > 0
-			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x + shot.getWidth()) / 16);
+			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x + shot.getWidth() + shot.offSetX) / 16);
 		}
 		else {
-			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x) / 16);
+			startX = endX = (int)((shot.desiredPosition.x + shot.velocity.x + shot.offSetX) / 16);
 		}
 
 		startY = (int)((shot.desiredPosition.y) / 16);
@@ -388,8 +388,8 @@ public class MainScreen extends BaseScreen {
 			}
 		}
 
-		startX = (int)(shot.desiredPosition.x / 16);					//16 tile size
-		endX = (int)((shot.desiredPosition.x + shot.getWidth()) / 16);
+		startX = (int)((shot.desiredPosition.x + shot.offSetX) / 16);					//16 tile size
+		endX = (int)((shot.desiredPosition.x + shot.getWidth() + shot.offSetX) / 16);
 
 
 		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
@@ -892,15 +892,16 @@ public class MainScreen extends BaseScreen {
 		this.player.desiredPosition.y = Math.round(this.player.getY());
 		this.player.desiredPosition.x = Math.round(this.player.getX());
 
-		this.playerRect.set(this.player.desiredPosition.x, (this.player.desiredPosition.y), this.player.getWidth(), this.player.getHeight());
+		this.playerRect.set(this.player.desiredPosition.x + this.player.offSetX, this.player.desiredPosition.y
+				, this.player.getWidth(), this.player.getHeight());
 
 		int startX, startY, endX, endY;
 
 		if (this.player.velocity.x > 0) {
-			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x + this.player.getWidth()) / this.TILED_SIZE);
+			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x + this.player.getWidth() + this.player.offSetX) / this.TILED_SIZE);
 		}
 		else {
-			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x) / this.TILED_SIZE);
+			startX = endX = (int)((this.player.desiredPosition.x + this.player.velocity.x + this.player.offSetX) / this.TILED_SIZE);
 		}
 
 		if (this.player.grounded && this.normalGravity){
@@ -912,8 +913,8 @@ public class MainScreen extends BaseScreen {
 			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE) - 1;
 		}
 		else{
-			startY = (int)((this.player.desiredPosition.y) / this.TILED_SIZE);
-			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE);
+			startY = (int)((this.player.desiredPosition.y) / this.TILED_SIZE) + 1;
+			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE) + 1;
 		}
 
 		this.getTiles(startX, startY, endX, endY, this.tiles);
@@ -950,8 +951,8 @@ public class MainScreen extends BaseScreen {
 		}
 
 
-		startX = (int)(this.player.desiredPosition.x / this.TILED_SIZE);					//16 tile size
-		endX = (int)((this.player.desiredPosition.x + this.player.getWidth()) / this.TILED_SIZE);
+		startX = (int)((this.player.desiredPosition.x + this.player.offSetX)/ this.TILED_SIZE);					//16 tile size
+		endX = (int)((this.player.desiredPosition.x + this.player.getWidth() + this.player.offSetX) / this.TILED_SIZE);
 
 		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
 
@@ -960,33 +961,23 @@ public class MainScreen extends BaseScreen {
 		this.playerRect.y += (int)(this.player.velocity.y);
 
 		for (Rectangle tile : this.tiles) {
-			// System.out.println(playerRect.x + " " + playerRect.y + " " + tile.x + " " + tile.y);
 			if (this.playerRect.overlaps(tile)) {
-				// we actually reset the koala y-position here
-				// so it is just below/above the tile we collided with
-				// this removes bouncing :)
-
 				if (this.normalGravity){
-					if (this.player.velocity.y > 0) {
+					if (this.player.velocity.y > 0) // we hit a block jumping upwards
 						this.player.desiredPosition.y = tile.y - this.player.getHeight() - 1;
-						// we hit a block jumping upwards, let's destroy it!
-					}
 					else {
-						this.player.desiredPosition.y = (tile.y + tile.height) - 1;
 						// if we hit the ground, mark us as grounded so we can jump
+						this.player.desiredPosition.y = (tile.y + tile.height) - 1;
 						this.player.grounded = true;
 					}
 				}
-				else{
+				else{	//upside down
 					if (this.player.velocity.y > 0) {
 						//this.player.desiredPosition.y = tile.y - tile.height- 1;
-						// if we hit the ground, mark us as grounded so we can jump
 						this.player.grounded = true;
 					}
-					else {
+					else
 						this.player.desiredPosition.y = (tile.y + tile.height) - 1;
-						// we hit a block jumping upwards, let's destroy it!
-					}
 				}
 
 				this.player.velocity.y = 0;

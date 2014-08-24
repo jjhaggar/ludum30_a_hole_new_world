@@ -3,6 +3,7 @@ package com.blogspot.ludumdaresforfun;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
@@ -16,10 +17,12 @@ public class Shot extends Image {
     public Rectangle rect = new Rectangle();
 
     protected Animation animation = null;
+    public float offSetX;
 
     public Shot(Animation animation) {
     	super(animation.getKeyFrame(0));
     	this.animation = animation;
+    	offSetX = ((AtlasRegion)animation.getKeyFrame(0)).offsetX;
     }
 
     public Rectangle getRect() {

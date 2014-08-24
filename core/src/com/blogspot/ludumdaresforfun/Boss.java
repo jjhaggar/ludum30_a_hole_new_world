@@ -1,6 +1,7 @@
 package com.blogspot.ludumdaresforfun;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -41,13 +42,15 @@ public class Boss extends Image {
     protected Animation animation = null;
     float stateTime = 0;
     float flowTime = 0;
+    public float offSetX;
 
 	public Boss(Animation animation) {
 		super(animation.getKeyFrame(0));
 		this.animation = animation;
+		offSetX = ((AtlasRegion)animation.getKeyFrame(0)).offsetX;
 	}
 	public Rectangle getRect() {
-        this.rect.set(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        this.rect.set(this.getX() + offSetX , this.getY(), this.getWidth(), this.getHeight() - 10);
         return this.rect;
 
     }

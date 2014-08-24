@@ -1,6 +1,7 @@
 package com.blogspot.ludumdaresforfun;
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -27,14 +28,16 @@ public class Player extends Image {
     public Rectangle rect = new Rectangle();
     protected Animation animation = null;
     float stateTime = 0;
+    public float offSetX;
 
     public Player(Animation animation) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
+        offSetX = ((AtlasRegion)animation.getKeyFrame(0)).offsetX;
     }
 
     public Rectangle getRect() {
-        this.rect.set(this.getX(), this.getY(), this.getWidth(), this.getHeight());		//tener cuidado con width
+        this.rect.set(this.getX() + this.offSetX, this.getY(), this.getWidth(), this.getHeight());		//tener cuidado con width
         return this.rect;
     }
 
