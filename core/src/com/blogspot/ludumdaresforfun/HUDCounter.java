@@ -17,6 +17,11 @@ public class HUDCounter extends Image {
         return this.currentLifes;
     }
 
+    public int gainLife(int lifes) {
+    	this.currentLifes += lifes;
+    	return this.currentLifes;
+    }
+
 
 
 }

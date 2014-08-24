@@ -55,7 +55,12 @@ public class MainScreen extends BaseScreen {
 	final int POS_UPPER_WORLD;
 	final int POS_LOWER_WORLD;
 	final int DISTANCESPAWN = 410;
+
 	final int TILED_SIZE;
+	final float activateBossXPosition = 420;
+	private float xRightBossWall = 420 + 200;
+	private float xLeftBossWall = 420;
+
 
 
 	public MainScreen() {
@@ -65,8 +70,8 @@ public class MainScreen extends BaseScreen {
 		this.MAP_HEIGHT = (Integer) this.map.getProperties().get("height");
 		this.MAP_WIDTH = (Integer) this.map.getProperties().get("width");
 		this.TILED_SIZE = (Integer) this.map.getProperties().get("tileheight");
-		this.POS_LOWER_WORLD = (this.MAP_HEIGHT / 2) * this.TILED_SIZE;
-		this.POS_UPPER_WORLD = this.MAP_HEIGHT  * this.TILED_SIZE;
+		this.POS_LOWER_WORLD = (this.MAP_HEIGHT / 2) * this.TILED_SIZE - this.TILED_SIZE;
+		this.POS_UPPER_WORLD = this.MAP_HEIGHT  * this.TILED_SIZE ;
 
 		this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
@@ -227,7 +232,7 @@ public class MainScreen extends BaseScreen {
 		}
 		else if (this.boss.flowState == Boss.FlowState.Summon){
 			this.boss.velocity.x = 0;
-			//summon
+			Summon();
 			this.boss.velocity.y = 200;  //only to differentiate right now
 			this.boss.flowState = Boss.FlowState.Transition;
 			this.boss.state = Boss.State.Summon;
@@ -235,6 +240,8 @@ public class MainScreen extends BaseScreen {
 		else if (this.boss.flowState == Boss.FlowState.Standing){
 			this.boss.velocity.x = 0;
 			this.boss.flowState = Boss.FlowState.Transition;
+			this.boss.counter.gainLife(3);
+			//addSound(“gainLife”);
 			this.boss.state = Boss.State.Standing;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Die){
@@ -271,6 +278,14 @@ public class MainScreen extends BaseScreen {
 		this.boss.flowTime += delta;
 	}
 
+
+	private void Summon() {
+		spawns.add(new Vector2(this.boss.getX(), this.boss.getY() + 50));
+		if (this.boss.getX() + 30 < xRightBossWall)
+			spawns.add(new Vector2(this.boss.getX() + 30, this.boss.getY() + 5));
+		if (this.boss.getX() - 30 > xLeftBossWall)
+			spawns.add(new Vector2(this.boss.getX() - 30, this.boss.getY() + 5));
+	}
 
 	private void changeOfStatesInCaseOfAnimationFinish() {
 		if ((this.boss.state == Boss.State.Jumping) && (this.boss.velocity.y < 0))
@@ -613,12 +628,14 @@ public class MainScreen extends BaseScreen {
 	            if (enemy.getX() < this.player.getX()) {
                     if ((enemy.getX() - enemy.ATTACK_DISTANCE) <= (this.player.getX() + this.player.getHeight())) {
                         enemy.dir = Enemy.Direction.Right;
+                        enemy.facesRight = true;
                         enemy.run();
                     }
 	            }
 	            else {
                     if ((enemy.getX() + enemy.ATTACK_DISTANCE) >= this.player.getX()) {
                         enemy.dir = Enemy.Direction.Left;
+                        enemy.facesRight = false;
                         enemy.run();
                     }
 	            }
@@ -627,12 +644,14 @@ public class MainScreen extends BaseScreen {
             else if (enemy.dir == Enemy.Direction.Left) {
                 if (-enemy.RANGE >= enemy.diffInitialPos) {
                     enemy.dir = Enemy.Direction.Right;
+                    enemy.facesRight = true;
                 }
                 enemy.walk();
 	        }
 	        else if (enemy.dir == Enemy.Direction.Right) {
                 if (enemy.diffInitialPos >= enemy.RANGE) {
                     enemy.dir = Enemy.Direction.Left;
+                    enemy.facesRight = false;
                 }
                 enemy.walk();
 	        }
@@ -1071,20 +1090,20 @@ public class MainScreen extends BaseScreen {
 			if (this.playerRect.overlaps(tile)) {
 				if (this.normalGravity){
 					if (this.player.velocity.y > 0) // we hit a block jumping upwards
-						this.player.desiredPosition.y = tile.y - this.player.getHeight() - 1;
+						this.player.desiredPosition.y = tile.y - this.player.getHeight() - 2;
 					else {
 						// if we hit the ground, mark us as grounded so we can jump
-						this.player.desiredPosition.y = (tile.y + tile.height) - 1;
+						this.player.desiredPosition.y = (tile.y + tile.height) - 2;
 						this.player.grounded = true;
 					}
 				}
 				else{	//upside down
 					if (this.player.velocity.y > 0) {
-						//this.player.desiredPosition.y = tile.y - tile.height- 1;
+						this.player.desiredPosition.y = tile.y - this.player.getHeight() + 1;
 						this.player.grounded = true;
 					}
 					else
-						this.player.desiredPosition.y = (tile.y + tile.height) - 1;
+						this.player.desiredPosition.y = (tile.y + tile.height);
 				}
 
 				this.player.velocity.y = 0;

@@ -78,14 +78,14 @@ public class Assets {
 		offsetShot = regions.first().offsetX;
 
 		// Enemy
-		regions = atlas.findRegions("char_walking");//"enemy_walk"); // change
+		regions = atlas.findRegions("enemy_walking");//"enemy_walk"); // change
 		enemyWalk = new Animation(0.15f, regions);
 		enemyWalk.setPlayMode(Animation.PlayMode.LOOP);
 
-		regions = atlas.findRegions("char_intro");//"enemy_run"); // change
-		enemyRun = new Animation(0, regions);
+		regions = atlas.findRegions("enemy_attack");//"enemy_run"); // change
+		enemyRun = new Animation(0.15f, regions);
 
-		regions = atlas.findRegions("char_gethit");//"enemy_hurt"); // change
+		regions = atlas.findRegions("enemy_dying");//"enemy_hurt"); // change
 		enemyHurt = new Animation(0.15f, regions);
 
 		// Boss

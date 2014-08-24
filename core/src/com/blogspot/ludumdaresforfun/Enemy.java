@@ -47,7 +47,7 @@ public class Enemy extends Image{
 
     public void die(){
     	// sound and set to die
-        Assets.playSound("enemyHurt");
+        Assets.playSound("enemyDead");
         this.state = State.Hurting;
     	this.setToDie = true;
     }
