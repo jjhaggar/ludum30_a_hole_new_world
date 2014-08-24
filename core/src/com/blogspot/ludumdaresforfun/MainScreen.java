@@ -365,6 +365,14 @@ public class MainScreen extends BaseScreen {
 	private void renderShot(Shot shot, float deltaTime){
 		AtlasRegion frame = null;
 		frame = (AtlasRegion) Assets.playerShot.getKeyFrame(shot.stateTime);
+		if (!this.normalGravity) {
+		    if (!frame.isFlipY())
+                frame.flip(false, true);
+		}
+		else {
+		    if (frame.isFlipY())
+                frame.flip(false, true);
+		}
 
 		Batch batch = this.renderer.getSpriteBatch();
 		batch.begin();
@@ -659,7 +667,7 @@ public class MainScreen extends BaseScreen {
 	private void updateEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
 
-	    	isEnemyInScreen(enemy);
+	    	this.isEnemyInScreen(enemy);
 
 	        // Collision between player vs enemy
 	    	if (!enemy.dying){
@@ -780,10 +788,10 @@ public class MainScreen extends BaseScreen {
 
 	private void isEnemyInScreen(Enemy enemy) {
 		//TODO: Maybe change so that they activate a little bit before they enter the screen
-		if (enemy.getX() > (camera.position.x - (SCREEN_WIDTH / 2))
-				&& (enemy.getX() < (camera.position.x + (SCREEN_WIDTH / 2)))
-				&& (enemy.getY() > (camera.position.y - (SCREEN_HEIGHT / 2))
-				&& (enemy.getX() < (camera.position.x + (SCREEN_HEIGHT / 2))))){
+		if ((enemy.getX() > (this.camera.position.x - (this.SCREEN_WIDTH / 2)))
+				&& (enemy.getX() < (this.camera.position.x + (this.SCREEN_WIDTH / 2)))
+				&& ((enemy.getY() > (this.camera.position.y - (this.SCREEN_HEIGHT / 2)))
+				&& (enemy.getX() < (this.camera.position.x + (this.SCREEN_HEIGHT / 2))))){
 			enemy.inScreen = true;
 		}
 	}
