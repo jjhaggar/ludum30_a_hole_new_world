@@ -656,22 +656,27 @@ public class MainScreen extends BaseScreen {
 
 	private void updateEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
+
+	    	isEnemyInScreen(enemy);
+
 	        // Collision between player vs enemy
-	    	if (this.player.getX() > enemy.getX()){
-	    		if (this.player.getRect().overlaps(enemy.getRect())) {
-	    			this.player.beingHit();
+	    	if (!enemy.dying){
+	    		if (this.player.getX() > enemy.getX()){
+	    			if (this.player.getRect().overlaps(enemy.getRect())) {
+	    				this.player.beingHit();
+	    			}
 	    		}
-	    	}
-	    	else{ //tricking because it doesnt work ok. only in the left side
-	    		Rectangle enemyRect = new Rectangle(enemy.getRect().x + 20, enemy.getY(), enemy.getWidth(), enemy.getHeight());
-	    		if (this.player.getRect().overlaps(enemyRect)) {
-	    			this.player.beingHit();
+	    		else{ //tricking because it doesnt work ok. only in the left side
+	    			Rectangle enemyRect = new Rectangle(enemy.getRect().x + 20, enemy.getY(), enemy.getWidth(), enemy.getHeight());
+	    			if (this.player.getRect().overlaps(enemyRect)) {
+	    				this.player.beingHit();
+	    			}
 	    		}
 	    	}
 
 	        enemy.stateTime += deltaTime;
 	        // Check if player is invincible and check distance to player for attack him.
-	        if (!enemy.running){
+	        if (!enemy.running && !enemy.dying && enemy.inScreen){
 	        	if (!this.player.invincible &&
 	        			((enemy.getY() - (enemy.getWidth() / 2)) <= this.player.getY()) &&
 	        			(this.player.getY() <= (enemy.getY() + (enemy.getWidth() / 2)))) {
@@ -749,6 +754,10 @@ public class MainScreen extends BaseScreen {
 
             enemy.setPosition(enemy.desiredPosition.x, enemy.desiredPosition.y);
 
+            if (Assets.playerDie.isAnimationFinished(enemy.stateTime) && enemy.dying){
+    			enemy.setToDie = true;
+    		}
+
         }
 
 	    int i = 0;
@@ -764,6 +773,16 @@ public class MainScreen extends BaseScreen {
 		for(int j = 0; j < toBeDeleted.length; j++){
 			if (toBeDeleted[j] && (this.enemies.size >= (j + 1)))
 				this.enemies.removeIndex(j);
+		}
+	}
+
+	private void isEnemyInScreen(Enemy enemy) {
+		//TODO: Maybe change so that they activate a little bit before they enter the screen
+		if (enemy.getX() > (camera.position.x - (SCREEN_WIDTH / 2))
+				&& (enemy.getX() < (camera.position.x + (SCREEN_WIDTH / 2)))
+				&& (enemy.getY() > (camera.position.y - (SCREEN_HEIGHT / 2))
+				&& (enemy.getX() < (camera.position.x + (SCREEN_HEIGHT / 2))))){
+			enemy.inScreen = true;
 		}
 	}
 

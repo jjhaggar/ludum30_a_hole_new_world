@@ -17,7 +17,7 @@ public class Enemy extends Image{
     Vector2 desiredPosition = new Vector2();
     final Vector2 velocity = new Vector2();
     State state = State.Walking;
-    boolean facesRight = true;
+    boolean facesRight = false;
     public boolean updateVelocity;
     public boolean setToDie = false;
 
@@ -28,7 +28,7 @@ public class Enemy extends Image{
     public enum Direction {
         Left, Right
     }
-    public Direction dir = Direction.Right;
+    public Direction dir = Direction.Left;
 
     public Rectangle rect = new Rectangle();
 
@@ -39,6 +39,8 @@ public class Enemy extends Image{
     protected Animation animation = null;
     float stateTime = 0;
 	private float offSetX;
+	public boolean dying = false;
+	public boolean inScreen = false;
 
     public Enemy(Animation animation) {
         super(animation.getKeyFrame(0));
@@ -56,7 +58,9 @@ public class Enemy extends Image{
     	// sound and set to die
         Assets.playSound("enemyDead");
         this.state = State.Hurting;
-    	this.setToDie = true;
+        this.stateTime = 0;
+    	this.dying = true;
+    	this.velocity.x = 0;
     }
 
     public void run() {
