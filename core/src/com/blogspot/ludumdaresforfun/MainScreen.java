@@ -62,6 +62,7 @@ public class MainScreen extends BaseScreen {
 	private float xLeftBossWall = 420;
 
 	float RightOffset = 0;
+	float UpOffset = 0;
 
 
 
@@ -564,19 +565,23 @@ public class MainScreen extends BaseScreen {
 		batch.begin();
 		if (this.player.facesRight && frame.isFlipX()) {
             frame.flip(true, false);
-            RightOffset = 1;
+            RightOffset = 1;	//fix differences
 		}
 		else if (!this.player.facesRight && !frame.isFlipX()) {
 			frame.flip(true, false);
-			RightOffset = -4;
+			RightOffset = -4;   //fix differences
 		}
 
-		if (this.normalGravity && frame.isFlipY())
+		if (this.normalGravity && frame.isFlipY()) {
 			frame.flip(false, true);
-		else if (!this.normalGravity && !frame.isFlipY())
+			UpOffset = 0;
+		}
+		else if (!this.normalGravity && !frame.isFlipY()){
 			frame.flip(false, true);
+			UpOffset = -2;
+		}
 
-		batch.draw(frame, this.player.getX() + frame.offsetX + RightOffset, this.player.getY() + frame.offsetY);
+		batch.draw(frame, this.player.getX() + frame.offsetX + RightOffset, this.player.getY() + frame.offsetY + UpOffset);
 
 		batch.end();
 		this.shapeRenderer.begin(ShapeType.Filled);
