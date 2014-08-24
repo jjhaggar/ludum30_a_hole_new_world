@@ -38,7 +38,7 @@ public class Assets {
 
 		// Player
 		regions = atlas.findRegions("char_attack");
-		playerAttack = new Animation(0.15f, regions);
+		playerAttack = new Animation(0.25f, regions);
 
 		regions = atlas.findRegions("char_empty");
 		playerEmpty = new Animation(0, regions);
@@ -53,8 +53,8 @@ public class Assets {
 		playerWalk = new Animation(0.15f, regions);
 		playerWalk.setPlayMode(Animation.PlayMode.LOOP);
 
-		regions = atlas.findRegions("char_standing");  //change to jumping
-		playerJump = new Animation(0, regions);
+		regions = atlas.findRegions("char_jumping");  //change to jumping
+		playerJump = new Animation(0, regions.get(1));
 
 		regions = atlas.findRegions("char_standing");	//change to shooting
 		playerStandShot = new Animation(0.15f, regions);

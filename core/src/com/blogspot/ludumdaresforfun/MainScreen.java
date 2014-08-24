@@ -77,7 +77,7 @@ public class MainScreen extends BaseScreen {
 
         this.renderer = new OrthogonalTiledMapRenderer(this.map, 1);
 
-		Gdx.graphics.setDisplayMode(400, 240, false);
+		//Gdx.graphics.setDisplayMode(400, 240, false);
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, 400, 240);
 		this.camera.position.y = this.yPosUpperWorld;
@@ -735,7 +735,7 @@ public class MainScreen extends BaseScreen {
 		// clamp the velocity to 0 if it's < 1, and set the state to standign
 		if (Math.abs(this.player.velocity.x) < 1) {
 			this.player.velocity.x = 0;
-			if (this.player.grounded && !this.player.shooting && !this.player.invincible)
+			if (this.player.grounded && !this.player.state.equals(Player.State.Attacking) && !this.player.invincible)
 				this.player.state = Player.State.Standing;
 		}
 	}
@@ -784,7 +784,7 @@ public class MainScreen extends BaseScreen {
 			this.shotArray.add(shot);
 
 			if (this.player.grounded){	//&& raya.velocity.x == 0)
-				this.player.state = Player.State.StandingShooting;
+				this.player.state = Player.State.Attacking;
 				this.player.stateTime = 0;
 			}
 			this.player.shooting = true;
