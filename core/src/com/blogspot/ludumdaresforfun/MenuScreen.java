@@ -1,7 +1,6 @@
 package com.blogspot.ludumdaresforfun;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class MenuScreen extends BaseScreen{
@@ -9,8 +8,6 @@ public class MenuScreen extends BaseScreen{
     BGAnimated bg;
 
 	public MenuScreen() {
-	    Assets.loadMusicAndSound();
-	    Assets.loadAnimation();
 	    if (!Assets.musicStage.isPlaying()) {
 	    	Assets.musicStage.setLooping(true);
 	    	Assets.musicStage.play();

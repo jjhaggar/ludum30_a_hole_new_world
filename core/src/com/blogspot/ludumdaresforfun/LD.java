@@ -13,6 +13,8 @@ public class LD extends Game {
     @Override
     public void create() {
         instance = this;
+	    Assets.loadMusicAndSound();
+	    Assets.loadAnimation();
         this.setScreen(new MenuScreen());
     }
 
