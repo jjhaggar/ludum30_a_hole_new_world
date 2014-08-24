@@ -57,7 +57,6 @@ public class MainScreen extends BaseScreen {
 
 	public MainScreen() {
 		this.shapeRenderer = new ShapeRenderer();
-		Assets.loadAnimation();
 
 		this.map = new TmxMapLoader().load("aholenewworld_enemy.tmx");
 
@@ -205,6 +204,11 @@ public class MainScreen extends BaseScreen {
 			this.boss.flowState = Boss.FlowState.Transition;
 			this.boss.state = Boss.State.Summon;
 		}
+		else if (this.boss.flowState == Boss.FlowState.Standing){
+			this.boss.velocity.x = 0;
+			this.boss.flowState = Boss.FlowState.Transition;
+			this.boss.state = Boss.State.Standing;
+		}
 		else if (this.boss.flowState == Boss.FlowState.Die){
 			this.boss.velocity.x = 0;
 			this.boss.velocity.y = 0;
@@ -215,21 +219,24 @@ public class MainScreen extends BaseScreen {
 			else if (this.boss.getX() < 420)							//same for other wall
 				this.boss.flowState = Boss.FlowState.WalkingRight;
 			else if (this.boss.flowTime > 2){							//takes pseudo-random action
-				int nextState = (int)Math.round(Math.random() * 3);
+				int nextState = (int)Math.round(Math.random() * 7);
 
 				if ((Math.abs(this.boss.getX() -
 						this.player.getX()) < 48) && ((nextState % 2) == 0))	//3 tiles far: attacks 50% time
 					this.boss.flowState = Boss.FlowState.Attack;
-				else if (nextState == 0)										//one possibility is jump
+				else if (nextState == 0 || nextState == 1)										//one possibility is jump
 					this.boss.flowState = Boss.FlowState.Jumping;
-				else if (nextState == 1)
+				else if (nextState == 2 || nextState == 3)
 					this.boss.flowState = Boss.FlowState.Summon;				//another summon
-				else{															//or move in your direction
+				else if (nextState == 4 || nextState == 5){															//or move in your direction
 					if ((this.boss.getX() - this.player.getX()) > 0)
 						this.boss.flowState = Boss.FlowState.WalkingLeft;
 					else
 						this.boss.flowState = Boss.FlowState.WalkingRight;
 				}
+				else
+					this.boss.flowState = Boss.FlowState.Standing;
+
 				this.boss.flowTime = 0;
 			}
 		}
@@ -677,14 +684,11 @@ public class MainScreen extends BaseScreen {
 		this.collisionWalls();
 
 
-			// unscale the velocity by the inverse delta time and set
-			// the latest position
+		// unscale the velocity by the inverse delta time and set the latest position
 		this.player.desiredPosition.add(this.player.velocity);
 		this.player.velocity.scl(1 / deltaTime);
 
-		// Apply damping to the velocity on the x-axis so we don't
-		// walk infinitely once a key was pressed
-		if (Assets.playerBeingHit.isAnimationFinished(this.player.stateTime))
+		if (Assets.playerBeingHit.isAnimationFinished(this.player.stateTime) && !player.dead)
 			this.player.noControl = false;
 
 		if (this.player.noControl == false)
@@ -692,8 +696,17 @@ public class MainScreen extends BaseScreen {
 
 		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 
-		this.activateBoss();
+		activateBoss();
 
+		if (Assets.playerDie.isAnimationFinished(this.player.stateTime) && player.dead){
+			gameOver();
+		}
+
+	}
+
+	private void gameOver() {
+		LD.getInstance().GAMEOVER_SCREEN = new GameOverScreen();
+        LD.getInstance().setScreen(LD.getInstance().GAMEOVER_SCREEN);
 	}
 
 	private void activateBoss() {

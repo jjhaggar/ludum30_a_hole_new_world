@@ -20,6 +20,7 @@ public class Assets {
     static Animation playerShot;
     static Animation enemyWalk, enemyRun, enemyHurt;
     static Animation bossGethit, bossStanding,  bossWalking, bossJumping, bossFalling, bossAttack, bossSummon, bossDie;
+    static Animation GameOver, Intro;
 	static Texture bg;
 	static float offsetPlayer, offsetBoss, offsetShot, offsetEnemy;
 
@@ -35,6 +36,15 @@ public class Assets {
 
         TextureAtlas atlas = assetManager.get(TEXTURE_ATLAS_OBJECTS);
 		Array<AtlasRegion> regions;
+
+		//BG
+		regions = atlas.findRegions("intro");
+		Intro = new Animation(0.25f, regions);
+		Intro.setPlayMode(PlayMode.LOOP);
+
+		regions = atlas.findRegions("game_over");
+		GameOver = new Animation(0.25f, regions);
+		GameOver.setPlayMode(PlayMode.LOOP);
 
 		// Player
 		regions = atlas.findRegions("char_attack");
@@ -147,6 +157,5 @@ public class Assets {
     }
 
 	static void dispose() {
-	    bg.dispose();
 	}
 }

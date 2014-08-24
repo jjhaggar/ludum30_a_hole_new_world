@@ -17,7 +17,7 @@ public class Boss extends Image {
     }
 
     enum FlowState {
-    	WalkingLeft, WalkingRight, Jumping, Transition, Attack, Summon, BeingHurt, Die
+    	WalkingLeft, WalkingRight, Jumping, Transition, Attack, Summon, BeingHurt, Die, Standing
     }
 
     Vector2 desiredPosition = new Vector2();

@@ -24,6 +24,8 @@ public class Player extends Image {
     public boolean shooting = false;
     public boolean invincible = false;
     public boolean noControl = false;
+    public boolean dead = false;
+
     public HUDCounter counter = new HUDCounter(5);
 
 
@@ -74,8 +76,10 @@ public class Player extends Image {
 
     public void die() {
         Assets.playSound("playerDead");
-        // TODO: animate, sound and reset game
-        System.out.println("GAME OVER");
+        this.state = Player.State.Die;
+        this.stateTime = 0;
+        this.noControl = true;
+        this.dead = true;
     }
 
     @Override

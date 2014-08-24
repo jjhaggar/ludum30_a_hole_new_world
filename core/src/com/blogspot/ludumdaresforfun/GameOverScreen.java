@@ -4,16 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-public class MenuScreen extends BaseScreen{
+public class GameOverScreen extends BaseScreen{
 
-    BGAnimated bg;
+    Image bg;
 
-	public MenuScreen() {
-	    Assets.loadMusicAndSound();
-	    Assets.loadAnimation();
-		Assets.music.setLooping(true);
-		Assets.music.play();
-	    this.bg = new BGAnimated(Assets.Intro);
+	public GameOverScreen() {
+		Assets.music.stop();;
+	    this.bg = new BGAnimated(Assets.GameOver);
 	    this.stage.addActor(this.bg);
 	}
 
