@@ -11,8 +11,10 @@ public class MenuScreen extends BaseScreen{
 	public MenuScreen() {
 	    Assets.loadMusicAndSound();
 	    Assets.loadAnimation();
-		Assets.music.setLooping(true);
-		Assets.music.play();
+	    if (!Assets.musicStage.isPlaying()) {
+	    	Assets.musicStage.setLooping(true);
+	    	Assets.musicStage.play();
+	    }
 	    this.bg = new BGAnimated(Assets.Intro);
 	    this.stage.addActor(this.bg);
 	}

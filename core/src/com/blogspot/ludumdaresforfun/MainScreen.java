@@ -62,7 +62,7 @@ public class MainScreen extends BaseScreen {
 	private float xRightBossWall = 420 + 200;
 	private float xLeftBossWall = 420;
 
-	float RightOffset = 0;
+
 	float UpOffset = 0;
 
 
@@ -564,11 +564,11 @@ public class MainScreen extends BaseScreen {
 		batch.begin();
 		if (this.player.facesRight && frame.isFlipX()) {
             frame.flip(true, false);
-            this.RightOffset = 1;	//fix differences
+            this.player.rightOffset = 1f;	//fix differences
 		}
 		else if (!this.player.facesRight && !frame.isFlipX()) {
 			frame.flip(true, false);
-			this.RightOffset = -4;   //fix differences
+			this.player.rightOffset = -4f;   //fix differences
 		}
 
 		if (this.normalGravity && frame.isFlipY()) {
@@ -580,7 +580,9 @@ public class MainScreen extends BaseScreen {
 			this.UpOffset = -2;
 		}
 
-		batch.draw(frame, this.player.getX() + frame.offsetX + this.RightOffset, this.player.getY() + frame.offsetY + this.UpOffset);
+		//batch.draw(frame, this.player.getX() + frame.offsetX, this.player.getY() + frame.offsetY + this.UpOffset);
+		batch.draw(frame, this.player.getX() + frame.offsetX + this.player.rightOffset, this.player.getY() + frame.offsetY + this.UpOffset);
+
 
 		batch.end();
 		this.shapeRenderer.begin(ShapeType.Filled);
@@ -636,43 +638,63 @@ public class MainScreen extends BaseScreen {
 	private void updateEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
 	        // Collision between player vs enemy
-	        if (this.player.getRect().overlaps(enemy.getRect())) {
-	            this.player.beingHit();
-	        }
-	        // Check if player is invincible and check distance to player for attack him.
-	        if (!this.player.invincible &&
-	                ((enemy.getY() - (enemy.getWidth() / 2)) <= this.player.getY()) &&
-	                (this.player.getY() <= (enemy.getY() + (enemy.getWidth() / 2)))) {
-	            if (enemy.getX() < this.player.getX()) {
-                    if ((enemy.getX() - enemy.ATTACK_DISTANCE) <= (this.player.getX() + this.player.getHeight())) {
-                        enemy.dir = Enemy.Direction.Right;
-                        enemy.facesRight = true;
-                        enemy.run();
-                    }
-	            }
-	            else {
-                    if ((enemy.getX() + enemy.ATTACK_DISTANCE) >= this.player.getX()) {
-                        enemy.dir = Enemy.Direction.Left;
-                        enemy.facesRight = false;
-                        enemy.run();
-                    }
-	            }
-	        }
+	    	if (this.player.getX() > enemy.getX()){
+	    		if (this.player.getRect().overlaps(enemy.getRect())) {
+	    			this.player.beingHit();
+	    		}
+	    	}
+	    	else{ //tricking because it doesnt work ok. only in the left side
+	    		Rectangle enemyRect = new Rectangle(enemy.getRect().x + 20, enemy.getY(), enemy.getWidth(), enemy.getHeight());
+	    		if (this.player.getRect().overlaps(enemyRect)) {
+	    			this.player.beingHit();
+	    		}
+	    	}
 
-            else if (enemy.dir == Enemy.Direction.Left) {
-                if (-enemy.RANGE >= enemy.diffInitialPos) {
-                    enemy.dir = Enemy.Direction.Right;
-                    enemy.facesRight = true;
-                }
-                enemy.walk();
+	        enemy.stateTime += deltaTime;
+	        // Check if player is invincible and check distance to player for attack him.
+	        if (!enemy.running){
+	        	if (!this.player.invincible &&
+	        			((enemy.getY() - (enemy.getWidth() / 2)) <= this.player.getY()) &&
+	        			(this.player.getY() <= (enemy.getY() + (enemy.getWidth() / 2)))) {
+	        		if (enemy.getX() < this.player.getX()) {
+	        			if ((enemy.getX() + enemy.ATTACK_DISTANCE) >= (this.player.getX() + this.player.getWidth())) {
+	        				enemy.dir = Enemy.Direction.Right;
+	        				enemy.facesRight = true;
+	        				enemy.run();
+	        				enemy.attackHereX = this.player.getX();
+	        				enemy.attackRight = true;
+	        			}
+	        		}
+	        		else {
+	        			if ((enemy.getX() - enemy.ATTACK_DISTANCE) <= this.player.getX()) {
+	        				enemy.dir = Enemy.Direction.Left;
+	        				enemy.facesRight = false;
+	        				enemy.run();
+	        				enemy.attackHereX = this.player.getX();
+	        				enemy.attackRight = false;
+	        			}
+	        		}
+	        	}
+
+	        	else if (enemy.dir == Enemy.Direction.Left) {
+	        		if (-enemy.RANGE >= enemy.diffInitialPos) {
+	        			enemy.dir = Enemy.Direction.Right;
+	        			enemy.facesRight = true;
+	        		}
+	        		enemy.walk();
+	        	}
+	        	else if (enemy.dir == Enemy.Direction.Right) {
+	        		if (enemy.diffInitialPos >= enemy.RANGE) {
+	        			enemy.dir = Enemy.Direction.Left;
+	        			enemy.facesRight = false;
+	        		}
+	        		enemy.walk();
+	        	}
 	        }
-	        else if (enemy.dir == Enemy.Direction.Right) {
-                if (enemy.diffInitialPos >= enemy.RANGE) {
-                    enemy.dir = Enemy.Direction.Left;
-                    enemy.facesRight = false;
-                }
-                enemy.walk();
-	        }
+	        else if ((enemy.getX() > enemy.attackHereX) && enemy.attackRight)
+	        	enemy.running = false;
+	        else if ((enemy.getX() < enemy.attackHereX) && !enemy.attackRight)
+	        	enemy.running = false;
 
             enemy.velocity.scl(deltaTime);
 
@@ -696,6 +718,7 @@ public class MainScreen extends BaseScreen {
             for (Rectangle tile : this.tiles) {
                 if (enemy.rect.overlaps(tile)) {
                     enemy.velocity.x = 0;
+                    enemy.running = false;
                     break;
                 }
             }
@@ -785,6 +808,10 @@ public class MainScreen extends BaseScreen {
 
 			this.camera.position.x = this.boss.getX();
 			this.camera.update();
+
+			Assets.musicStage.stop();
+			Assets.musicBoss.setLooping(true);
+			Assets.musicBoss.play();
 
 			//close door
 			TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get(0));

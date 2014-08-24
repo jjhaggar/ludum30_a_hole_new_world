@@ -33,6 +33,7 @@ public class Player extends Image {
     protected Animation animation = null;
     float stateTime = 0;
     public float offSetX;
+    public float rightOffset = 0;
 
     public Player(Animation animation) {
         super(animation.getKeyFrame(0));

@@ -25,7 +25,7 @@ public class Assets {
 	static float offsetPlayer, offsetBoss, offsetShot, offsetEnemy;
 
 	// Music and Sounds
-	public static Music music;
+	public static Music musicBoss, musicStage;
     public static HashMap<String, Sound> sounds = new HashMap<String, Sound>();
 
 	static void loadAnimation() {
@@ -83,7 +83,7 @@ public class Assets {
 		enemyWalk.setPlayMode(Animation.PlayMode.LOOP);
 
 		regions = atlas.findRegions("enemy_attack");//"enemy_run"); // change
-		enemyRun = new Animation(0.15f, regions);
+		enemyRun = new Animation(0.50f, regions);
 
 		regions = atlas.findRegions("enemy_dying");//"enemy_hurt"); // change
 		enemyHurt = new Animation(0.15f, regions);
@@ -128,8 +128,8 @@ public class Assets {
 	}
 
 	public static void loadMusicAndSound() {
-		music = Gdx.audio.newMusic(Gdx.files.internal("music/mainTheme.ogg"));
-		music = Gdx.audio.newMusic(Gdx.files.internal("music/finalBoss.ogg"));
+		musicStage = Gdx.audio.newMusic(Gdx.files.internal("music/mainTheme.ogg"));
+		musicBoss = Gdx.audio.newMusic(Gdx.files.internal("music/finalBoss.ogg"));
 		// Player
         addSound("playerAttack");
         addSound("playerHurt");
@@ -153,7 +153,9 @@ public class Assets {
     }
 
     public static void playSound(final String name) {
-        sounds.get(name).play();
+
+    	sounds.get(name).play(0.25f);
+
     }
 
 	static void dispose() {

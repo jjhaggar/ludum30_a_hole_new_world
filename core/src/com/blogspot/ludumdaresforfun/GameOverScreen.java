@@ -9,7 +9,11 @@ public class GameOverScreen extends BaseScreen{
     Image bg;
 
 	public GameOverScreen() {
-		Assets.music.stop();;
+		if (Assets.musicBoss.isPlaying())
+			Assets.musicBoss.stop();
+		else if (Assets.musicStage.isPlaying())
+			Assets.musicBoss.stop();
+
 	    this.bg = new BGAnimated(Assets.GameOver);
 	    this.stage.addActor(this.bg);
 	}

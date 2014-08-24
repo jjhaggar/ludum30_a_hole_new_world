@@ -2,6 +2,7 @@ package com.blogspot.ludumdaresforfun;
 
 
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -20,6 +21,10 @@ public class Enemy extends Image{
     public boolean updateVelocity;
     public boolean setToDie = false;
 
+    public boolean running = false;
+    public float attackHereX = 0;
+    public boolean attackRight = false;
+
     public enum Direction {
         Left, Right
     }
@@ -29,18 +34,20 @@ public class Enemy extends Image{
 
     public int diffInitialPos = 0;
     public final int RANGE = 100;
-    public final int ATTACK_DISTANCE = 50;
+    public final int ATTACK_DISTANCE = 100;
 
     protected Animation animation = null;
     float stateTime = 0;
+	private float offSetX;
 
     public Enemy(Animation animation) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
+        offSetX = ((AtlasRegion)Assets.enemyRun.getKeyFrame(0)).offsetX;
     }
 
     public Rectangle getRect() {
-        this.rect.set(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        this.rect.set(this.getX() + offSetX, this.getY(), this.getWidth(), this.getHeight());
         return this.rect;
 
     }
@@ -53,16 +60,23 @@ public class Enemy extends Image{
     }
 
     public void run() {
-        Assets.playSound("enemyAttack");
-        if (this.dir == Direction.Left) {
-            this.diffInitialPos -= 2;
-            this.velocity.x = -this.ATTACK_VELOCITY;
-        }
-        else {
-            this.diffInitialPos += 2;
-            this.velocity.x = this.ATTACK_VELOCITY;
-        }
-        this.state = Enemy.State.Running;
+    	if (this.state != Enemy.State.Running)
+    	{
+    		Assets.playSound("enemyAttack");
+
+    		if (this.dir == Direction.Left) {
+    			this.diffInitialPos -= 2;
+    			this.velocity.x = -this.ATTACK_VELOCITY;
+    		}
+    		else {
+    			this.diffInitialPos += 2;
+    			this.velocity.x = this.ATTACK_VELOCITY;
+    		}
+    		this.state = Enemy.State.Running;
+    		this.stateTime = 0;
+    		this.running = true;
+
+    	}
     }
 
     public void walk() {
