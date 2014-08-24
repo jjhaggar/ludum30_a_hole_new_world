@@ -126,10 +126,10 @@ public class MainScreen extends BaseScreen {
 			if (shot != null)
 				this.renderShot(shot, delta);
 		}
-		if (this.boss != null){
-			this.updateBoss(delta);
+		if (this.boss != null)
+			this.updateBoss(delta); //update can put boss to null so two checks
+		if (this.boss != null)
 			this.renderBoss(delta);
-		}
 
 	}
 
@@ -157,18 +157,25 @@ public class MainScreen extends BaseScreen {
 		this.flowBoss(delta);
 
 		this.boss.setPosition(this.boss.desiredPosition.x, this.boss.desiredPosition.y);
+
+		if (this.boss.setToDie && Assets.bossDie.isAnimationFinished(this.boss.stateTime))
+			this.boss = null;
 	}
 
 
 	private void flowBoss(float delta) {
 
+		changeOfStatesInCaseOfAnimationFinish();
+
 		if (this.boss.flowState == Boss.FlowState.WalkingLeft){
 			this.boss.velocity.x = -100;
 			this.boss.flowState = Boss.FlowState.Transition;
+			this.boss.state = Boss.State.Walking;
 		}
 		else if (this.boss.flowState == Boss.FlowState.WalkingRight){
 			this.boss.velocity.x = 100;
 			this.boss.flowState = Boss.FlowState.Transition;
+			this.boss.state = Boss.State.Walking;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Jumping){
 			if ((this.boss.getX() - this.player.getX()) > 0)
@@ -178,6 +185,7 @@ public class MainScreen extends BaseScreen {
 
 			this.boss.velocity.y = 400;
 			this.boss.flowState = Boss.FlowState.Transition;
+			this.boss.state = Boss.State.Jumping;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Attack){
 			if ((this.boss.getX() - this.player.getX()) > 0)
@@ -188,29 +196,35 @@ public class MainScreen extends BaseScreen {
 			this.boss.velocity.x = 0;
 			//attack to character(detect position and collision)
 			this.boss.flowState = Boss.FlowState.Transition;
+			this.boss.state = Boss.State.Attack;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Summon){
 			this.boss.velocity.x = 0;
 			//summon
-			this.boss.flowTime = 0;
 			this.boss.velocity.y = 200;  //only to differentiate right now
 			this.boss.flowState = Boss.FlowState.Transition;
+			this.boss.state = Boss.State.Summon;
+		}
+		else if (this.boss.flowState == Boss.FlowState.Die){
+			this.boss.velocity.x = 0;
+			this.boss.velocity.y = 0;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Transition){
-			if (this.boss.getX() > (420 + 300))
+			if (this.boss.getX() > (420 + 300))							//if going to hit wall turns back
 				this.boss.flowState = Boss.FlowState.WalkingLeft;
-			else if (this.boss.getX() < 420)
+			else if (this.boss.getX() < 420)							//same for other wall
 				this.boss.flowState = Boss.FlowState.WalkingRight;
-			else if (this.boss.flowTime > 2){
+			else if (this.boss.flowTime > 2){							//takes pseudo-random action
 				int nextState = (int)Math.round(Math.random() * 3);
 
-				if ((Math.abs(this.boss.getX() - this.player.getX()) < 48) && ((nextState % 2) == 0))	//2 tiles
+				if ((Math.abs(this.boss.getX() -
+						this.player.getX()) < 48) && ((nextState % 2) == 0))	//3 tiles far: attacks 50% time
 					this.boss.flowState = Boss.FlowState.Attack;
-				else if (nextState == 0)
+				else if (nextState == 0)										//one possibility is jump
 					this.boss.flowState = Boss.FlowState.Jumping;
 				else if (nextState == 1)
-					this.boss.flowState = Boss.FlowState.Summon;
-				else{
+					this.boss.flowState = Boss.FlowState.Summon;				//another summon
+				else{															//or move in your direction
 					if ((this.boss.getX() - this.player.getX()) > 0)
 						this.boss.flowState = Boss.FlowState.WalkingLeft;
 					else
@@ -223,6 +237,13 @@ public class MainScreen extends BaseScreen {
 	}
 
 
+	private void changeOfStatesInCaseOfAnimationFinish() {
+		if (this.boss.state == Boss.State.Jumping && this.boss.velocity.y < 0)
+			boss.state = Boss.State.Falling;
+		if (this.boss.setToDie)
+			this.boss.flowState = Boss.FlowState.Die;
+	}
+
 	private void renderBoss(float delta) {
 		AtlasRegion frame = null;
 
@@ -233,6 +254,31 @@ public class MainScreen extends BaseScreen {
 
 		if (this.boss.state == Boss.State.Standing)
 			frame = (AtlasRegion)Assets.bossStanding.getKeyFrame(this.boss.stateTime);
+		else if (this.boss.state == Boss.State.Walking)
+			frame = (AtlasRegion)Assets.bossWalking.getKeyFrame(this.boss.stateTime);
+		else if (this.boss.state == Boss.State.Attack)
+			frame = (AtlasRegion)Assets.bossAttack.getKeyFrame(this.boss.stateTime);
+		else if (this.boss.state == Boss.State.Jumping)
+			frame = (AtlasRegion)Assets.bossJumping.getKeyFrame(this.boss.stateTime);
+		else if (this.boss.state == Boss.State.Falling)
+			frame = (AtlasRegion)Assets.bossFalling.getKeyFrame(this.boss.stateTime);
+		else if (this.boss.state == Boss.State.Hurting)
+			frame = (AtlasRegion)Assets.bossGethit.getKeyFrame(this.boss.stateTime);
+		else if (this.boss.state == Boss.State.Die)
+			frame = (AtlasRegion)Assets.bossDie.getKeyFrame(this.boss.stateTime);
+		else if (this.boss.state == Boss.State.Summon)
+			frame = (AtlasRegion)Assets.bossSummon.getKeyFrame(this.boss.stateTime);
+
+		if (this.boss.invincible && this.boss.toggle) {
+			frame = (AtlasRegion)Assets.bossGethit.getKeyFrame(this.player.stateTime);
+		    this.boss.toggle = !this.boss.toggle;
+		}
+		else if (this.boss.invincible && !this.boss.toggle) {
+		    this.boss.toggle = !this.boss.toggle;
+		}
+		else if (!this.boss.invincible) {
+		    this.boss.toggle = false;
+		}
 
 		Batch batch = this.renderer.getSpriteBatch();
 		batch.begin();
@@ -247,7 +293,6 @@ public class MainScreen extends BaseScreen {
 		}
 
 		batch.end();
-
 	}
 
 
@@ -329,6 +374,14 @@ public class MainScreen extends BaseScreen {
 
 		if ((this.boss != null) && this.playerRect.overlaps(this.boss.rect)) {
 		    this.boss.beingHit();
+
+		    if (!boss.setToDie){
+		    	boss.invincible = true;		//activates also the flickering
+		    }
+		    else {
+		    	boss.state = Boss.State.Die;
+		    	boss.stateTime = 0;
+		    }
 		    collided = true;
 		}
 
@@ -632,7 +685,7 @@ public class MainScreen extends BaseScreen {
 			this.bossActive = true;
 
 			this.boss = new Boss(Assets.bossStanding);
-			this.boss.setPosition(600, 350);
+			this.boss.setPosition(600, 260);
 
 			this.camera.position.x = 600;		//boss final position camera
 			this.camera.update();

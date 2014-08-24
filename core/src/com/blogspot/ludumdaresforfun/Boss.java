@@ -6,16 +6,18 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 public class Boss extends Image {
     final float VELOCITY = 50f;
     final float ATTACK_VELOCITY = 120f;
     enum State {
-        Standing, Walking, Running, Hurting
+        Standing, Walking, Jumping, Falling, Attack, Summon, Hurting, Die
     }
 
     enum FlowState {
-    	WalkingLeft, WalkingRight, Jumping, Transition, Attack, Summon
+    	WalkingLeft, WalkingRight, Jumping, Transition, Attack, Summon, BeingHurt, Die
     }
 
     Vector2 desiredPosition = new Vector2();
@@ -26,7 +28,7 @@ public class Boss extends Image {
     public boolean updateVelocity;
     public boolean setToDie = false;
     public boolean grounded;
-    public HUDCounter counter = new HUDCounter(26);
+    public HUDCounter counter = new HUDCounter(24);  //the same as megaman enemies
 
     public enum Direction {
         Left, Right
@@ -43,6 +45,8 @@ public class Boss extends Image {
     float stateTime = 0;
     float flowTime = 0;
     public float offSetX;
+	public boolean invincible = false;
+	public boolean toggle = false;
 
 	public Boss(Animation animation) {
 		super(animation.getKeyFrame(0));
@@ -68,6 +72,12 @@ public class Boss extends Image {
         if (lifes <= 0) {
             this.die();
         }
+        Timer.schedule(new Task() {
+            @Override
+            public void run() {
+                Boss.this.invincible = false;
+            }
+        }, 1);
     }
 
     @Override

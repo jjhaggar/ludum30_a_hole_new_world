@@ -19,7 +19,7 @@ public class Assets {
     static Animation playerAttack, playerEmpty, playerIntro, playerStand, playerWalk, playerJump, playerStandShot;
     static Animation playerShot;
     static Animation enemyWalk, enemyRun, enemyHurt;
-    static Animation bossGethit, bossStanding,  bossWalking;
+    static Animation bossGethit, bossStanding,  bossWalking, bossJumping, bossFalling, bossAttack, bossSummon, bossDie;
 	static Texture bg;
 	static float offsetPlayer, offsetBoss, offsetShot, offsetEnemy;
 
@@ -76,8 +76,11 @@ public class Assets {
 		enemyHurt = new Animation(0.15f, regions);
 
 		// Boss
-		regions = atlas.findRegions("boss_gethit");
+		//regions = atlas.findRegions("boss_gethit");
+		regions = atlas.findRegions("boss_empty");
 		bossGethit = new Animation(0.15f, regions);
+		bossGethit.setPlayMode(PlayMode.LOOP);
+
 
 		regions = atlas.findRegions("boss_standing");
 		bossStanding = new Animation(0.15f, regions);
@@ -85,6 +88,24 @@ public class Assets {
 
 		regions = atlas.findRegions("boss_walking");
 		bossWalking = new Animation(0.15f, regions);
+		bossWalking.setPlayMode(PlayMode.LOOP);
+
+		regions = atlas.findRegions("boss_jump_a");
+		bossJumping = new Animation(0.15f, regions);
+		bossJumping.setPlayMode(PlayMode.LOOP);
+
+		regions = atlas.findRegions("boss_jump_d");
+		bossFalling = new Animation(0.15f, regions);
+		bossFalling.setPlayMode(PlayMode.LOOP);
+
+		regions = atlas.findRegions("boss_attack_close");
+		bossAttack = new Animation(0.15f, regions);
+
+		regions = atlas.findRegions("boss_attack_distance");
+		bossSummon = new Animation(0.15f, regions);
+
+		regions = atlas.findRegions("boss_dying");
+		bossDie = new Animation(0.30f, regions);
 	}
 
 	static TextureRegion getBg() {

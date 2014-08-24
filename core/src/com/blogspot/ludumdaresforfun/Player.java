@@ -10,8 +10,8 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 public class Player extends Image {
-    final float MAX_VELOCITY = 100f;
-    final float JUMP_VELOCITY = 270f; // 210f;
+    final float MAX_VELOCITY = 120f;
+    final float JUMP_VELOCITY = 300f; // 210f;
     enum State {
         Standing, Walking, Jumping, StandingShooting, Attacking, Intro
     }
