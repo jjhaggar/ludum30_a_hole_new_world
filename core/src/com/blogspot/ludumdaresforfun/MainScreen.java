@@ -35,6 +35,7 @@ public class MainScreen extends BaseScreen {
 
 	private Array<Enemy> enemies = new Array<Enemy>();
 	private Array<Rectangle> tiles = new Array<Rectangle>();
+	private Array<Rectangle> spikes = new Array<Rectangle>();
 	private Array<Shot> shotArray = new Array<Shot>();
 	private Array<Vector2> spawns = new Array<Vector2>();
 
@@ -745,8 +746,8 @@ public class MainScreen extends BaseScreen {
 			else
 				this.player.velocity.x = 120 * deltaTime;
 		}
-		this.collisionWalls();
 
+		boolean collisionSpike = this.collisionWallsAndSpike();
 
 		// unscale the velocity by the inverse delta time and set the latest position
 		this.player.desiredPosition.add(this.player.velocity);
@@ -763,10 +764,13 @@ public class MainScreen extends BaseScreen {
 						> (this.MAP_WIDTH * this.TILED_SIZE)))
 			this.player.desiredPosition.x = 1;
 
-		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
+        this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 
 		if (Assets.playerDie.isAnimationFinished(this.player.stateTime) && this.player.dead){
 			this.gameOver();
+		}
+		if (collisionSpike) {
+		    this.player.beingHit();
 		}
 	}
 
@@ -1030,11 +1034,12 @@ public class MainScreen extends BaseScreen {
 	}
 
 
-	private void collisionWalls() {
+	private boolean collisionWallsAndSpike() {
 		//collision detection
 		// perform collision detection & response, on each axis, separately
 		// if the raya is moving right, check the tiles to the right of it's
 		// right bounding box edge, otherwise check the ones to the left
+        boolean collisionSpike = false;
 		this.playerRect = this.rectPool.obtain();
 
 		this.player.desiredPosition.y = Math.round(this.player.getY());
@@ -1065,15 +1070,23 @@ public class MainScreen extends BaseScreen {
 			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE) + 1;
 		}
 
-		this.getTiles(startX, startY, endX, endY, this.tiles);
+		this.getTiles(startX, startY, endX, endY, this.tiles, this.spikes);
 
 		this.playerRect.x += this.player.velocity.x;
+
+		for (Rectangle spike : this.spikes) {
+			if (this.playerRect.overlaps(spike)) {
+				this.player.velocity.x = 0;
+			    collisionSpike = true;
+				break;
+            }
+		}
 
 		for (Rectangle tile : this.tiles) {
 			if (this.playerRect.overlaps(tile)) {
 				this.player.velocity.x = 0;
 				break;
-				}
+            }
 		}
 
 		this.playerRect.x = this.player.desiredPosition.x;
@@ -1098,15 +1111,38 @@ public class MainScreen extends BaseScreen {
 			}
 		}
 
-
 		startX = (int)((this.player.desiredPosition.x + this.player.offSetX)/ this.TILED_SIZE);					//16 tile size
 		endX = (int)((this.player.desiredPosition.x + this.player.getWidth() + this.player.offSetX) / this.TILED_SIZE);
 
 		// System.out.println(startX + " " + startY + " " + endX + " " + endY);
 
-		this.getTiles(startX, startY, endX, endY, this.tiles);
+		this.getTiles(startX, startY, endX, endY, this.tiles, this.spikes);
 
 		this.playerRect.y += (int)(this.player.velocity.y);
+
+		for (Rectangle spike : this.spikes) {
+			if (this.playerRect.overlaps(spike)) {
+				if (this.normalGravity){
+					if (this.player.velocity.y > 0) // we hit a block jumping upwards
+						this.player.desiredPosition.y = spike.y - this.player.getHeight() - 2;
+					else {
+						// if we hit the ground, mark us as grounded so we can jump
+						this.player.desiredPosition.y = (spike.y + spike.height) - 2;
+						this.player.grounded = true;
+					}
+				}
+				else{	//upside down
+					if (this.player.velocity.y > 0) {
+						this.player.desiredPosition.y = (spike.y - this.player.getHeight()) + 1;
+						this.player.grounded = true;
+					}
+					else
+						this.player.desiredPosition.y = (spike.y + spike.height);
+				}
+			    collisionSpike = true;
+				break;
+            }
+		}
 
 		for (Rectangle tile : this.tiles) {
 			if (this.playerRect.overlaps(tile)) {
@@ -1130,22 +1166,32 @@ public class MainScreen extends BaseScreen {
 
 				this.player.velocity.y = 0;
 				break;
-				}
-			}
+            }
+        }
 
 		if (this.tiles.size == 0)
 			this.player.grounded = false;
 
 		//goes together with get
 		this.rectPool.free(this.playerRect);
+
+		return collisionSpike;
 	}
 
 
-	private void getTiles (int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
+	private void getTiles(int startX, int startY, int endX, int endY, Array<Rectangle> tiles) {
+	    this.getTiles(startX, startY, endX, endY, tiles, null);
+    }
+
+	private void getTiles(int startX, int startY, int endX, int endY, Array<Rectangle> tiles, Array<Rectangle> spikes) {
 		TiledMapTileLayer layer = (TiledMapTileLayer)(this.map.getLayers().get("Collisions"));
-		//TiledMapTileLayer layer2 = (TiledMapTileLayer)(this.map.getLayers().get("Spikes"));
+		TiledMapTileLayer layer2 = (TiledMapTileLayer)(this.map.getLayers().get("Spikes"));
 		this.rectPool.freeAll(tiles);
 		tiles.clear();
+        if (spikes != null) {
+            this.rectPool.freeAll(spikes);
+            spikes.clear();
+        }
 		for (int y = startY; y <= endY; y++) {
 			for (int x = startX; x <= endX; x++) {
 				Cell cell = layer.getCell(x, y);
@@ -1154,12 +1200,15 @@ public class MainScreen extends BaseScreen {
 					rect.set(x * this.TILED_SIZE, y  * this.TILED_SIZE, this.TILED_SIZE, this.TILED_SIZE);
 					tiles.add(rect);
                 }
-				//Cell cell2 = layer2.getCell(x, y);
-				//if (cell2 != null) {
-				//	Rectangle rect = this.rectPool.obtain();
-				//	rect.set(x * this.TILED_SIZE, y  * this.TILED_SIZE, this.TILED_SIZE, this.TILED_SIZE);
-				//	tiles.add(rect);
-                //}
+				if (spikes != null) {
+                    Cell cell2 = layer2.getCell(x, y);
+                    if (cell2 != null) {
+                        Rectangle rect = this.rectPool.obtain();
+                        rect.set(x * this.TILED_SIZE, y  * this.TILED_SIZE, this.TILED_SIZE, this.TILED_SIZE);
+                        spikes.add(rect);
+                        tiles.add(rect);
+                    }
+				}
             }
         }
     }
