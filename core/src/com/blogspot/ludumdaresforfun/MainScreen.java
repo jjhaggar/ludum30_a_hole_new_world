@@ -120,6 +120,7 @@ public class MainScreen extends BaseScreen {
                 }
             }
         }
+        //this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
 	}
 
 	@Override
@@ -871,19 +872,19 @@ public class MainScreen extends BaseScreen {
 			//door = new Vector2(789 - 25, 61);
 
 			layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Platfs"));
-			cell = layerSpawn.getCell((int)door.x, (int)door.y - 1); //has to be solid block
+			cell = layerSpawn.getCell((int)door.x, (int)door.y); //has to be solid block
 
-	        layerSpawn.setCell((int)door.x, (int)door.y, cell);
 	        layerSpawn.setCell((int)door.x, (int)door.y + 1, cell);
-	        layerSpawn.setCell((int)door.x + 1, (int)door.y, cell);
+	        layerSpawn.setCell((int)door.x, (int)door.y + 2, cell);
 	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 1, cell);
+	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 2, cell);
 
 	        layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Collisions"));
-	        cell = layerSpawn.getCell((789 -25), 70);
-	        layerSpawn.setCell((int)door.x, (int)door.y, cell);
+	        cell = layerSpawn.getCell((int)door.x, (int)door.y);
 	        layerSpawn.setCell((int)door.x, (int)door.y + 1, cell);
-	        layerSpawn.setCell((int)door.x + 1, (int)door.y, cell);
+	        layerSpawn.setCell((int)door.x, (int)door.y + 2, cell);
 	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 1, cell);
+	        layerSpawn.setCell((int)door.x + 1, (int)door.y + 2, cell);
 
 
 		}
