@@ -868,7 +868,7 @@ public class MainScreen extends BaseScreen {
 				this.player.facesRight = true;
 			}
 
-			if (Gdx.input.isKeyJustPressed(Keys.D) && (this.shotArray.size < 3)){
+			if ((Gdx.input.isKeyJustPressed(Keys.D) || this.configControllers.shootPressed) && (this.shotArray.size < 3)){
 				Assets.playSound("playerAttack");
 				Shot shot = new Shot(Assets.playerShot);
 				if (this.player.facesRight){

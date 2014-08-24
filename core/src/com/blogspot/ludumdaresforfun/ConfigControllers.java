@@ -11,6 +11,7 @@ public class ConfigControllers {
 	public boolean leftPressed = false;
 	public boolean rightPressed = false;
 	public boolean jumpPressed = false;
+	public boolean shootPressed = false;
 
     public ConfigControllers() {
     }
@@ -58,6 +59,9 @@ public class ConfigControllers {
                 if (buttonIndex == 0){
                     ConfigControllers.this.jumpPressed = true;
                 }
+                if (buttonIndex == 1){
+                    ConfigControllers.this.shootPressed = true;
+                }
                 return false;
             }
 
@@ -66,6 +70,9 @@ public class ConfigControllers {
                 // System.out.println("#" + indexOf(controller) + ", button " + buttonIndex + " up");
                 if (buttonIndex == 0){
                     ConfigControllers.this.jumpPressed = false;
+                }
+                if (buttonIndex == 1){
+                    ConfigControllers.this.shootPressed = false;
                 }
                 return false;
             }
@@ -96,7 +103,19 @@ public class ConfigControllers {
 
             @Override
             public boolean povMoved(Controller controller, int povCode, PovDirection value) {
-                // TODO Auto-generated method stub
+            	if (value.equals("west") || value == PovDirection.west){
+            		rightPressed = false;
+            		leftPressed = true;
+            	}
+            	else if (value.equals(PovDirection.east)){
+            		rightPressed = true;
+            		leftPressed = false;
+            	}
+            	else if (value.equals(PovDirection.center)){
+            		rightPressed = false;
+            		leftPressed = false;
+            	}
+            		else System.out.println("else!!");
                 return false;
             }
         });
