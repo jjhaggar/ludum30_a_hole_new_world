@@ -47,11 +47,13 @@ public class Enemy extends Image{
 
     public void die(){
     	// sound and set to die
+        Assets.playSound("enemyHurt");
         this.state = State.Hurting;
     	this.setToDie = true;
     }
 
     public void run() {
+        Assets.playSound("enemyAttack");
         if (this.dir == Direction.Left) {
             this.diffInitialPos -= 2;
             this.velocity.x = -this.ATTACK_VELOCITY;

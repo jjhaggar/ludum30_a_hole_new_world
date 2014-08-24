@@ -45,6 +45,7 @@ public class Player extends Image {
 
     public void beingHit() {
         if (!this.invincible) {
+            Assets.playSound("playerHurt");
             this.invincible = true;
             int lifes = this.counter.lostLife();
             if (lifes <= 0) {
@@ -61,6 +62,7 @@ public class Player extends Image {
     }
 
     public void die() {
+        Assets.playSound("playerDead");
         // TODO: animate, sound and reset game
         System.out.println("GAME OVER");
     }

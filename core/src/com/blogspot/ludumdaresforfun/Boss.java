@@ -54,11 +54,13 @@ public class Boss extends Image {
 
     public void die(){
     	//animate, sound and set to die
+        Assets.playSound("bossDead");
     	this.setToDie = true;
     	System.out.println("YOU KILL THE BOSS");
     }
 
     public void beingHit() {
+        Assets.playSound("bossHurt");
         int lifes = this.counter.lostLife();
         if (lifes <= 0) {
             this.die();

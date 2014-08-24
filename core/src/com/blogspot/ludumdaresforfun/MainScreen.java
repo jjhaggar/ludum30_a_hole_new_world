@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -241,7 +240,6 @@ public class MainScreen extends BaseScreen {
 			if (frame.isFlipX())
 				frame.flip(true, false);
 			batch.draw(frame, this.boss.getX() + frame.offsetX, this.boss.getY() + frame.offsetY);
-			System.out.println(this.boss.getX() + "");
 		} else {
 			if (!frame.isFlipX())
 				frame.flip(true, false);
@@ -286,10 +284,11 @@ public class MainScreen extends BaseScreen {
 
 		//collision (destroy if necessary)
 		boolean collided = this.collisionShotEnemy(shot);
-		if (collided == false)
+		if (!collided) {
 			collided = this.collisionShot(shot);
-
-
+			if (collided)
+                Assets.playSound("holyWaterBroken");
+		}
 
 		// unscale the velocity by the inverse delta time and set
 		// the latest position
@@ -328,9 +327,9 @@ public class MainScreen extends BaseScreen {
 			}
 		}
 
-		if (boss != null && this.playerRect.overlaps(this.boss.rect)) {
-			this.boss.beingHit();
-			collided = true;
+		if ((this.boss != null) && this.playerRect.overlaps(this.boss.rect)) {
+		    this.boss.beingHit();
+		    collided = true;
 		}
 
 
@@ -691,6 +690,7 @@ public class MainScreen extends BaseScreen {
 
 	private void movingShootingJumping(float deltaTime) {
 		if ((Gdx.input.isKeyJustPressed(Keys.S) || this.configControllers.jumpPressed) && this.player.grounded){
+            Assets.playSound("playerJump");
 			if (this.normalGravity)
 				this.player.velocity.y = this.player.JUMP_VELOCITY;
 			else
@@ -719,6 +719,7 @@ public class MainScreen extends BaseScreen {
 		}
 
 		if (Gdx.input.isKeyJustPressed(Keys.D) && (this.shotArray.size < 3)){
+            Assets.playSound("playerAttack");
 			Shot shot = new Shot(Assets.playerShot);
 			if (this.player.facesRight){
 				//-1 necessary to be exactly the same as the other facing

@@ -8,6 +8,9 @@ public class MenuScreen extends BaseScreen{
     Image bg;
 
 	public MenuScreen() {
+	    Assets.loadMusicAndSound();
+		Assets.music.setLooping(true);
+		Assets.music.play();
 	    this.bg = new Image(Assets.getBg());
 	    this.stage.addActor(this.bg);
 	}
