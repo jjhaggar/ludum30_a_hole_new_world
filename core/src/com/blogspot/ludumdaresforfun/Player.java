@@ -37,7 +37,7 @@ public class Player extends Image {
     public Player(Animation animation) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
-        offSetX = ((AtlasRegion)animation.getKeyFrame(0)).offsetX;
+        offSetX = ((AtlasRegion)Assets.playerWalk.getKeyFrame(0)).offsetX;
     }
 
     public Rectangle getRect() {

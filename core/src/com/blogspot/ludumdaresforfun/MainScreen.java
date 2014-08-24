@@ -61,12 +61,14 @@ public class MainScreen extends BaseScreen {
 	private float xRightBossWall = 420 + 200;
 	private float xLeftBossWall = 420;
 
+	float RightOffset = 0;
+
 
 
 	public MainScreen() {
 		this.shapeRenderer = new ShapeRenderer();
 
-		this.map = new TmxMapLoader().load("newtiles.tmx");
+		this.map = new TmxMapLoader().load("test01.tmx");
 		this.MAP_HEIGHT = (Integer) this.map.getProperties().get("height");
 		this.MAP_WIDTH = (Integer) this.map.getProperties().get("width");
 		this.TILED_SIZE = (Integer) this.map.getProperties().get("tileheight");
@@ -123,9 +125,15 @@ public class MainScreen extends BaseScreen {
 		this.activateBoss();
 
 		if (!this.bossActive){
-			this.camera.position.x = this.player.getX(); //200;//raya.position.x;
-            this.camera.position.y = this.player.getY();
+            //update x
+            if ((this.player.getX() - (SCREEN_WIDTH / 2)) < TILED_SIZE)
+            	this.camera.position.x = (SCREEN_WIDTH / 2) + TILED_SIZE;
+            else if ((this.player.getX() + (SCREEN_WIDTH / 2)) > MAP_WIDTH * TILED_SIZE)
+            	this.camera.position.x =  MAP_WIDTH * 16 - (SCREEN_WIDTH / 2);
+            else
+            	this.camera.position.x = this.player.getX();
 
+            //update y
 			if ((this.player.getY() - (SCREEN_HEIGHT / 2)) >= this.POS_LOWER_WORLD)
                 this.camera.position.y = this.player.getY();
             else if (this.player.getY() > this.POS_LOWER_WORLD)
@@ -556,9 +564,11 @@ public class MainScreen extends BaseScreen {
 		batch.begin();
 		if (this.player.facesRight && frame.isFlipX()) {
             frame.flip(true, false);
+            RightOffset = 1;
 		}
 		else if (!this.player.facesRight && !frame.isFlipX()) {
 			frame.flip(true, false);
+			RightOffset = -4;
 		}
 
 		if (this.normalGravity && frame.isFlipY())
@@ -566,7 +576,7 @@ public class MainScreen extends BaseScreen {
 		else if (!this.normalGravity && !frame.isFlipY())
 			frame.flip(false, true);
 
-		batch.draw(frame, this.player.getX() + frame.offsetX, this.player.getY() + frame.offsetY);
+		batch.draw(frame, this.player.getX() + frame.offsetX + RightOffset, this.player.getY() + frame.offsetY);
 
 		batch.end();
 		this.shapeRenderer.begin(ShapeType.Filled);
@@ -745,6 +755,11 @@ public class MainScreen extends BaseScreen {
 		if (this.player.noControl == false)
 			this.player.velocity.x *= 0;		//0 is totally stopped if not pressed
 
+		if (((this.player.desiredPosition.x - this.player.offSetX + this.player.velocity.x) < 0 )
+				|| ((this.player.desiredPosition.x + this.player.getWidth() + this.player.velocity.x)
+						> MAP_WIDTH * TILED_SIZE))
+			this.player.desiredPosition.x = 1;
+
 		this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 
 		if (Assets.playerDie.isAnimationFinished(this.player.stateTime) && this.player.dead){
@@ -790,14 +805,14 @@ public class MainScreen extends BaseScreen {
 			//this.camera.position.y = this.POS_LOWER_WORLD;
 			if (this.normalGravity == true){
 				this.normalGravity = false;
-				this.player.velocity.y = -this.player.JUMP_VELOCITY;
+				this.player.velocity.y = -this.player.JUMP_VELOCITY * 1.01f;
 			}
 		}
 		else {
 			//this.camera.position.y = 0;//this.yPosUpperWorld;
 			if (this.normalGravity == false){
 				this.normalGravity = true;
-				this.player.velocity.y = this.player.JUMP_VELOCITY;
+				this.player.velocity.y = this.player.JUMP_VELOCITY / 1.3f;
 			}
 		}
 
