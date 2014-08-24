@@ -1128,7 +1128,6 @@ public class MainScreen extends BaseScreen {
 		// perform collision detection & response, on each axis, separately
 		// if the raya is moving right, check the tiles to the right of it's
 		// right bounding box edge, otherwise check the ones to the left
-        boolean collisionSpike = false;
 		this.playerRect = this.rectPool.obtain();
 
 		this.player.desiredPosition.y = Math.round(this.player.getY());
@@ -1159,17 +1158,9 @@ public class MainScreen extends BaseScreen {
 			endY = (int)((this.player.desiredPosition.y + this.player.getHeight()) / this.TILED_SIZE) + 1;
 		}
 
-		this.getTiles(startX, startY, endX, endY, this.tiles, this.spikes);
+		this.getTiles(startX, startY, endX, endY, this.tiles);
 
 		this.playerRect.x += this.player.velocity.x;
-
-		for (Rectangle spike : this.spikes) {
-			if (this.playerRect.overlaps(spike)) {
-				this.player.velocity.x = 0;
-			    collisionSpike = true;
-				break;
-            }
-		}
 
 		for (Rectangle tile : this.tiles) {
 			if (this.playerRect.overlaps(tile)) {
@@ -1208,6 +1199,8 @@ public class MainScreen extends BaseScreen {
 		this.getTiles(startX, startY, endX, endY, this.tiles, this.spikes);
 
 		this.playerRect.y += (int)(this.player.velocity.y);
+
+        boolean collisionSpike = false;
 
 		for (Rectangle spike : this.spikes) {
 			if (this.playerRect.overlaps(spike)) {
