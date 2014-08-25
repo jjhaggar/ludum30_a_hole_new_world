@@ -8,12 +8,14 @@ import com.badlogic.gdx.math.Vector3;
 
 public class ConfigControllers {
 	// Botones del mando / Gamepad Buttons
+	private MainScreen screen;
 	public boolean leftPressed = false;
 	public boolean rightPressed = false;
 	public boolean jumpPressed = false;
 	public boolean shootPressed = false;
 
-    public ConfigControllers() {
+    public ConfigControllers(MainScreen screen) {
+    	this.screen = screen;
     }
 
     public void init() {
@@ -56,12 +58,12 @@ public class ConfigControllers {
             @Override
             public boolean buttonDown (Controller controller, int buttonIndex) {
                 // System.out.println("#" + indexOf(controller) + ", button " + buttonIndex + " down");
-                if (buttonIndex == 0  && !ConfigControllers.this.jumpPressed  && (LD.getInstance().MAIN_SCREEN.player.grounded) ){
-                    LD.getInstance().MAIN_SCREEN.jump();
+                if (buttonIndex == 0  && !ConfigControllers.this.jumpPressed){
+                	ConfigControllers.this.screen.jump();
                     ConfigControllers.this.jumpPressed = true;
                 }
-                if (buttonIndex == 1 && !ConfigControllers.this.shootPressed && (LD.getInstance().MAIN_SCREEN.shotArray.size < 3) ){
-                    LD.getInstance().MAIN_SCREEN.shoot();
+                if (buttonIndex == 1 && !ConfigControllers.this.shootPressed){
+                	ConfigControllers.this.screen.shoot();
                     ConfigControllers.this.shootPressed = true;
                 }
                 return false;

@@ -93,7 +93,7 @@ public class MainScreen extends BaseScreen {
 		this.player = new Player(Assets.playerStand);
         this.boss = new Boss(Assets.bossStanding);
 
-        this.configControllers = new ConfigControllers();
+        this.configControllers = new ConfigControllers(this);
 		this.configControllers.init();
 
 		TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Spawns"));
@@ -1051,7 +1051,7 @@ public class MainScreen extends BaseScreen {
 	private void movingShootingJumping(float deltaTime) {
 
 		if (this.player.noControl == false){
-			if (Gdx.input.isKeyJustPressed(Keys.S) && this.player.grounded){
+			if (Gdx.input.isKeyJustPressed(Keys.S)){
 				this.jump();
 				//this.player.stateTime = 0;
 			}
@@ -1076,7 +1076,7 @@ public class MainScreen extends BaseScreen {
 				this.player.facesRight = true;
 			}
 
-			if (Gdx.input.isKeyJustPressed(Keys.D) && (this.shotArray.size < 3)){
+			if (Gdx.input.isKeyJustPressed(Keys.D)){
 				this.shoot();
 			}
 		}
@@ -1102,30 +1102,34 @@ public class MainScreen extends BaseScreen {
 	}
 
 	public void shoot() {
-		Assets.playSound("playerAttack");
-		Shot shot = new Shot(Assets.playerShot);
-		if (this.player.facesRight){
-			//-1 necessary to be exactly the same as the other facing
-			shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
+		if  (this.shotArray.size < 3){
+			Assets.playSound("playerAttack");
+			Shot shot = new Shot(Assets.playerShot);
+			if (this.player.facesRight){
+				//-1 necessary to be exactly the same as the other facing
+				shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
+			}
+			else {
+				shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
+			}
+			this.shotArray.add(shot);
+	
+			this.player.state = Player.State.Attacking;
+			this.player.stateTime = 0;
+			this.player.shooting = true;
 		}
-		else {
-			shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
-		}
-		this.shotArray.add(shot);
-
-		this.player.state = Player.State.Attacking;
-		this.player.stateTime = 0;
-		this.player.shooting = true;
 	}
 
 	public void jump() {
-		Assets.playSound("playerJump");
-		if (this.normalGravity)
-			this.player.velocity.y = this.player.JUMP_VELOCITY;
-		else
-			this.player.velocity.y = -this.player.JUMP_VELOCITY;
-		this.player.grounded = false;
-		this.player.state = Player.State.Jumping;
+		if (this.player.grounded){
+			Assets.playSound("playerJump");
+			if (this.normalGravity)
+				this.player.velocity.y = this.player.JUMP_VELOCITY;
+			else
+				this.player.velocity.y = -this.player.JUMP_VELOCITY;
+			this.player.grounded = false;
+			this.player.state = Player.State.Jumping;
+		}
 	}
 
 	private boolean collisionForBoss(Boss boss) {
