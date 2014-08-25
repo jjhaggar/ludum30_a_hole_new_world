@@ -47,7 +47,7 @@ public class Assets {
 		Ending.setPlayMode(PlayMode.LOOP);
 
 		regions = atlas.findRegions("game_over");
-		GameOver = new Animation(0.25f, regions);
+		GameOver = new Animation(0f, regions);
 		GameOver.setPlayMode(PlayMode.LOOP);
 
 		// Player
