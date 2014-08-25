@@ -797,34 +797,36 @@ public class MainScreen extends BaseScreen {
 
 	        enemy.stateTime += deltaTime;
 	        // Check if player is invincible and check distance to player for attack him.
-	        if (!enemy.running && !enemy.dying && !enemy.beingInvoked){
+	        if (!enemy.running && !enemy.dying && !enemy.beingInvoked && enemy.canMove){
 	            // Attack
-	        	if (!this.player.invincible && (Math.abs(((enemy.getCenterY() - this.player.getCenterY()))) <= this.player.getHeight())) {
-	        		if (enemy.getX() < this.player.getX()) {
-	        			if ((enemy.getX() + enemy.ATTACK_DISTANCE) >= (this.player.getRight())) {
+	            System.out.println("Enemy: ");
+	        	if (!this.player.invincible &&
+                        (Math.abs(enemy.getCenterX() - this.player.getCenterX()) <= enemy.ATTACK_DISTANCE) &&
+	        	        (Math.abs(((enemy.getCenterY() - this.player.getCenterY()))) <= this.player.getHeight())) {
+	        		if (enemy.getCenterX() < this.player.getCenterX()) {
+                            System.out.println("1-");
 	        				enemy.dir = Enemy.Direction.Right;
 	        				enemy.run();
 	        				enemy.attackHereX = this.player.getX();
 	        				enemy.attackRight = true;
-	        			}
 	        		}
 	        		else {
-	        			if ((enemy.getX() - enemy.ATTACK_DISTANCE) <= this.player.getX()) {
+                            System.out.println("1--");
 	        				enemy.dir = Enemy.Direction.Left;
 	        				enemy.run();
 	        				enemy.attackHereX = this.player.getX();
 	        				enemy.attackRight = false;
-	        			}
 	        		}
 	        	}
-
 	        	else if (enemy.dir == Enemy.Direction.Left) {
+                    System.out.println("1");
 	        		if (-enemy.RANGE >= enemy.diffInitialPos) {
 	        			enemy.dir = Enemy.Direction.Right;
 	        		}
 	        		enemy.walk();
 	        	}
 	        	else if (enemy.dir == Enemy.Direction.Right) {
+                    System.out.println("1");
 	        		if (enemy.diffInitialPos >= enemy.RANGE) {
 	        			enemy.dir = Enemy.Direction.Left;
 	        		}
@@ -896,13 +898,12 @@ public class MainScreen extends BaseScreen {
 
 		if (Assets.enemyAppearing.isAnimationFinished(enemy.stateTime) && enemy.state.equals(Enemy.State.BeingInvoked)){
 			enemy.beingInvoked = false;
-			enemy.walk();
 		}
 
 	}
 
 	private void isEnemyInScreen(Enemy enemy) {
-	    if (enemy.inScreen)
+	    if (enemy.canMove)
 	        return;
 	    Rectangle cameraRect = new Rectangle(0, 0, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
 	    cameraRect.setCenter(this.camera.position.x, this.camera.position.y);
@@ -911,7 +912,7 @@ public class MainScreen extends BaseScreen {
 		        enemy.dir = Enemy.Direction.Left;
 		    else
 		        enemy.dir = Enemy.Direction.Right;
-			enemy.inScreen = true;
+			enemy.canMove = true;
 		}
 	}
 

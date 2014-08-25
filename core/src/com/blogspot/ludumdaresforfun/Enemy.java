@@ -40,7 +40,7 @@ public class Enemy extends Image{
     float stateTime = 0;
 	float offSetX;
 	public boolean dying = false;
-	public boolean inScreen = false;
+	public boolean canMove = false;
 	public AtlasRegion actualFrame;
 	public boolean beingInvoked = false;
 
