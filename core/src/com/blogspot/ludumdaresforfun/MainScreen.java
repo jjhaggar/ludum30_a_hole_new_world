@@ -27,7 +27,7 @@ public class MainScreen extends BaseScreen {
 	Rectangle playerRect;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
-	private Player player;
+	public Player player;
 	private ShapeRenderer shapeRenderer;
 	private TiledMap map;
 	private boolean normalGravity = true;
@@ -36,7 +36,7 @@ public class MainScreen extends BaseScreen {
 	private Array<Enemy> enemies = new Array<Enemy>();
 	private Array<Rectangle> tiles = new Array<Rectangle>();
 	private Array<Rectangle> spikes = new Array<Rectangle>();
-	private Array<Shot> shotArray = new Array<Shot>();
+	public Array<Shot> shotArray = new Array<Shot>();
 	private Array<Vector2> spawns = new Array<Vector2>();
 	private Array<Vector2> lifes = new Array<Vector2>();
 
@@ -1047,14 +1047,8 @@ public class MainScreen extends BaseScreen {
 	private void movingShootingJumping(float deltaTime) {
 
 		if (this.player.noControl == false){
-			if ((Gdx.input.isKeyJustPressed(Keys.S) || this.configControllers.jumpPressed) && this.player.grounded){
-				Assets.playSound("playerJump");
-				if (this.normalGravity)
-					this.player.velocity.y = this.player.JUMP_VELOCITY;
-				else
-					this.player.velocity.y = -this.player.JUMP_VELOCITY;
-				this.player.grounded = false;
-				this.player.state = Player.State.Jumping;
+			if (Gdx.input.isKeyJustPressed(Keys.S) && this.player.grounded){
+				jump();
 				//this.player.stateTime = 0;
 			}
 
@@ -1078,21 +1072,8 @@ public class MainScreen extends BaseScreen {
 				this.player.facesRight = true;
 			}
 
-			if ((Gdx.input.isKeyJustPressed(Keys.D) || this.configControllers.shootPressed) && (this.shotArray.size < 3)){
-				Assets.playSound("playerAttack");
-				Shot shot = new Shot(Assets.playerShot);
-				if (this.player.facesRight){
-					//-1 necessary to be exactly the same as the other facing
-					shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
-				}
-				else {
-					shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
-				}
-				this.shotArray.add(shot);
-
-				this.player.state = Player.State.Attacking;
-				this.player.stateTime = 0;
-				this.player.shooting = true;
+			if (Gdx.input.isKeyJustPressed(Keys.D) && (this.shotArray.size < 3)){
+				shoot();
 			}
 		}
 
@@ -1114,6 +1095,33 @@ public class MainScreen extends BaseScreen {
 			if (toBeDeleted[j] && (this.shotArray.size >= (j + 1)))
 				this.shotArray.removeIndex(j);
 		}
+	}
+
+	public void shoot() {
+		Assets.playSound("playerAttack");
+		Shot shot = new Shot(Assets.playerShot);
+		if (this.player.facesRight){
+			//-1 necessary to be exactly the same as the other facing
+			shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
+		}
+		else {
+			shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
+		}
+		this.shotArray.add(shot);
+
+		this.player.state = Player.State.Attacking;
+		this.player.stateTime = 0;
+		this.player.shooting = true;
+	}
+
+	public void jump() {
+		Assets.playSound("playerJump");
+		if (this.normalGravity)
+			this.player.velocity.y = this.player.JUMP_VELOCITY;
+		else
+			this.player.velocity.y = -this.player.JUMP_VELOCITY;
+		this.player.grounded = false;
+		this.player.state = Player.State.Jumping;
 	}
 
 	private boolean collisionForBoss(Boss boss) {

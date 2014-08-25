@@ -56,10 +56,12 @@ public class ConfigControllers {
             @Override
             public boolean buttonDown (Controller controller, int buttonIndex) {
                 // System.out.println("#" + indexOf(controller) + ", button " + buttonIndex + " down");
-                if (buttonIndex == 0){
+                if (buttonIndex == 0  && !ConfigControllers.this.jumpPressed  && (LD.getInstance().MAIN_SCREEN.player.grounded) ){
+                    LD.getInstance().MAIN_SCREEN.jump();
                     ConfigControllers.this.jumpPressed = true;
                 }
-                if (buttonIndex == 1){
+                if (buttonIndex == 1 && !ConfigControllers.this.shootPressed && (LD.getInstance().MAIN_SCREEN.shotArray.size < 3) ){
+                    LD.getInstance().MAIN_SCREEN.shoot();
                     ConfigControllers.this.shootPressed = true;
                 }
                 return false;
@@ -115,7 +117,7 @@ public class ConfigControllers {
             		rightPressed = false;
             		leftPressed = false;
             	}
-            		else System.out.println("else!!");
+                // else System.out.println("else!!");
                 return false;
             }
         });
