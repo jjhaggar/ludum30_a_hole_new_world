@@ -10,11 +10,6 @@ public class GameOverScreen extends BaseScreen{
     public boolean bossCheckPoint = false;
 
 	public GameOverScreen(boolean checkPoint) {
-		if (Assets.musicBoss.isPlaying())
-			Assets.musicBoss.stop();
-		else if (Assets.musicStage.isPlaying())
-			Assets.musicBoss.stop();
-
 		this.bossCheckPoint = checkPoint;
 
 	    this.bg = new BGAnimated(Assets.GameOver);
@@ -29,6 +24,8 @@ public class GameOverScreen extends BaseScreen{
 
     @Override
     public void enterButtonPressed() {
+    	Assets.musicStage.setLooping(true);
+    	Assets.musicStage.play();
         LD.getInstance().MAIN_SCREEN = new MainScreen(this.bossCheckPoint);
         LD.getInstance().setScreen(LD.getInstance().MAIN_SCREEN);
     }

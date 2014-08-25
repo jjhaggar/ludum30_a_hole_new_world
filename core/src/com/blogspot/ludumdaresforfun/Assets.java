@@ -150,6 +150,8 @@ public class Assets {
 	public static void loadMusicAndSound() {
 		musicStage = Gdx.audio.newMusic(Gdx.files.internal("music/mainTheme.ogg"));
 		musicBoss = Gdx.audio.newMusic(Gdx.files.internal("music/finalBoss.ogg"));
+		musicBoss.setVolume(0.5f);
+		musicStage.setVolume(0.5f);
 		// Player
         addSound("playerAttack");
         addSound("playerHurt");
