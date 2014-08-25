@@ -1375,7 +1375,7 @@ public class MainScreen extends BaseScreen {
 						this.player.desiredPosition.y = tile.y - this.player.actualFrame.getRegionHeight() ;
 					else {
 						// if we hit the ground, mark us as grounded so we can jump
-						this.player.desiredPosition.y = (tile.y + tile.height) - 1;
+						this.player.desiredPosition.y = (tile.y + tile.height) - 2;
 						this.player.grounded = true;
 					}
 				}
