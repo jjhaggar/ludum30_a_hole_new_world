@@ -127,7 +127,7 @@ public class MainScreen extends BaseScreen {
         }
 
         this.hud = new HUD(Assets.hudBase);
-       // if (checkPoint)
+        if (checkPoint)
         	this.player.setPosition((this.door.x + 1) * 16, (this.door.y + 1) * 16);
 
 	}
@@ -212,6 +212,11 @@ public class MainScreen extends BaseScreen {
 				this.player.beingHit();
 			}
 		}
+
+		//bug fix provisional
+		if (this.boss.getY() < (door.y * this.TILED_SIZE - 32))
+			this.boss.setY(door.y* this.TILED_SIZE + 35);
+		//end bug provisional
 
 		this.boss.desiredPosition.y = this.boss.getY();
 

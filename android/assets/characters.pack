@@ -45,9 +45,30 @@ intro
   orig: 400, 240
   offset: 0, 0
   index: 2
+sequence_ending
+  rotate: false
+  xy: 403, 299
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 1
+sequence_ending
+  rotate: false
+  xy: 403, 299
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 2
+sequence_ending
+  rotate: false
+  xy: 403, 57
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 3
 hud_base
   rotate: false
-  xy: 403, 523
+  xy: 1, 39
   size: 400, 16
   orig: 400, 16
   offset: 0, 0
@@ -61,28 +82,28 @@ boss_dying
   index: 17
 boss_dying
   rotate: false
-  xy: 1, 10
+  xy: 805, 924
   size: 116, 45
   orig: 128, 128
   offset: 11, 34
   index: 18
 boss_dying
   rotate: false
-  xy: 403, 475
+  xy: 805, 876
   size: 111, 46
   orig: 128, 128
   offset: 12, 33
   index: 19
 boss_dying
   rotate: false
-  xy: 805, 924
+  xy: 805, 829
   size: 108, 45
   orig: 128, 128
   offset: 17, 34
   index: 20
 boss_dying
   rotate: false
-  xy: 403, 427
+  xy: 805, 781
   size: 105, 46
   orig: 128, 128
   offset: 18, 33
@@ -96,736 +117,1395 @@ boss_dying
   index: 22
 boss_dying
   rotate: false
-  xy: 805, 870
+  xy: 805, 727
   size: 79, 52
   orig: 128, 128
   offset: 30, 26
   index: 16
 boss_attack_close
   rotate: false
-  xy: 403, 366
+  xy: 805, 666
   size: 71, 59
   orig: 128, 128
   offset: 55, 34
   index: 11
 boss_dying
   rotate: false
-  xy: 805, 821
+  xy: 923, 928
   size: 79, 47
   orig: 128, 128
   offset: 27, 35
   index: 23
 boss_attack_close
   rotate: false
-  xy: 403, 305
+  xy: 805, 605
   size: 65, 59
   orig: 128, 128
   offset: 49, 34
   index: 10
 boss_attack_close
   rotate: false
-  xy: 805, 761
+  xy: 805, 545
   size: 66, 58
   orig: 128, 128
   offset: 55, 35
   index: 12
 boss_attack_close
   rotate: false
-  xy: 403, 245
+  xy: 805, 485
   size: 62, 58
   orig: 128, 128
   offset: 55, 35
   index: 13
-boss_dying
-  rotate: false
-  xy: 516, 474
-  size: 69, 47
-  orig: 128, 128
-  offset: 24, 44
-  index: 27
 boss_attack_close
   rotate: false
-  xy: 805, 699
+  xy: 805, 423
   size: 54, 60
   orig: 128, 128
   offset: 28, 35
   index: 6
 boss_attack_close
   rotate: false
-  xy: 403, 183
+  xy: 805, 361
   size: 54, 60
   orig: 128, 128
   offset: 28, 35
   index: 8
 boss_attack_close
   rotate: false
-  xy: 805, 639
+  xy: 805, 301
   size: 55, 58
   orig: 128, 128
   offset: 27, 35
   index: 5
 boss_attack_close
   rotate: false
-  xy: 805, 579
+  xy: 805, 241
   size: 55, 58
   orig: 128, 128
   offset: 27, 35
   index: 7
 boss_attack_distance
   rotate: false
-  xy: 403, 114
+  xy: 805, 172
   size: 43, 67
   orig: 128, 128
   offset: 47, 35
   index: 7
-boss_dying
-  rotate: false
-  xy: 119, 12
-  size: 66, 43
-  orig: 128, 128
-  offset: 32, 40
-  index: 24
-boss_standing
-  rotate: false
-  xy: 805, 519
-  size: 52, 58
-  orig: 128, 128
-  offset: 35, 35
-  index: 3
-boss_dying
-  rotate: false
-  xy: 587, 477
-  size: 61, 44
-  orig: 128, 128
-  offset: 30, 43
-  index: 26
-boss_attack_close
-  rotate: false
-  xy: 403, 54
-  size: 46, 58
-  orig: 128, 128
-  offset: 36, 35
-  index: 3
-boss_dying
-  rotate: false
-  xy: 650, 488
-  size: 64, 33
-  orig: 128, 128
-  offset: 31, 54
-  index: 28
 boss_attack_distance
   rotate: false
-  xy: 886, 855
+  xy: 805, 103
   size: 42, 67
   orig: 128, 128
   offset: 48, 35
   index: 6
 boss_dying
   rotate: false
-  xy: 187, 12
-  size: 50, 43
+  xy: 1, 4
+  size: 64, 33
   orig: 128, 128
-  offset: 43, 31
-  index: 15
-boss_attack_distance
-  rotate: false
-  xy: 239, 2
-  size: 49, 53
-  orig: 128, 128
-  offset: 40, 35
-  index: 2
-boss_dying
-  rotate: false
-  xy: 290, 2
-  size: 49, 53
-  orig: 128, 128
-  offset: 40, 35
-  index: 2
-boss_attack_distance
-  rotate: false
-  xy: 341, 9
-  size: 48, 46
-  orig: 128, 128
-  offset: 43, 35
-  index: 3
-boss_attack_distance
-  rotate: false
-  xy: 476, 364
-  size: 39, 61
-  orig: 128, 128
-  offset: 51, 35
-  index: 4
+  offset: 31, 54
+  index: 28
 boss_attack_close
   rotate: false
-  xy: 470, 304
-  size: 47, 58
-  orig: 128, 128
-  offset: 35, 35
-  index: 4
-boss_standing
-  rotate: false
-  xy: 467, 244
-  size: 50, 58
-  orig: 128, 128
-  offset: 37, 35
-  index: 2
-boss_attack_distance
-  rotate: false
-  xy: 459, 185
-  size: 48, 57
-  orig: 128, 128
-  offset: 37, 35
-  index: 1
-boss_dying
-  rotate: false
-  xy: 716, 483
-  size: 50, 38
-  orig: 128, 128
-  offset: 43, 35
-  index: 4
-boss_dying
-  rotate: false
-  xy: 510, 433
-  size: 50, 39
-  orig: 128, 128
-  offset: 43, 35
-  index: 14
-boss_jump_d
-  rotate: false
-  xy: 517, 372
-  size: 43, 59
-  orig: 128, 128
-  offset: 30, 35
-  index: 1
-boss_attack_distance
-  rotate: false
-  xy: 519, 309
-  size: 39, 61
-  orig: 128, 128
-  offset: 51, 35
-  index: 5
-boss_attack_close
-  rotate: false
-  xy: 519, 249
+  xy: 805, 43
   size: 42, 58
   orig: 128, 128
   offset: 41, 35
   index: 1
+boss_dying
+  rotate: false
+  xy: 403, 8
+  size: 69, 47
+  orig: 128, 128
+  offset: 24, 44
+  index: 27
+boss_dying
+  rotate: false
+  xy: 474, 12
+  size: 66, 43
+  orig: 128, 128
+  offset: 32, 40
+  index: 24
+boss_dying
+  rotate: false
+  xy: 542, 11
+  size: 61, 44
+  orig: 128, 128
+  offset: 30, 43
+  index: 26
 boss_attack_distance
   rotate: false
-  xy: 562, 413
-  size: 35, 59
+  xy: 605, 2
+  size: 49, 53
   orig: 128, 128
-  offset: 44, 35
-  index: 8
+  offset: 40, 35
+  index: 2
 boss_dying
   rotate: false
-  xy: 599, 418
-  size: 48, 57
+  xy: 656, 2
+  size: 49, 53
   orig: 128, 128
-  offset: 37, 35
-  index: 1
-boss_attack_close
+  offset: 40, 35
+  index: 2
+boss_attack_distance
   rotate: false
-  xy: 768, 463
-  size: 35, 58
+  xy: 707, 9
+  size: 48, 46
   orig: 128, 128
-  offset: 48, 35
-  index: 14
-boss_standing
-  rotate: false
-  xy: 805, 459
-  size: 47, 58
-  orig: 128, 128
-  offset: 41, 35
-  index: 1
+  offset: 43, 35
+  index: 3
 boss_dying
   rotate: false
-  xy: 391, 6
+  xy: 757, 9
   size: 46, 46
   orig: 128, 128
   offset: 43, 35
   index: 3
+enemy_dying
+  rotate: false
+  xy: 67, 1
+  size: 22, 36
+  orig: 46, 51
+  offset: 11, 1
+  index: 2
 boss_attack_close
   rotate: false
-  xy: 562, 353
+  xy: 886, 721
   size: 41, 58
   orig: 128, 128
   offset: 41, 35
   index: 2
+boss_standing
+  rotate: false
+  xy: 878, 661
+  size: 50, 58
+  orig: 128, 128
+  offset: 37, 35
+  index: 2
+boss_dying
+  rotate: false
+  xy: 872, 616
+  size: 50, 43
+  orig: 128, 128
+  offset: 43, 31
+  index: 15
+boss_standing
+  rotate: false
+  xy: 873, 556
+  size: 52, 58
+  orig: 128, 128
+  offset: 35, 35
+  index: 3
+boss_dying
+  rotate: false
+  xy: 805, 3
+  size: 50, 38
+  orig: 128, 128
+  offset: 43, 35
+  index: 4
+boss_attack_distance
+  rotate: false
+  xy: 850, 178
+  size: 39, 61
+  orig: 128, 128
+  offset: 51, 35
+  index: 4
+enemy_attack
+  rotate: false
+  xy: 91, 3
+  size: 37, 34
+  orig: 46, 51
+  offset: 8, 1
+  index: 2
+boss_attack_distance
+  rotate: false
+  xy: 861, 422
+  size: 39, 61
+  orig: 128, 128
+  offset: 51, 35
+  index: 5
+boss_jump_d
+  rotate: false
+  xy: 861, 361
+  size: 43, 59
+  orig: 128, 128
+  offset: 30, 35
+  index: 1
 boss_attack_close
   rotate: false
-  xy: 605, 358
+  xy: 862, 301
+  size: 46, 58
+  orig: 128, 128
+  offset: 36, 35
+  index: 3
+boss_attack_close
+  rotate: false
+  xy: 862, 241
+  size: 47, 58
+  orig: 128, 128
+  offset: 35, 35
+  index: 4
+boss_attack_close
+  rotate: false
+  xy: 869, 485
   size: 46, 58
   orig: 128, 128
   offset: 40, 35
   index: 9
-boss_dying
+boss_attack_distance
   rotate: false
-  xy: 560, 313
-  size: 50, 38
+  xy: 891, 180
+  size: 35, 59
   orig: 128, 128
-  offset: 43, 35
-  index: 6
-boss_walking
+  offset: 44, 35
+  index: 8
+boss_attack_distance
   rotate: false
-  xy: 563, 253
-  size: 45, 58
+  xy: 902, 424
+  size: 37, 59
   orig: 128, 128
-  offset: 33, 35
+  offset: 42, 35
+  index: 9
+boss_jump_a
+  rotate: false
+  xy: 906, 363
+  size: 34, 59
+  orig: 128, 128
+  offset: 39, 35
+  index: 1
+boss_jump_a
+  rotate: false
+  xy: 910, 302
+  size: 31, 59
+  orig: 128, 128
+  offset: 42, 35
+  index: 2
+boss_jump_d
+  rotate: false
+  xy: 911, 241
+  size: 38, 59
+  orig: 128, 128
+  offset: 35, 35
+  index: 2
+boss_attack_close
+  rotate: false
+  xy: 928, 181
+  size: 35, 58
+  orig: 128, 128
+  offset: 48, 35
+  index: 14
+enemy_attack
+  rotate: false
+  xy: 130, 8
+  size: 31, 29
+  orig: 46, 51
+  offset: 11, 1
   index: 3
 boss_attack_distance
   rotate: false
-  xy: 612, 298
+  xy: 849, 112
   size: 39, 58
   orig: 128, 128
   offset: 42, 35
   index: 10
 boss_gethit
   rotate: false
-  xy: 610, 238
+  xy: 849, 52
   size: 43, 58
   orig: 128, 128
   offset: 41, 35
   index: 1
 boss_dying
   rotate: false
-  xy: 886, 816
-  size: 50, 37
+  xy: 857, 11
+  size: 50, 39
   orig: 128, 128
   offset: 43, 35
-  index: 5
-boss_walking
-  rotate: false
-  xy: 873, 756
-  size: 44, 58
-  orig: 128, 128
-  offset: 33, 35
-  index: 6
-boss_dying
-  rotate: false
-  xy: 861, 716
-  size: 50, 38
-  orig: 128, 128
-  offset: 43, 35
-  index: 7
+  index: 14
 boss_gethit
   rotate: false
-  xy: 862, 656
+  xy: 917, 496
   size: 43, 58
   orig: 128, 128
   offset: 41, 35
   index: 2
-boss_jump_d
+boss_standing
   rotate: false
-  xy: 862, 595
-  size: 38, 59
+  xy: 941, 436
+  size: 47, 58
   orig: 128, 128
-  offset: 35, 35
-  index: 2
+  offset: 41, 35
+  index: 1
 boss_attack_distance
   rotate: false
-  xy: 919, 755
-  size: 37, 59
+  xy: 942, 377
+  size: 48, 57
   orig: 128, 128
-  offset: 42, 35
-  index: 9
+  offset: 37, 35
+  index: 1
 boss_dying
   rotate: false
-  xy: 913, 716
-  size: 50, 37
+  xy: 943, 318
+  size: 48, 57
   orig: 128, 128
-  offset: 43, 35
-  index: 8
-boss_walking
-  rotate: false
-  xy: 907, 656
-  size: 38, 58
-  orig: 128, 128
-  offset: 35, 35
-  index: 2
-boss_walking
-  rotate: false
-  xy: 902, 596
-  size: 38, 58
-  orig: 128, 128
-  offset: 35, 35
-  index: 5
-boss_jump_a
-  rotate: false
-  xy: 947, 655
-  size: 34, 59
-  orig: 128, 128
-  offset: 39, 35
+  offset: 37, 35
   index: 1
 boss_walking
   rotate: false
-  xy: 942, 595
-  size: 34, 58
+  xy: 951, 258
+  size: 45, 58
   orig: 128, 128
-  offset: 39, 35
-  index: 1
-boss_jump_a
-  rotate: false
-  xy: 448, 122
-  size: 31, 59
-  orig: 128, 128
-  offset: 42, 35
-  index: 2
-boss_walking
-  rotate: false
-  xy: 481, 125
-  size: 34, 58
-  orig: 128, 128
-  offset: 39, 35
-  index: 4
-boss_dying
-  rotate: false
-  xy: 650, 449
-  size: 50, 37
-  orig: 128, 128
-  offset: 43, 35
-  index: 9
-boss_dying
-  rotate: false
-  xy: 702, 443
-  size: 50, 38
-  orig: 128, 128
-  offset: 43, 35
-  index: 10
-enemy_attack
-  rotate: false
-  xy: 649, 418
-  size: 31, 29
-  orig: 46, 51
-  offset: 11, 1
+  offset: 33, 35
   index: 3
-boss_dying
+boss_walking
   rotate: false
-  xy: 653, 378
-  size: 50, 38
+  xy: 965, 198
+  size: 34, 58
   orig: 128, 128
-  offset: 43, 35
-  index: 11
-boss_dying
-  rotate: false
-  xy: 653, 339
-  size: 50, 37
-  orig: 128, 128
-  offset: 43, 35
-  index: 12
-boss_dying
-  rotate: false
-  xy: 653, 300
-  size: 50, 37
-  orig: 128, 128
-  offset: 43, 35
-  index: 13
-enemy_attack
-  rotate: false
-  xy: 655, 264
-  size: 37, 34
-  orig: 46, 51
-  offset: 8, 1
-  index: 2
-enemy_dying
-  rotate: false
-  xy: 451, 83
-  size: 24, 37
-  orig: 46, 51
-  offset: 10, 1
-  index: 1
-enemy_walking
-  rotate: false
-  xy: 451, 83
-  size: 24, 37
-  orig: 46, 51
-  offset: 10, 1
+  offset: 39, 35
   index: 1
 char_attack
   rotate: false
-  xy: 451, 49
+  xy: 163, 5
   size: 25, 32
   orig: 30, 35
   offset: 2, 2
   index: 2
-enemy_appearing
-  rotate: false
-  xy: 682, 420
-  size: 18, 27
-  orig: 46, 51
-  offset: 15, 1
-  index: 3
 char_attack
   rotate: false
-  xy: 655, 230
+  xy: 190, 5
   size: 24, 32
   orig: 30, 35
   offset: 3, 2
   index: 3
-enemy_dying
+char_intro
   rotate: false
-  xy: 439, 11
-  size: 22, 36
+  xy: 216, 5
+  size: 24, 32
+  orig: 30, 35
+  offset: 1, 2
+  index: 1
+enemy_walking
+  rotate: false
+  xy: 242, 2
+  size: 23, 35
   orig: 46, 51
   offset: 11, 1
   index: 2
 enemy_attack
   rotate: false
-  xy: 463, 12
+  xy: 267, 2
   size: 22, 35
   orig: 46, 51
   offset: 1, 1
   index: 1
-char_dying
-  rotate: false
-  xy: 702, 419
-  size: 23, 22
-  orig: 30, 35
-  offset: 7, 2
-  index: 3
-enemy_walking
-  rotate: false
-  xy: 705, 382
-  size: 23, 35
-  orig: 46, 51
-  offset: 11, 1
-  index: 2
 char_gethit
   rotate: false
-  xy: 705, 347
+  xy: 291, 4
   size: 22, 33
   orig: 30, 35
   offset: 0, 2
   index: 1
 char_intro
   rotate: false
-  xy: 705, 313
-  size: 24, 32
-  orig: 30, 35
-  offset: 1, 2
-  index: 1
-char_intro
-  rotate: false
-  xy: 681, 229
+  xy: 315, 4
   size: 20, 33
   orig: 30, 35
   offset: 2, 2
   index: 2
+boss_dying
+  rotate: false
+  xy: 923, 889
+  size: 50, 37
+  orig: 128, 128
+  offset: 43, 35
+  index: 5
+boss_walking
+  rotate: false
+  xy: 975, 868
+  size: 38, 58
+  orig: 128, 128
+  offset: 35, 35
+  index: 2
+boss_walking
+  rotate: false
+  xy: 929, 829
+  size: 44, 58
+  orig: 128, 128
+  offset: 33, 35
+  index: 6
+boss_walking
+  rotate: false
+  xy: 975, 808
+  size: 38, 58
+  orig: 128, 128
+  offset: 35, 35
+  index: 5
+boss_dying
+  rotate: false
+  xy: 912, 789
+  size: 50, 38
+  orig: 128, 128
+  offset: 43, 35
+  index: 6
+boss_walking
+  rotate: false
+  xy: 929, 729
+  size: 34, 58
+  orig: 128, 128
+  offset: 39, 35
+  index: 4
+boss_dying
+  rotate: false
+  xy: 930, 689
+  size: 50, 38
+  orig: 128, 128
+  offset: 43, 35
+  index: 7
+boss_dying
+  rotate: false
+  xy: 930, 650
+  size: 50, 37
+  orig: 128, 128
+  offset: 43, 35
+  index: 8
+boss_dying
+  rotate: false
+  xy: 965, 768
+  size: 50, 38
+  orig: 128, 128
+  offset: 43, 35
+  index: 10
+boss_dying
+  rotate: false
+  xy: 965, 729
+  size: 50, 37
+  orig: 128, 128
+  offset: 43, 35
+  index: 9
 enemy_dying
   rotate: false
-  xy: 509, 207
-  size: 17, 35
+  xy: 982, 690
+  size: 24, 37
   orig: 46, 51
-  offset: 12, 1
-  index: 3
+  offset: 10, 1
+  index: 1
+enemy_walking
+  rotate: false
+  xy: 982, 690
+  size: 24, 37
+  orig: 46, 51
+  offset: 10, 1
+  index: 1
 char_jumping
   rotate: false
-  xy: 528, 215
+  xy: 337, 5
   size: 20, 32
   orig: 30, 35
   offset: 4, 3
   index: 2
-char_intro
-  rotate: false
-  xy: 550, 214
-  size: 17, 33
-  orig: 30, 35
-  offset: 4, 2
-  index: 3
-char_walking
-  rotate: false
-  xy: 569, 218
-  size: 18, 33
-  orig: 30, 35
-  offset: 5, 2
-  index: 1
-char_walking
-  rotate: false
-  xy: 589, 218
-  size: 18, 33
-  orig: 30, 35
-  offset: 5, 2
-  index: 3
 enemy_dying
   rotate: false
-  xy: 1, 1
-  size: 17, 7
+  xy: 982, 653
+  size: 17, 35
   orig: 46, 51
   offset: 12, 1
-  index: 7
+  index: 3
+boss_dying
+  rotate: false
+  xy: 927, 610
+  size: 50, 38
+  orig: 128, 128
+  offset: 43, 35
+  index: 11
+boss_dying
+  rotate: false
+  xy: 927, 571
+  size: 50, 37
+  orig: 128, 128
+  offset: 43, 35
+  index: 12
 char_dying
   rotate: false
-  xy: 862, 580
+  xy: 927, 556
   size: 29, 13
   orig: 30, 35
   offset: 0, 0
   index: 4
-char_intro
-  rotate: false
-  xy: 694, 266
-  size: 17, 32
-  orig: 30, 35
-  offset: 5, 2
-  index: 4
-char_attack
-  rotate: false
-  xy: 609, 208
-  size: 21, 28
-  orig: 30, 35
-  offset: 4, 2
-  index: 1
-char_dying
-  rotate: false
-  xy: 632, 209
-  size: 21, 27
-  orig: 30, 35
-  offset: 7, 2
-  index: 2
 char_jumping
   rotate: false
-  xy: 655, 198
+  xy: 359, 7
   size: 20, 30
   orig: 30, 35
   offset: 4, 2
   index: 1
 char_jumping
   rotate: false
-  xy: 655, 198
+  xy: 359, 7
   size: 20, 30
   orig: 30, 35
   offset: 4, 2
   index: 3
+boss_dying
+  rotate: false
+  xy: 965, 159
+  size: 50, 37
+  orig: 128, 128
+  offset: 43, 35
+  index: 13
 char_dying
   rotate: false
-  xy: 677, 196
+  xy: 381, 6
   size: 18, 31
   orig: 30, 35
   offset: 6, 2
   index: 1
-char_standing
+enemy_dying
   rotate: false
-  xy: 915, 937
-  size: 17, 32
+  xy: 130, 1
+  size: 20, 5
+  orig: 46, 51
+  offset: 11, 1
+  index: 6
+char_intro
+  rotate: false
+  xy: 1004, 942
+  size: 17, 33
+  orig: 30, 35
+  offset: 4, 2
+  index: 3
+enemy_appearing
+  rotate: false
+  xy: 873, 545
+  size: 16, 9
+  orig: 46, 51
+  offset: 17, 1
+  index: 1
+hud_boss_head
+  rotate: false
+  xy: 1008, 711
+  size: 15, 16
+  orig: 400, 16
+  offset: 162, 0
+  index: -1
+enemy_dying
+  rotate: false
+  xy: 964, 813
+  size: 9, 14
+  orig: 46, 51
+  offset: 15, 1
+  index: 8
+char_walking
+  rotate: false
+  xy: 1001, 655
+  size: 18, 33
   orig: 30, 35
   offset: 5, 2
   index: 1
-char_standing
-  rotate: false
-  xy: 915, 937
-  size: 17, 32
-  orig: 30, 35
-  offset: 5, 2
-  index: 2
-char_walking
-  rotate: false
-  xy: 915, 937
-  size: 17, 32
-  orig: 30, 35
-  offset: 5, 2
-  index: 2
-char_walking
-  rotate: false
-  xy: 915, 937
-  size: 17, 32
-  orig: 30, 35
-  offset: 5, 2
-  index: 4
 char_attack_holy_water_hit
   rotate: false
-  xy: 915, 924
+  xy: 951, 245
   size: 12, 11
   orig: 30, 35
   offset: 15, 13
   index: 1
 enemy_dying
   rotate: false
-  xy: 934, 951
-  size: 18, 24
-  orig: 46, 51
-  offset: 12, 1
-  index: 4
-enemy_appearing
-  rotate: false
-  xy: 119, 1
-  size: 16, 9
-  orig: 46, 51
-  offset: 17, 1
-  index: 1
-enemy_dying
-  rotate: false
-  xy: 727, 428
+  xy: 958, 556
   size: 20, 13
   orig: 46, 51
   offset: 11, 1
   index: 5
+char_walking
+  rotate: false
+  xy: 962, 521
+  size: 18, 33
+  orig: 30, 35
+  offset: 5, 2
+  index: 3
+char_dying
+  rotate: false
+  xy: 962, 497
+  size: 23, 22
+  orig: 30, 35
+  offset: 7, 2
+  index: 3
+char_intro
+  rotate: false
+  xy: 979, 616
+  size: 17, 32
+  orig: 30, 35
+  offset: 5, 2
+  index: 4
+char_standing
+  rotate: false
+  xy: 979, 582
+  size: 17, 32
+  orig: 30, 35
+  offset: 5, 2
+  index: 1
+char_standing
+  rotate: false
+  xy: 979, 582
+  size: 17, 32
+  orig: 30, 35
+  offset: 5, 2
+  index: 2
+char_walking
+  rotate: false
+  xy: 979, 582
+  size: 17, 32
+  orig: 30, 35
+  offset: 5, 2
+  index: 2
+char_walking
+  rotate: false
+  xy: 979, 582
+  size: 17, 32
+  orig: 30, 35
+  offset: 5, 2
+  index: 4
+char_attack_holy_water_hit
+  rotate: false
+  xy: 850, 172
+  size: 13, 4
+  orig: 30, 35
+  offset: 13, 13
+  index: 2
+enemy_dying
+  rotate: false
+  xy: 980, 556
+  size: 18, 24
+  orig: 46, 51
+  offset: 12, 1
+  index: 4
+char_attack
+  rotate: false
+  xy: 982, 526
+  size: 21, 28
+  orig: 30, 35
+  offset: 4, 2
+  index: 1
 enemy_appearing
   rotate: false
-  xy: 509, 189
-  size: 16, 16
+  xy: 1005, 626
+  size: 18, 27
   orig: 46, 51
-  offset: 17, 1
-  index: 2
-hud_boss_head
+  offset: 15, 1
+  index: 3
+char_dying
   rotate: false
-  xy: 954, 959
-  size: 15, 16
-  orig: 400, 16
-  offset: 162, 0
-  index: -1
+  xy: 998, 597
+  size: 21, 27
+  orig: 30, 35
+  offset: 7, 2
+  index: 2
 char_attack_holy_water
   rotate: false
-  xy: 137, 1
+  xy: 917, 485
   size: 8, 9
   orig: 30, 35
   offset: 16, 13
   index: -1
+enemy_appearing
+  rotate: false
+  xy: 987, 508
+  size: 16, 16
+  orig: 46, 51
+  offset: 17, 1
+  index: 2
 enemy_dying
   rotate: false
-  xy: 528, 208
-  size: 20, 5
+  xy: 1004, 933
+  size: 17, 7
   orig: 46, 51
-  offset: 11, 1
-  index: 6
-enemy_dying
-  rotate: false
-  xy: 754, 467
-  size: 9, 14
-  orig: 46, 51
-  offset: 15, 1
-  index: 8
+  offset: 12, 1
+  index: 7
 hud_life_counter_boss
   rotate: false
-  xy: 20, 1
+  xy: 891, 547
   size: 7, 7
   orig: 400, 16
   offset: 180, 4
   index: -1
 hud_life_counter_player
   rotate: false
-  xy: 29, 1
+  xy: 1008, 702
   size: 7, 7
   orig: 400, 16
   offset: 33, 4
   index: -1
-char_attack_holy_water_hit
-  rotate: false
-  xy: 341, 3
-  size: 13, 4
-  orig: 30, 35
-  offset: 13, 13
-  index: 2
 boss_empty
   rotate: false
-  xy: 587, 474
+  xy: 1, 1
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
 char_empty
   rotate: false
-  xy: 587, 474
+  xy: 1, 1
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
   index: -1
+
+characters2.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_ending
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 4
+sequence_ending
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 5
+sequence_ending
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 6
+sequence_ending
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 7
+sequence_ending
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 8
+sequence_ending
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 9
+sequence_ending
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 10
+sequence_ending
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 11
+
+characters3.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_ending
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 12
+sequence_ending
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 13
+sequence_ending
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 14
+sequence_ending
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 15
+sequence_ending
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 16
+sequence_ending
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 17
+sequence_ending
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 18
+sequence_ending
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 19
+sequence_ending
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 20
+sequence_ending
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 21
+
+characters4.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_ending
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 22
+sequence_ending
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 23
+sequence_ending
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 24
+sequence_ending
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 25
+sequence_ending
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 26
+sequence_ending
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 27
+sequence_ending
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 28
+sequence_ending
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 29
+
+characters5.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_ending
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 30
+sequence_ending
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 31
+sequence_ending
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 32
+sequence_ending
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 33
+sequence_ending
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 34
+sequence_ending
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 35
+sequence_ending
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 36
+sequence_intro
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 0
+sequence_intro
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 1
+sequence_intro
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 2
+sequence_intro
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 3
+
+characters6.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_intro
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 4
+sequence_intro
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 5
+sequence_intro
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 6
+sequence_intro
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 7
+sequence_intro
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 8
+sequence_intro
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 9
+sequence_intro
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 10
+sequence_intro
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 11
+
+characters7.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_intro
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 12
+sequence_intro
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 13
+sequence_intro
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 14
+sequence_intro
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 15
+sequence_intro
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 16
+sequence_intro
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 17
+sequence_intro
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 18
+sequence_intro
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 19
+sequence_intro
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 20
+sequence_intro
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 21
+
+characters8.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_intro
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 22
+sequence_intro
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 23
+sequence_intro
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 24
+sequence_intro
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 25
+sequence_intro
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 26
+sequence_intro
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 27
+sequence_intro
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 28
+sequence_intro
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 29
+
+characters9.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_intro
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 30
+sequence_intro
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 31
+sequence_intro
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 32
+sequence_intro
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 33
+sequence_intro
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 34
+sequence_intro
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 35
+sequence_intro
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 36
+sequence_intro
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 37
+
+characters10.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_intro
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 38
+sequence_intro
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 39
+sequence_intro
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 40
+sequence_intro
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 41
+sequence_intro
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 42
+sequence_intro
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 43
+sequence_intro
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 44
+sequence_intro
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 45
+
+characters11.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+sequence_intro
+  rotate: false
+  xy: 1, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 46
+sequence_intro
+  rotate: false
+  xy: 1, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 47
+sequence_intro
+  rotate: false
+  xy: 403, 727
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 48
+sequence_intro
+  rotate: false
+  xy: 1, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 49
+sequence_intro
+  rotate: false
+  xy: 403, 485
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 50
+sequence_intro
+  rotate: false
+  xy: 1, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 51
+sequence_intro
+  rotate: false
+  xy: 403, 243
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 52
+sequence_intro
+  rotate: false
+  xy: 403, 1
+  size: 400, 240
+  orig: 400, 240
+  offset: 0, 0
+  index: 53
