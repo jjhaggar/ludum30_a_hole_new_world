@@ -71,6 +71,7 @@ public class Boss extends Image {
     		Assets.playSound("bossDead");
     		this.setToDie = true;
     		System.out.println("YOU KILL THE BOSS");
+    		this.stateTime = 0;
     	}
     }
 

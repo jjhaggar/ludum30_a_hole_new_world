@@ -293,8 +293,6 @@ public class MainScreen extends BaseScreen {
 		else if (this.boss.flowState == Boss.FlowState.Die){
 			this.boss.velocity.x = 0;
 			this.boss.velocity.y = 0;
-			this.boss.stateTime = 0;
-			this.boss.flowState = Boss.FlowState.Transition;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Transition){ //door.x is the left side of the tiles
 
