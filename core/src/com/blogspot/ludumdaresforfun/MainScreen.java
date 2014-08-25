@@ -198,9 +198,16 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void updateBoss(float delta) {
-		if (this.player.getRect().overlaps(this.boss.getRect())) {
-            this.player.beingHit();
-        }
+		if (boss.state.equals(Boss.State.Jumping) || boss.state.equals(Boss.State.Falling)){
+			if (this.player.getRect().overlaps(new Rectangle (this.boss.getX(), this.boss.getY(), this.boss.getWidth(), this.boss.getHeight()))) {
+				this.player.beingHit();
+			}
+		}
+		else{
+			if (this.player.getRect().overlaps(this.boss.getRect())) {
+				this.player.beingHit();
+			}
+		}
 
 		this.boss.desiredPosition.y = this.boss.getY();
 
@@ -286,6 +293,7 @@ public class MainScreen extends BaseScreen {
 		else if (this.boss.flowState == Boss.FlowState.Die){
 			this.boss.velocity.x = 0;
 			this.boss.velocity.y = 0;
+			this.boss.stateTime = 0;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Transition){ //door.x is the left side of the tiles
 
@@ -712,7 +720,7 @@ public class MainScreen extends BaseScreen {
                         ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetLifePlayer.x + (pl * (playerLife.getRegionWidth() + this.hud.OFFSET_LIFES_PLAYER))),
                         (((this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE - Assets.offsetLifePlayer.y) + playerLife.getRegionHeight()));
             }
-            if (this.bossActive) {
+            if (this.bossActive && boss != null) {
                 batch.draw(bossHead, ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetBoosHead),
                     (this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE);
                 for (int bl=0; bl < this.boss.getLifes(); bl++) {
@@ -953,8 +961,8 @@ public class MainScreen extends BaseScreen {
 			this.camera.position.x = (this.MAP_WIDTH * this.TILED_SIZE) - (this.SCREEN_WIDTH / 2);
 			this.camera.update();
 
-			this.xRightBossWall = (((this.door.x * this.TILED_SIZE) + this.SCREEN_WIDTH) - (this.TILED_SIZE * 4));
-			this.xLeftBossWall = ((this.door.x * this.TILED_SIZE) + (this.TILED_SIZE * 2));
+			this.xRightBossWall = (((this.door.x * this.TILED_SIZE) + this.SCREEN_WIDTH) -  (this.TILED_SIZE * 4) - 16);
+			this.xLeftBossWall = ((this.door.x * this.TILED_SIZE) + (this.TILED_SIZE * 2)) + 8;
 
 			Assets.musicStage.stop();
 			Assets.musicBoss.setLooping(true);
