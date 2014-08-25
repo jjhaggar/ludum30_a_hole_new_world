@@ -173,7 +173,7 @@ public class Assets {
     }
 
     public static void playSound(final String name) {
-    	sounds.get(name).play(0.25f);
+    	sounds.get(name).play(1f);
     }
 
 	static void dispose() {
