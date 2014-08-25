@@ -4,11 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-public class EndScreen extends BaseScreen{
+public class CreditsScreen extends BaseScreen{
 
     Image bg;
 
-	public EndScreen() {
+	public CreditsScreen() {
 		if (Assets.musicBoss.isPlaying())
 			Assets.musicBoss.stop();
 		else if (Assets.musicStage.isPlaying())

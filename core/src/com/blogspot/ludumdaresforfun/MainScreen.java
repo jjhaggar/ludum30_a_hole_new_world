@@ -261,7 +261,8 @@ public class MainScreen extends BaseScreen {
 		this.boss.setPosition(this.boss.desiredPosition.x, this.boss.desiredPosition.y);
 
 		if (this.boss.setToDie && Assets.bossDie.isAnimationFinished(this.boss.stateTime)) {
-		    LD.getInstance().setScreen(new EndScreen());
+            LD.getInstance().ENDING_SCREEN = new EndingScreen();
+            LD.getInstance().setScreen(LD.getInstance().ENDING_SCREEN);
 		}
 	}
 
@@ -1112,6 +1113,10 @@ public class MainScreen extends BaseScreen {
 			if (Gdx.input.isKeyJustPressed(Keys.D)){
 				this.shoot();
 			}
+			//if (Gdx.input.isKeyJustPressed(Keys.Y)){
+            //    LD.getInstance().ENDING_SCREEN = new EndingScreen();
+            //    LD.getInstance().setScreen(LD.getInstance().ENDING_SCREEN);
+			//}
 		}
 
 		if (Assets.playerAttack.isAnimationFinished(this.player.stateTime))

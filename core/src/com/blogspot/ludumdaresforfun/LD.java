@@ -6,6 +6,8 @@ public class LD extends Game {
 
     static LD instance;
     public MenuScreen MENU_SCREEN;
+    public IntroScreen INTRO_SCREEN;
+    public EndingScreen ENDING_SCREEN;
     public GameOverScreen GAMEOVER_SCREEN;
 
     public MainScreen MAIN_SCREEN;

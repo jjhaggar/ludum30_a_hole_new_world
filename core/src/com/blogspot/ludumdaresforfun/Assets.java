@@ -19,7 +19,7 @@ public class Assets {
     static Animation playerShot, playerShotHit;
     static Animation enemyWalk, enemyRun, enemyHurt, enemyAppearing;
     static Animation bossGethit, bossStanding,  bossWalking, bossJumping, bossFalling, bossAttack, bossSummon, bossDie;
-    static Animation Ending, GameOver, Intro;
+    static Animation Ending, GameOver, Intro, SequenceIntro, SequenceEnding;
     static Animation hudBase, hudBossHead, hudLifeBoss, hudLifePlayer;
 	static float offsetPlayer, offsetBoss, offsetShot, offsetEnemy, offsetBoosHead;
 	static Vector2 offsetLifeBoss, offsetLifePlayer;
@@ -49,6 +49,15 @@ public class Assets {
 		regions = atlas.findRegions("game_over");
 		GameOver = new Animation(0f, regions);
 		GameOver.setPlayMode(PlayMode.LOOP);
+
+		regions = atlas.findRegions("sequence_intro");
+		SequenceIntro = new Animation(0.55f, regions);
+		Intro.setPlayMode(PlayMode.NORMAL);
+
+		regions = atlas.findRegions("sequence_ending");
+		SequenceEnding = new Animation(0.55f, regions);
+		Intro.setPlayMode(PlayMode.NORMAL);
+
 
 		// Player
 		regions = atlas.findRegions("char_attack");
