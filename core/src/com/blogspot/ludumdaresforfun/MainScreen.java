@@ -251,6 +251,11 @@ public class MainScreen extends BaseScreen {
 			this.boss.velocity.y = 400;
 			this.boss.flowState = Boss.FlowState.Transition;
 			this.boss.state = Boss.State.Jumping;
+
+			if (this.boss.getX() > this.xRightBossWall)		 //if going to hit wall turns back
+				this.boss.velocity.x = -100;
+			else if (this.boss.getX() < this.xLeftBossWall)							//same for other wall
+				this.boss.velocity.x = 100;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Attack){
 			if ((this.boss.getX() - this.player.getX()) > 0)
@@ -385,7 +390,11 @@ public class MainScreen extends BaseScreen {
 
 	private void renderShot(Shot shot, float deltaTime){
 		AtlasRegion frame = null;
-		frame = (AtlasRegion) Assets.playerShot.getKeyFrame(shot.stateTime);
+		if (shot.state == Shot.State.Normal)
+			frame = (AtlasRegion) Assets.playerShot.getKeyFrame(shot.stateTime);
+		else if (shot.state == Shot.State.Exploding)
+			frame = (AtlasRegion) Assets.playerShotHit.getKeyFrame(shot.stateTime);
+
 		if (!this.normalGravity) {
 		    if (!frame.isFlipY())
                 frame.flip(false, true);
@@ -411,11 +420,12 @@ public class MainScreen extends BaseScreen {
 	}
 
     public boolean updateShot(Shot shot, float deltaTime){
+    	boolean killMe = false;
         shot.desiredPosition.y = shot.getY();
 
         shot.stateTime += deltaTime;
 
-		if (this.normalGravity)
+		if (this.normalGravity && !shot.state.equals(Shot.State.Exploding))
 			shot.velocity.add(0, this.GRAVITY);
 		else
 			shot.velocity.add(0, -this.GRAVITY);
@@ -424,11 +434,9 @@ public class MainScreen extends BaseScreen {
 
 		//collision (destroy if necessary)
 		boolean collided = this.collisionShotEnemy(shot);
-		if (!collided) {
+
+		if (!collided)
 			collided = this.collisionShot(shot);
-			if (collided)
-                Assets.playSound("holyWaterBroken");
-		}
 
 		// unscale the velocity by the inverse delta time and set
 		// the latest position
@@ -445,7 +453,18 @@ public class MainScreen extends BaseScreen {
 				collided = true;
 		}
 
-		return collided;
+		if (collided && !shot.state.equals(Shot.State.Exploding)){
+            Assets.playSound("holyWaterBroken");
+            shot.state = Shot.State.Exploding;
+            shot.stateTime = 0;
+            shot.velocity.x = 0f;
+            shot.velocity.y = 0f;
+		}
+
+		if (Assets.playerShotHit.isAnimationFinished(shot.stateTime) && shot.state.equals(Shot.State.Exploding))
+			killMe = true;
+
+		return killMe;
     }
 
 
@@ -1096,12 +1115,12 @@ public class MainScreen extends BaseScreen {
 		}
 
 		if (boss.grounded && this.normalGravity){
-			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE) + 1;
-			endY = (int)((boss.desiredPosition.y + this.boss.actualFrame.getRegionHeight()) / this.TILED_SIZE) + 1;
+			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE);
+			endY = (int)((boss.desiredPosition.y + this.boss.actualFrame.getRegionHeight()) / this.TILED_SIZE);
 		}
 		else if (boss.grounded && !this.normalGravity){
-			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE) - 1;
-			endY = (int)((boss.desiredPosition.y + this.boss.actualFrame.getRegionHeight()) / this.TILED_SIZE) - 1;
+			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE);
+			endY = (int)((boss.desiredPosition.y + this.boss.actualFrame.getRegionHeight()) / this.TILED_SIZE);
 		}
 		else{
 			startY = (int)((boss.desiredPosition.y) / this.TILED_SIZE);

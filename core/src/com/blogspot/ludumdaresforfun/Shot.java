@@ -16,7 +16,11 @@ public class Shot extends Image {
     Vector2 desiredPosition = new Vector2();
     final Vector2 velocity = new Vector2();
     public Rectangle rect = new Rectangle();
+    enum State {
+        Normal, Exploding
+    }
 
+    State state = State.Normal;
     protected Animation animation = null;
     public float offSetX;
     public AtlasRegion actualFrame;

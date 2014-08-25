@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Array;
 public class Assets {
 	static AssetManager assetManager;
     static Animation playerAttack, playerEmpty, playerIntro, playerStand, playerWalk, playerJump, playerBeingHit, playerDie;
-    static Animation playerShot;
+    static Animation playerShot, playerShotHit;
     static Animation enemyWalk, enemyRun, enemyHurt, enemyAppearing;
     static Animation bossGethit, bossStanding,  bossWalking, bossJumping, bossFalling, bossAttack, bossSummon, bossDie;
     static Animation GameOver, Intro;
@@ -79,6 +79,9 @@ public class Assets {
 		regions = atlas.findRegions("char_attack_holy_water");
 		playerShot = new Animation(0, regions);
 		offsetShot = regions.first().offsetX;
+
+		regions = atlas.findRegions("char_attack_holy_water_hit");
+		playerShotHit = new Animation(0.15f, regions);
 
 		// Enemy
 		regions = atlas.findRegions("enemy_walking");//"enemy_walk"); // change
@@ -141,13 +144,11 @@ public class Assets {
 		regions = atlas.findRegions("hud_life_counter_player");
 		hudLifePlayer = new Animation(0, regions);
 		offsetLifePlayer = new Vector2(regions.first().offsetX, regions.first().offsetY);
-
 	}
 
 	static TextureRegion getBg() {
 		bg = new Texture(Gdx.files.internal("bg.png"));
 		return new TextureRegion(bg, 0, 0, 400, 240);
-
 	}
 
 	public static void loadMusicAndSound() {
@@ -176,9 +177,7 @@ public class Assets {
     }
 
     public static void playSound(final String name) {
-
     	sounds.get(name).play(0.25f);
-
     }
 
 	static void dispose() {
