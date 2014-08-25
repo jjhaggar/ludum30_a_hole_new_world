@@ -127,7 +127,7 @@ public class MainScreen extends BaseScreen {
 
         this.hud = new HUD(Assets.hudBase);
         if (checkPoint)
-        	this.player.setPosition(this.door.x * 16, this.door.y * 16);
+        	this.player.setPosition((this.door.x + 1) * 16, (this.door.y + 1) * 16);
 
 	}
 
@@ -1113,7 +1113,7 @@ public class MainScreen extends BaseScreen {
 				shot.Initialize((this.player.getCenterX()), ((this.player.getY() + (this.player.getHeight() / 2)) - 10), this.player.facesRight, this.normalGravity);
 			}
 			this.shotArray.add(shot);
-	
+
 			this.player.state = Player.State.Attacking;
 			this.player.stateTime = 0;
 			this.player.shooting = true;
