@@ -82,6 +82,14 @@ public class Player extends Image {
     }
 
     public void die() {
+    	if (Assets.musicBoss.isLooping())
+    	{
+    		Assets.musicBoss.stop();
+    	}
+    	else if (Assets.musicStage.isLooping())
+    	{
+    		Assets.musicStage.stop();
+    	}
         Assets.playSound("playerDead");
         this.state = Player.State.Die;
         this.stateTime = 0;

@@ -156,6 +156,7 @@ public class Assets {
         addSound("playerDead");
         addSound("playerJump");
         addSound("playerShot");
+        addSound("gainLifePlayer");
 		// Enemy
         addSound("enemyAttack");
         addSound("enemyDead");
@@ -163,6 +164,7 @@ public class Assets {
         addSound("bossAttack");
         addSound("bossHurt");
         addSound("bossDead");
+        addSound("gainLifeBoss");
 		// Others
         addSound("closeDoor");
         addSound("holyWaterBroken");

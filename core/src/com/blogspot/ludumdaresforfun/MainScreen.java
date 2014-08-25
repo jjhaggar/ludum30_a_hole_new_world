@@ -291,6 +291,7 @@ public class MainScreen extends BaseScreen {
 			this.boss.velocity.x = 0;
 			this.boss.flowState = Boss.FlowState.Transition;
 			this.boss.counter.gainLife(3);
+			Assets.playSound("gainLifeBoss");
 			//addSound(“gainLife”);
 			this.boss.state = Boss.State.Standing;
 		}
@@ -760,6 +761,7 @@ public class MainScreen extends BaseScreen {
                         (this.player.getLifes() < this.player.MAX_LIFES)) {
                     this.player.counter.gainLife(1);
                     obtainLifes.add(life);
+                    Assets.playSound("gainLifePlayer");
                     // Remove life in map
                     TiledMapTileLayer layerPlantfs = (TiledMapTileLayer)(this.map.getLayers().get("Platfs"));
                     layerPlantfs.setCell((int)life.x / this.TILED_SIZE, (int)life.y / this.TILED_SIZE, null);
@@ -770,6 +772,7 @@ public class MainScreen extends BaseScreen {
                         (this.player.getLifes() < this.player.MAX_LIFES)) {
                     this.player.counter.gainLife(1);
                     obtainLifes.add(life);
+                    Assets.playSound("gainLifePlayer");
                     // Remove life in map
                     TiledMapTileLayer layerPlantfs = (TiledMapTileLayer)(this.map.getLayers().get("Platfs"));
                     layerPlantfs.setCell((int)life.x / this.TILED_SIZE, (int)life.y / this.TILED_SIZE, null);
