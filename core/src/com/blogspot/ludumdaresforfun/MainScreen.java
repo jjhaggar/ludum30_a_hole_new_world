@@ -125,7 +125,7 @@ public class MainScreen extends BaseScreen {
 
         this.hud = new HUD(Assets.hudBase);
         if (checkPoint)
-        	this.player.setPosition(765*16, 62*16);
+        	this.player.setPosition(this.door.x * 16, this.door.y * 16);
 
 	}
 
@@ -134,6 +134,7 @@ public class MainScreen extends BaseScreen {
 		Gdx.gl.glClearColor(.9f, .9f, .9f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		//System.out.println("gravirty" + this.GRAVITY); TODO Player vibrarte when dead in down world
 		this.updatePlayer(delta);
 		this.player.act(delta);
 
@@ -229,8 +230,9 @@ public class MainScreen extends BaseScreen {
 
 		this.boss.setPosition(this.boss.desiredPosition.x, this.boss.desiredPosition.y);
 
-		if (this.boss.setToDie && Assets.bossDie.isAnimationFinished(this.boss.stateTime))
-			this.boss = null;
+		if (this.boss.setToDie && Assets.bossDie.isAnimationFinished(this.boss.stateTime)) {
+		    LD.getInstance().setScreen(new EndScreen());
+		}
 	}
 
 
@@ -799,19 +801,16 @@ public class MainScreen extends BaseScreen {
 	        // Check if player is invincible and check distance to player for attack him.
 	        if (!enemy.running && !enemy.dying && !enemy.beingInvoked && enemy.canMove){
 	            // Attack
-	            System.out.println("Enemy: ");
 	        	if (!this.player.invincible &&
                         (Math.abs(enemy.getCenterX() - this.player.getCenterX()) <= enemy.ATTACK_DISTANCE) &&
 	        	        (Math.abs(((enemy.getCenterY() - this.player.getCenterY()))) <= this.player.getHeight())) {
 	        		if (enemy.getCenterX() < this.player.getCenterX()) {
-                            System.out.println("1-");
 	        				enemy.dir = Enemy.Direction.Right;
 	        				enemy.run();
 	        				enemy.attackHereX = this.player.getX();
 	        				enemy.attackRight = true;
 	        		}
 	        		else {
-                            System.out.println("1--");
 	        				enemy.dir = Enemy.Direction.Left;
 	        				enemy.run();
 	        				enemy.attackHereX = this.player.getX();
@@ -819,14 +818,12 @@ public class MainScreen extends BaseScreen {
 	        		}
 	        	}
 	        	else if (enemy.dir == Enemy.Direction.Left) {
-                    System.out.println("1");
 	        		if (-enemy.RANGE >= enemy.diffInitialPos) {
 	        			enemy.dir = Enemy.Direction.Right;
 	        		}
 	        		enemy.walk();
 	        	}
 	        	else if (enemy.dir == Enemy.Direction.Right) {
-                    System.out.println("1");
 	        		if (enemy.diffInitialPos >= enemy.RANGE) {
 	        			enemy.dir = Enemy.Direction.Left;
 	        		}
@@ -1048,7 +1045,7 @@ public class MainScreen extends BaseScreen {
 
 		if (this.player.noControl == false){
 			if (Gdx.input.isKeyJustPressed(Keys.S) && this.player.grounded){
-				jump();
+				this.jump();
 				//this.player.stateTime = 0;
 			}
 
@@ -1073,7 +1070,7 @@ public class MainScreen extends BaseScreen {
 			}
 
 			if (Gdx.input.isKeyJustPressed(Keys.D) && (this.shotArray.size < 3)){
-				shoot();
+				this.shoot();
 			}
 		}
 
