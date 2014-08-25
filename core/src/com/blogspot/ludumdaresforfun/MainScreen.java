@@ -294,33 +294,36 @@ public class MainScreen extends BaseScreen {
 			this.boss.velocity.x = 0;
 			this.boss.velocity.y = 0;
 			this.boss.stateTime = 0;
+			this.boss.flowState = Boss.FlowState.Transition;
 		}
 		else if (this.boss.flowState == Boss.FlowState.Transition){ //door.x is the left side of the tiles
 
-			if (this.boss.getX() > this.xRightBossWall)		 //if going to hit wall turns back
-				this.boss.flowState = Boss.FlowState.WalkingLeft;
-			else if (this.boss.getX() < this.xLeftBossWall)							//same for other wall
-				this.boss.flowState = Boss.FlowState.WalkingRight;
-			else if (this.boss.flowTime > 2){							//takes pseudo-random action
-				int nextState = (int)Math.round(Math.random() * 7);
+			if (!this.boss.state.equals(Boss.State.Die)){
+				if (this.boss.getX() > this.xRightBossWall)		 //if going to hit wall turns back
+					this.boss.flowState = Boss.FlowState.WalkingLeft;
+				else if (this.boss.getX() < this.xLeftBossWall)							//same for other wall
+					this.boss.flowState = Boss.FlowState.WalkingRight;
+				else if (this.boss.flowTime > 2){							//takes pseudo-random action
+					int nextState = (int)Math.round(Math.random() * 7);
 
-				if ((Math.abs(this.boss.getX() -
-						this.player.getX()) < 48) && ((nextState % 2) == 0))	//3 tiles far: attacks 50% time
-					this.boss.flowState = Boss.FlowState.Attack;
-				else if ((nextState == 0) || (nextState == 1))										//one possibility is jump
-					this.boss.flowState = Boss.FlowState.Jumping;
-				else if ((nextState == 2) || (nextState == 3))
-					this.boss.flowState = Boss.FlowState.Summon;				//another summon
-				else if ((nextState == 4) || (nextState == 5)){															//or move in your direction
-					if ((this.boss.getX() - this.player.getX()) > 0)
-						this.boss.flowState = Boss.FlowState.WalkingLeft;
+					if ((Math.abs(this.boss.getX() -
+							this.player.getX()) < 48) && ((nextState % 2) == 0))	//3 tiles far: attacks 50% time
+						this.boss.flowState = Boss.FlowState.Attack;
+					else if ((nextState == 0) || (nextState == 1))										//one possibility is jump
+						this.boss.flowState = Boss.FlowState.Jumping;
+					else if ((nextState == 2) || (nextState == 3))
+						this.boss.flowState = Boss.FlowState.Summon;				//another summon
+					else if ((nextState == 4) || (nextState == 5)){															//or move in your direction
+						if ((this.boss.getX() - this.player.getX()) > 0)
+							this.boss.flowState = Boss.FlowState.WalkingLeft;
+						else
+							this.boss.flowState = Boss.FlowState.WalkingRight;
+					}
 					else
-						this.boss.flowState = Boss.FlowState.WalkingRight;
-				}
-				else
-					this.boss.flowState = Boss.FlowState.Standing;
+						this.boss.flowState = Boss.FlowState.Standing;
 
-				this.boss.flowTime = 0;
+					this.boss.flowTime = 0;
+				}
 			}
 		}
 		this.boss.flowTime += delta;
