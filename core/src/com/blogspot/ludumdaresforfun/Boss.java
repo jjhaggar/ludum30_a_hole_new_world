@@ -13,6 +13,7 @@ public class Boss extends Image {
     final float VELOCITY = 50f;
     final float ATTACK_VELOCITY = 120f;
     final int ACTIVATE_DISTANCE = 250;
+    final int MAX_LIFES = 24;
     enum State {
         Standing, Walking, Jumping, Falling, Attack, Summon, Hurting, Die
     }
@@ -29,7 +30,7 @@ public class Boss extends Image {
     public boolean updateVelocity;
     public boolean setToDie = false;
     public boolean grounded;
-    public Counter counter = new Counter(24);  //the same as megaman enemies
+    public Counter counter = new Counter(this.MAX_LIFES);  //the same as megaman enemies
 
     public enum Direction {
         Left, Right

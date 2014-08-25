@@ -19,6 +19,8 @@ public class Counter extends Image {
 
     public int gainLife(int lifes) {
     	this.currentLifes += lifes;
+    	if (this.currentLifes > this.LIFES)
+    	    this.currentLifes = this.LIFES;
     	return this.currentLifes;
     }
 
