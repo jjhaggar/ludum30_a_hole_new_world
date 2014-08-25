@@ -2,6 +2,7 @@ package com.blogspot.ludumdaresforfun.desktop;
 
 import java.io.File;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.tools.texturepacker.TexturePacker;
@@ -14,7 +15,7 @@ public class DesktopLauncher {
 		config.height = 240;
 		config.width = 400;
 		new LwjglApplication(new LD(), config);
-		//Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height, true);
+		Gdx.graphics.setDisplayMode(Gdx.graphics.getDesktopDisplayMode().width, Gdx.graphics.getDesktopDisplayMode().height, true);
 	}
 
 	private static void createPacker() {

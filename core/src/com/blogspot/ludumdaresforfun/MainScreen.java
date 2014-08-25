@@ -125,7 +125,7 @@ public class MainScreen extends BaseScreen {
         }
 
         this.hud = new HUD(Assets.hudBase);
-        this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
+        //this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
 
 	}
 
