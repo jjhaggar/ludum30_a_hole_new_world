@@ -274,6 +274,7 @@ public class MainScreen extends BaseScreen {
 			else
 				this.boss.facesRight = true;
 
+			Assets.playSound("bossAttack");
 			this.boss.velocity.x = 0;
 			//attack to character(detect position and collision)
 			this.boss.flowState = Boss.FlowState.Transition;
