@@ -930,7 +930,7 @@ public class MainScreen extends BaseScreen {
 		this.player.velocity.scl(deltaTime);
 
 		//retreat if noControl //velocity y is changed in beingHit
-		if (this.player.noControl){
+		if (this.player.noControl && !(this.player.state.equals(Player.State.Die) && Assets.playerDie.isAnimationFinished(this.player.stateTime))){
 			if (this.player.facesRight)
 				this.player.velocity.x = -120f * deltaTime;
 			else
@@ -958,6 +958,7 @@ public class MainScreen extends BaseScreen {
                     MainScreen.this.gameOver();
                 }
             }, 1f);
+            this.player.velocity.x = 0;
 		}
 		if (collisionSpike) {
 		    this.player.beingHit();
