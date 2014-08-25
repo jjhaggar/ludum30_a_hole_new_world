@@ -682,7 +682,7 @@ public class MainScreen extends BaseScreen {
 
             Batch batch = this.renderer.getSpriteBatch();
             batch.begin();
-            if (enemy.facesRight) {
+            if (enemy.dir == Enemy.Direction.Right) {
                 if (enemy.actualFrame.isFlipX())
                 	enemy.actualFrame.flip(true, false);
                 batch.draw(enemy.actualFrame, enemy.getX(), enemy.getY());
@@ -797,14 +797,12 @@ public class MainScreen extends BaseScreen {
 
 	        enemy.stateTime += deltaTime;
 	        // Check if player is invincible and check distance to player for attack him.
-	        if (!enemy.running && !enemy.dying && !enemy.beingInvoked && enemy.inScreen){
-	        	if (!this.player.invincible &&
-	        	        (Math.abs(((enemy.getY() + (enemy.getHeight() / 2))
-                        - (this.player.getY() + (this.player.getHeight() / 2)))) <= this.player.getHeight())) {
+	        if (!enemy.running && !enemy.dying && !enemy.beingInvoked){
+	            // Attack
+	        	if (!this.player.invincible && (Math.abs(((enemy.getCenterY() - this.player.getCenterY()))) <= this.player.getHeight())) {
 	        		if (enemy.getX() < this.player.getX()) {
-	        			if ((enemy.getX() + enemy.ATTACK_DISTANCE) >= (this.player.getX() + this.player.getWidth())) {
+	        			if ((enemy.getX() + enemy.ATTACK_DISTANCE) >= (this.player.getRight())) {
 	        				enemy.dir = Enemy.Direction.Right;
-	        				enemy.facesRight = true;
 	        				enemy.run();
 	        				enemy.attackHereX = this.player.getX();
 	        				enemy.attackRight = true;
@@ -813,7 +811,6 @@ public class MainScreen extends BaseScreen {
 	        		else {
 	        			if ((enemy.getX() - enemy.ATTACK_DISTANCE) <= this.player.getX()) {
 	        				enemy.dir = Enemy.Direction.Left;
-	        				enemy.facesRight = false;
 	        				enemy.run();
 	        				enemy.attackHereX = this.player.getX();
 	        				enemy.attackRight = false;
@@ -824,14 +821,12 @@ public class MainScreen extends BaseScreen {
 	        	else if (enemy.dir == Enemy.Direction.Left) {
 	        		if (-enemy.RANGE >= enemy.diffInitialPos) {
 	        			enemy.dir = Enemy.Direction.Right;
-	        			enemy.facesRight = true;
 	        		}
 	        		enemy.walk();
 	        	}
 	        	else if (enemy.dir == Enemy.Direction.Right) {
 	        		if (enemy.diffInitialPos >= enemy.RANGE) {
 	        			enemy.dir = Enemy.Direction.Left;
-	        			enemy.facesRight = false;
 	        		}
 	        		enemy.walk();
 	        	}
@@ -901,17 +896,21 @@ public class MainScreen extends BaseScreen {
 
 		if (Assets.enemyAppearing.isAnimationFinished(enemy.stateTime) && enemy.state.equals(Enemy.State.BeingInvoked)){
 			enemy.beingInvoked = false;
-			enemy.state = Enemy.State.Walking;
+			enemy.walk();
 		}
 
 	}
 
 	private void isEnemyInScreen(Enemy enemy) {
-		//TODO: Maybe change so that they activate a little bit before they enter the screen
-		if ((enemy.getX() > (this.camera.position.x - (this.SCREEN_WIDTH / 2)))
-				&& (enemy.getX() < (this.camera.position.x + (this.SCREEN_WIDTH / 2)))
-				&& ((enemy.getY() > (this.camera.position.y - (this.SCREEN_HEIGHT / 2)))
-				&& (enemy.getX() < (this.camera.position.x + (this.SCREEN_HEIGHT / 2))))){
+	    if (enemy.inScreen)
+	        return;
+	    Rectangle cameraRect = new Rectangle(0, 0, this.SCREEN_WIDTH, this.SCREEN_HEIGHT);
+	    cameraRect.setCenter(this.camera.position.x, this.camera.position.y);
+	    if (enemy.rect.overlaps(cameraRect)) {
+		    if ((this.player.getX() - enemy.getX()) < 0)
+		        enemy.dir = Enemy.Direction.Left;
+		    else
+		        enemy.dir = Enemy.Direction.Right;
 			enemy.inScreen = true;
 		}
 	}
