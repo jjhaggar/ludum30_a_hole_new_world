@@ -52,11 +52,11 @@ public class Assets {
 
 		regions = atlas.findRegions("sequence_intro");
 		SequenceIntro = new Animation(0.55f, regions);
-		Intro.setPlayMode(PlayMode.NORMAL);
+		SequenceIntro.setPlayMode(PlayMode.NORMAL);
 
 		regions = atlas.findRegions("sequence_ending");
 		SequenceEnding = new Animation(0.55f, regions);
-		Intro.setPlayMode(PlayMode.NORMAL);
+		SequenceEnding.setPlayMode(PlayMode.NORMAL);
 
 
 		// Player
@@ -179,6 +179,7 @@ public class Assets {
 		// Others
         addSound("closeDoor");
         addSound("holyWaterBroken");
+        addSound("lightning");
 	}
 
     public static void addSound(final String name) {

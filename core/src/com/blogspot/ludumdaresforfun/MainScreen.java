@@ -754,7 +754,7 @@ public class MainScreen extends BaseScreen {
             for (int pl=0; pl < this.player.getLifes(); pl++) {
                 batch.draw(playerLife,
                         ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetLifePlayer.x + (pl * (playerLife.getRegionWidth() + this.hud.OFFSET_LIFES_PLAYER))),
-                        (((this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE - Assets.offsetLifePlayer.y) + playerLife.getRegionHeight()));
+                        (((this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE - Assets.offsetLifePlayer.y) + playerLife.getRegionHeight() + 1));
             }
             if (this.bossActive && (this.boss != null)) {
                 batch.draw(bossHead, ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetBoosHead),
@@ -762,7 +762,7 @@ public class MainScreen extends BaseScreen {
                 for (int bl=0; bl < this.boss.getLifes(); bl++) {
                     batch.draw(bossLife,
                             ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetLifeBoss.x + (bl * (bossLife.getRegionWidth() + this.hud.OFFSET_LIFES_BOSS))),
-                            (((this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE - Assets.offsetLifeBoss.y) + bossLife.getRegionHeight()));
+                            (((this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE - Assets.offsetLifeBoss.y) + bossLife.getRegionHeight() + 1));
                 }
             }
         } else {
@@ -1113,10 +1113,10 @@ public class MainScreen extends BaseScreen {
 			if (Gdx.input.isKeyJustPressed(Keys.D)){
 				this.shoot();
 			}
-			//if (Gdx.input.isKeyJustPressed(Keys.Y)){
-            //    LD.getInstance().ENDING_SCREEN = new EndingScreen();
-            //    LD.getInstance().setScreen(LD.getInstance().ENDING_SCREEN);
-			//}
+			if (Gdx.input.isKeyJustPressed(Keys.Y)){
+			    LD.getInstance().ENDING_SCREEN = new EndingScreen();
+			    LD.getInstance().setScreen(LD.getInstance().ENDING_SCREEN);
+			}
 		}
 
 		if (Assets.playerAttack.isAnimationFinished(this.player.stateTime))

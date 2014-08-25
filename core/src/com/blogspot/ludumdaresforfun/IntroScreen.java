@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class IntroScreen extends BaseScreen{
 
     BGAnimated bg;
+    boolean lighningAlreadyPlaying = false;
 
     public IntroScreen() {
 
@@ -19,6 +20,11 @@ public class IntroScreen extends BaseScreen{
             @Override
             public boolean act(float delta) {
                 IntroScreen.this.bg.act(delta);
+                if (Assets.SequenceIntro.getKeyFrameIndex(IntroScreen.this.bg.stateTime) == 20 && !lighningAlreadyPlaying){
+                	Assets.playSound("lightning");
+                	lighningAlreadyPlaying = true;
+                }
+
                 if (Assets.SequenceIntro.isAnimationFinished(IntroScreen.this.bg.stateTime)) {
                     LD.getInstance().MAIN_SCREEN = new MainScreen(false);
                     LD.getInstance().setScreen(LD.getInstance().MAIN_SCREEN);
@@ -37,6 +43,8 @@ public class IntroScreen extends BaseScreen{
 
     @Override
     public void enterButtonPressed() {
+    	LD.getInstance().MAIN_SCREEN = new MainScreen(false);
+        LD.getInstance().setScreen(LD.getInstance().MAIN_SCREEN);
     }
 
 	@Override
