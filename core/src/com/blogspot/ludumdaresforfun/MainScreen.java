@@ -18,6 +18,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 public class MainScreen extends BaseScreen {
 
@@ -950,7 +952,12 @@ public class MainScreen extends BaseScreen {
         this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 
 		if (Assets.playerDie.isAnimationFinished(this.player.stateTime) && this.player.dead){
-			this.gameOver();
+            Timer.schedule(new Task() {
+                @Override
+                public void run() {
+                    MainScreen.this.gameOver();
+                }
+            }, 1f);
 		}
 		if (collisionSpike) {
 		    this.player.beingHit();
