@@ -188,7 +188,7 @@ public class MainScreen extends BaseScreen {
 			if (shot != null)
 				this.renderShot(shot, delta);
 		}
-		if (this.bossActive && this.boss != null) {
+		if (this.bossActive && (this.boss != null)) {
 			this.updateBoss(delta);
 			if (this.boss != null)
 				this.renderBoss(delta);
@@ -198,7 +198,7 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void updateBoss(float delta) {
-		if (boss.state.equals(Boss.State.Jumping) || boss.state.equals(Boss.State.Falling)){
+		if (this.boss.state.equals(Boss.State.Jumping) || this.boss.state.equals(Boss.State.Falling)){
 			if (this.player.getRect().overlaps(new Rectangle (this.boss.getX(), this.boss.getY(), this.boss.getWidth(), this.boss.getHeight()))) {
 				this.player.beingHit();
 			}
@@ -499,7 +499,7 @@ public class MainScreen extends BaseScreen {
 
 		if ((this.boss != null) && this.playerRect.overlaps(this.boss.getRect())) {
 
-			if (!boss.invincible)
+			if (!this.boss.invincible)
 				this.boss.beingHit();
 
 		    if (!this.boss.setToDie){
@@ -721,7 +721,7 @@ public class MainScreen extends BaseScreen {
                         ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetLifePlayer.x + (pl * (playerLife.getRegionWidth() + this.hud.OFFSET_LIFES_PLAYER))),
                         (((this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE - Assets.offsetLifePlayer.y) + playerLife.getRegionHeight()));
             }
-            if (this.bossActive && boss != null) {
+            if (this.bossActive && (this.boss != null)) {
                 batch.draw(bossHead, ((this.camera.position.x - (this.SCREEN_WIDTH / 2)) + Assets.offsetBoosHead),
                     (this.camera.position.y + (this.SCREEN_HEIGHT / 2)) - this.TILED_SIZE);
                 for (int bl=0; bl < this.boss.getLifes(); bl++) {
@@ -751,13 +751,25 @@ public class MainScreen extends BaseScreen {
 	private void collisionLifes(float deltaTime) {
         Array<Vector2> obtainLifes = new Array<Vector2>();
 	    for (Vector2 life : this.lifes) {
-	        if ((life.dst(this.player.getX(), this.player.getY()) < this.player.getWidth()) &&
-	                (this.player.getLifes() < this.player.MAX_LIFES)) {
-	            this.player.counter.gainLife(1);
-	            obtainLifes.add(life);
-	            // Remove life in map
-                TiledMapTileLayer layerPlantfs = (TiledMapTileLayer)(this.map.getLayers().get("Platfs"));
-                layerPlantfs.setCell((int)life.x / this.TILED_SIZE, (int)life.y / this.TILED_SIZE, null);
+	        if (this.normalGravity) {
+                if ((life.dst(this.player.getX(), this.player.getCenterY()) < this.player.getWidth()) &&
+                        (this.player.getLifes() < this.player.MAX_LIFES)) {
+                    this.player.counter.gainLife(1);
+                    obtainLifes.add(life);
+                    // Remove life in map
+                    TiledMapTileLayer layerPlantfs = (TiledMapTileLayer)(this.map.getLayers().get("Platfs"));
+                    layerPlantfs.setCell((int)life.x / this.TILED_SIZE, (int)life.y / this.TILED_SIZE, null);
+                }
+	        }
+	        else {
+                if ((life.dst(this.player.getX(), this.player.getY()) < this.player.getWidth()) &&
+                        (this.player.getLifes() < this.player.MAX_LIFES)) {
+                    this.player.counter.gainLife(1);
+                    obtainLifes.add(life);
+                    // Remove life in map
+                    TiledMapTileLayer layerPlantfs = (TiledMapTileLayer)(this.map.getLayers().get("Platfs"));
+                    layerPlantfs.setCell((int)life.x / this.TILED_SIZE, (int)life.y / this.TILED_SIZE, null);
+                }
 	        }
 	    }
 	    this.lifes.removeAll(obtainLifes, false);
@@ -766,8 +778,8 @@ public class MainScreen extends BaseScreen {
 	private void updateEnemies(float deltaTime) {
 	    for (Enemy enemy : this.enemies) {
 
-	    	isEnemyInScreen(enemy);
-	    	isEnemyFinishedInvoking(enemy);
+	    	this.isEnemyInScreen(enemy);
+	    	this.isEnemyFinishedInvoking(enemy);
 
 	        // Collision between player vs enemy
 	    	if (!enemy.dying){
