@@ -34,6 +34,7 @@ public class MainScreen extends BaseScreen {
 	private TiledMap map;
 	private boolean normalGravity = true;
 	private boolean bossActive = false;
+	private float healingTimer = 50f;
 
 	private Array<Enemy> enemies = new Array<Enemy>();
 	private Array<Rectangle> tiles = new Array<Rectangle>();
@@ -126,7 +127,7 @@ public class MainScreen extends BaseScreen {
         }
 
         this.hud = new HUD(Assets.hudBase);
-        if (checkPoint)
+       // if (checkPoint)
         	this.player.setPosition((this.door.x + 1) * 16, (this.door.y + 1) * 16);
 
 	}
@@ -230,6 +231,28 @@ public class MainScreen extends BaseScreen {
 		this.boss.velocity.scl(1 / delta);
 		this.flowBoss(delta);
 
+		if (this.boss.lifesToGain > 0 )
+		{
+			if (this.boss.lifesToGain == 3 && this.boss.lifesTimer < 10f){
+				this.boss.counter.gainLife(1);
+				--this.boss.lifesToGain;
+				this.boss.lifesTimer = 10f;
+			}
+			else if (this.boss.lifesToGain == 2 && this.boss.lifesTimer < 10f){
+				this.boss.counter.gainLife(1);
+				--this.boss.lifesToGain;
+				this.boss.lifesTimer = 10f;
+			}
+			else if (this.boss.lifesToGain == 1 && this.boss.lifesTimer < 10f){
+				this.boss.counter.gainLife(1);
+				--this.boss.lifesToGain;
+				this.boss.lifesTimer = 10f;
+			}
+
+			this.boss.lifesTimer -= delta;
+		}
+
+
 		this.boss.setPosition(this.boss.desiredPosition.x, this.boss.desiredPosition.y);
 
 		if (this.boss.setToDie && Assets.bossDie.isAnimationFinished(this.boss.stateTime)) {
@@ -291,7 +314,8 @@ public class MainScreen extends BaseScreen {
 		else if (this.boss.flowState == Boss.FlowState.Standing){
 			this.boss.velocity.x = 0;
 			this.boss.flowState = Boss.FlowState.Transition;
-			this.boss.counter.gainLife(3);
+			this.boss.lifesTimer = 10f;
+			this.boss.lifesToGain = 3;
 			Assets.playSound("gainLifeBoss");
 			//addSound(“gainLife”);
 			this.boss.state = Boss.State.Standing;

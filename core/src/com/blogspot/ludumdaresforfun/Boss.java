@@ -32,6 +32,9 @@ public class Boss extends Image {
     public boolean grounded;
     public Counter counter = new Counter(this.MAX_LIFES);  //the same as megaman enemies
 
+    public int lifesToGain = 0;
+    public float lifesTimer = 0f;
+
     public enum Direction {
         Left, Right
     }
@@ -77,17 +80,19 @@ public class Boss extends Image {
     }
 
     public void beingHit() {
-        Assets.playSound("bossHurt");
-        int lifes = this.counter.lostLife();
-        if (lifes <= 0) {
-            this.die();
-        }
-        Timer.schedule(new Task() {
-            @Override
-            public void run() {
-                Boss.this.invincible = false;
-            }
-        }, 1);
+    	if (!this.setToDie){
+    		Assets.playSound("bossHurt");
+    		int lifes = this.counter.lostLife();
+    		if (lifes <= 0) {
+    			this.die();
+    		}
+    		Timer.schedule(new Task() {
+    			@Override
+    			public void run() {
+    				Boss.this.invincible = false;
+    			}
+    		}, 1);
+    	}
     }
 
     public int getLifes() {
