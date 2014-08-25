@@ -41,13 +41,13 @@ public class Player extends Image {
     public Player(Animation animation) {
         super(animation.getKeyFrame(0));
         this.animation = animation;
-        actualFrame = ((AtlasRegion)Assets.playerWalk.getKeyFrame(0));
-		offSetX = actualFrame.offsetX;
-		offSetY = actualFrame.offsetY;
+        this.actualFrame = ((AtlasRegion)Assets.playerWalk.getKeyFrame(0));
+		this.offSetX = this.actualFrame.offsetX;
+		this.offSetY = this.actualFrame.offsetY;
     }
 
     public Rectangle getRect() {
-    	this.rect.set(this.getX() + actualFrame.offsetX - offSetX, this.getY() + actualFrame.offsetY - offSetY , this.actualFrame.packedWidth, this.actualFrame.packedHeight);
+    	this.rect.set((this.getX() + this.actualFrame.offsetX) - this.offSetX, (this.getY() + this.actualFrame.offsetY) - this.offSetY , this.actualFrame.packedWidth, this.actualFrame.packedHeight);
         return this.rect;
     }
 
@@ -74,6 +74,7 @@ public class Player extends Image {
                 @Override
                 public void run() {
                     Player.this.invincible = false;
+                    Player.this.state = Player.State.Standing;
                 }
             }, 1.8f);
         }
