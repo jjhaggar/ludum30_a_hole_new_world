@@ -6,12 +6,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Animation.PlayMode;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
@@ -23,7 +21,6 @@ public class Assets {
     static Animation bossGethit, bossStanding,  bossWalking, bossJumping, bossFalling, bossAttack, bossSummon, bossDie;
     static Animation Ending, GameOver, Intro;
     static Animation hudBase, hudBossHead, hudLifeBoss, hudLifePlayer;
-	static Texture bg;
 	static float offsetPlayer, offsetBoss, offsetShot, offsetEnemy, offsetBoosHead;
 	static Vector2 offsetLifeBoss, offsetLifePlayer;
 
@@ -148,11 +145,6 @@ public class Assets {
 		regions = atlas.findRegions("hud_life_counter_player");
 		hudLifePlayer = new Animation(0, regions);
 		offsetLifePlayer = new Vector2(regions.first().offsetX, regions.first().offsetY);
-	}
-
-	static TextureRegion getBg() {
-		bg = new Texture(Gdx.files.internal("bg.png"));
-		return new TextureRegion(bg, 0, 0, 400, 240);
 	}
 
 	public static void loadMusicAndSound() {
