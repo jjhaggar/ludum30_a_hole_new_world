@@ -65,12 +65,11 @@ public class MainScreen extends BaseScreen {
 	private float xRightBossWall = 420 + 200;
 	private float xLeftBossWall = 420;
 
+	public boolean bossCheckPoint = false;
 
 	float UpOffset = 0;
 
-
-
-	public MainScreen() {
+	public MainScreen(boolean checkPoint) {
 		this.shapeRenderer = new ShapeRenderer();
 
 		this.map = new TmxMapLoader().load("newtiles.tmx");
@@ -125,7 +124,8 @@ public class MainScreen extends BaseScreen {
         }
 
         this.hud = new HUD(Assets.hudBase);
-        //this.player.setPosition(765*16, 62*16);  //TODO: only debug, delete later
+        if (checkPoint)
+        	this.player.setPosition(765*16, 62*16);
 
 	}
 
@@ -949,7 +949,7 @@ public class MainScreen extends BaseScreen {
 	}
 
 	private void gameOver() {
-		LD.getInstance().GAMEOVER_SCREEN = new GameOverScreen();
+		LD.getInstance().GAMEOVER_SCREEN = new GameOverScreen(this.bossCheckPoint);
         LD.getInstance().setScreen(LD.getInstance().GAMEOVER_SCREEN);
 	}
 
@@ -958,6 +958,8 @@ public class MainScreen extends BaseScreen {
 			return;
 		if ((this.player.getX() >= (this.boss.getX() - this.boss.ACTIVATE_DISTANCE)) && !this.bossActive) {
 			this.bossActive = true;
+
+			this.bossCheckPoint = true;
 
 			this.camera.position.x = (this.MAP_WIDTH * this.TILED_SIZE) - (this.SCREEN_WIDTH / 2);
 			this.camera.update();

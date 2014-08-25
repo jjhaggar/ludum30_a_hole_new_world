@@ -24,7 +24,7 @@ public class MenuScreen extends BaseScreen{
 
     @Override
     public void enterButtonPressed() {
-        LD.getInstance().MAIN_SCREEN = new MainScreen();
+        LD.getInstance().MAIN_SCREEN = new MainScreen(false);
         LD.getInstance().setScreen(LD.getInstance().MAIN_SCREEN);
     }
 

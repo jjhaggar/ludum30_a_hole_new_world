@@ -7,12 +7,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class GameOverScreen extends BaseScreen{
 
     Image bg;
+    public boolean bossCheckPoint = false;
 
-	public GameOverScreen() {
+	public GameOverScreen(boolean checkPoint) {
 		if (Assets.musicBoss.isPlaying())
 			Assets.musicBoss.stop();
 		else if (Assets.musicStage.isPlaying())
 			Assets.musicBoss.stop();
+
+		this.bossCheckPoint = checkPoint;
 
 	    this.bg = new BGAnimated(Assets.GameOver);
 	    this.stage.addActor(this.bg);
@@ -26,7 +29,7 @@ public class GameOverScreen extends BaseScreen{
 
     @Override
     public void enterButtonPressed() {
-        LD.getInstance().MAIN_SCREEN = new MainScreen();
+        LD.getInstance().MAIN_SCREEN = new MainScreen(this.bossCheckPoint);
         LD.getInstance().setScreen(LD.getInstance().MAIN_SCREEN);
     }
 
