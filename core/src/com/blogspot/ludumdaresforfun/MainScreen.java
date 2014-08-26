@@ -54,7 +54,7 @@ public class MainScreen extends BaseScreen {
     };
     HUD hud;
 
-	private final float GRAVITY = -10f;
+	private final float GRAVITY = -600f;  //-10 * 60
 	final int SCREEN_HEIGHT = 240;
 	final int SCREEN_WIDTH = 400;
 	final int MAP_HEIGHT;
@@ -136,6 +136,8 @@ public class MainScreen extends BaseScreen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(.9f, .9f, .9f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		delta = Math.min(delta, 0.1f);
 
 		//System.out.println("gravirty" + this.GRAVITY); TODO Player vibrarte when dead in down world
 		this.updatePlayer(delta);
@@ -223,9 +225,9 @@ public class MainScreen extends BaseScreen {
 		this.boss.stateTime += delta;
 
 		if (this.normalGravity)
-			this.boss.velocity.add(0, this.GRAVITY);
+			this.boss.velocity.add(0, this.GRAVITY * delta);
 		else
-			this.boss.velocity.add(0, -this.GRAVITY);
+			this.boss.velocity.add(0, -this.GRAVITY * delta);
 
 		this.boss.velocity.scl(delta);
 
@@ -470,9 +472,9 @@ public class MainScreen extends BaseScreen {
         shot.stateTime += deltaTime;
 
 		if (this.normalGravity && !shot.state.equals(Shot.State.Exploding))
-			shot.velocity.add(0, this.GRAVITY);
+			shot.velocity.add(0, this.GRAVITY * deltaTime);
 		else
-			shot.velocity.add(0, -this.GRAVITY);
+			shot.velocity.add(0, -this.GRAVITY * deltaTime);
 
 		shot.velocity.scl(deltaTime);
 
@@ -958,7 +960,7 @@ public class MainScreen extends BaseScreen {
 		this.player.desiredPosition.y = this.player.getY();
 
 		this.movingShootingJumping(deltaTime);
-		this.gravityAndClamping();
+		this.gravityAndClamping(deltaTime);
 
 		this.player.velocity.scl(deltaTime);
 
@@ -1046,11 +1048,11 @@ public class MainScreen extends BaseScreen {
 	}
 
 
-	private void gravityAndClamping() {
+	private void gravityAndClamping(float deltaTime) {
 		if (this.normalGravity)
-			this.player.velocity.add(0, this.GRAVITY);
+			this.player.velocity.add(0, this.GRAVITY  * deltaTime);
 		else
-			this.player.velocity.add(0, -this.GRAVITY);
+			this.player.velocity.add(0, -this.GRAVITY * deltaTime);
 
 		if (this.player.getY() < this.POS_LOWER_WORLD){
 			//this.camera.position.y = this.POS_LOWER_WORLD;
@@ -1113,10 +1115,10 @@ public class MainScreen extends BaseScreen {
 			if (Gdx.input.isKeyJustPressed(Keys.D)){
 				this.shoot();
 			}
-			if (Gdx.input.isKeyJustPressed(Keys.Y)){
-			    LD.getInstance().ENDING_SCREEN = new EndingScreen();
-			    LD.getInstance().setScreen(LD.getInstance().ENDING_SCREEN);
-			}
+//			if (Gdx.input.isKeyJustPressed(Keys.Y)){
+//			    LD.getInstance().ENDING_SCREEN = new EndingScreen();
+//			    LD.getInstance().setScreen(LD.getInstance().ENDING_SCREEN);
+//			}
 		}
 
 		if (Assets.playerAttack.isAnimationFinished(this.player.stateTime))
