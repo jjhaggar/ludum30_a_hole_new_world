@@ -5,8 +5,8 @@
 	<inherits name='com.badlogic.gdx.controllers.controllers-gwt' />
 	<inherits name='com.badlogic.gdx.physics.box2d.box2d-gwt' />
 
-    <inherits name='LudumGame' />
-	<entry-point class='com.mygdx.ludum.client.HtmlLauncher' />
+    <inherits name='LD' />
+	<entry-point class='com.blogspot.ludumdaresforfun.client.HtmlLauncher' />
 	
 	<add-linker name="xsiframe"/>
 	<set-configuration-property name='xsiframe.failIfScriptTag' value='FALSE'/>
