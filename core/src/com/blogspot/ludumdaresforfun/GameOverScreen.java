@@ -8,12 +8,16 @@ public class GameOverScreen extends BaseScreen{
 
     Image bg;
     public boolean bossCheckPoint = false;
+	private ConfigControllers configControllers;
 
 	public GameOverScreen(boolean checkPoint) {
 		this.bossCheckPoint = checkPoint;
 
 	    this.bg = new BGAnimated(Assets.GameOver);
 	    this.stage.addActor(this.bg);
+
+        this.configControllers = new ConfigControllers(this);
+        this.configControllers.init();
 	}
 
 	@Override
@@ -24,6 +28,7 @@ public class GameOverScreen extends BaseScreen{
 
     @Override
     public void enterButtonPressed() {
+        this.configControllers.terminate();
     	Assets.musicStage.setLooping(true);
     	Assets.musicStage.play();
         LD.getInstance().MAIN_SCREEN = new MainScreen(this.bossCheckPoint);

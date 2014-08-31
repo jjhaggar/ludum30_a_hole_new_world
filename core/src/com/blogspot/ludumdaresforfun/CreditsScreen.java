@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class CreditsScreen extends BaseScreen{
 
     Image bg;
+    private ConfigControllers configControllers;
 
 	public CreditsScreen() {
 		if (Assets.musicBoss.isPlaying())
@@ -16,6 +17,9 @@ public class CreditsScreen extends BaseScreen{
 
 	    this.bg = new BGAnimated(Assets.Ending);
 	    this.stage.addActor(this.bg);
+
+        this.configControllers = new ConfigControllers(this);
+		this.configControllers.init();
 	}
 
 	@Override
@@ -26,6 +30,7 @@ public class CreditsScreen extends BaseScreen{
 
     @Override
     public void enterButtonPressed() {
+        this.configControllers.terminate();
         LD.getInstance().setScreen(new MenuScreen());
     }
 

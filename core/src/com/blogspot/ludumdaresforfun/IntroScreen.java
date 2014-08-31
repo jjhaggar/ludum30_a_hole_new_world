@@ -8,6 +8,7 @@ public class IntroScreen extends BaseScreen{
 
     BGAnimated bg;
     boolean lighningAlreadyPlaying = false;
+	private ConfigControllers configControllers;
 
     public IntroScreen() {
 
@@ -33,6 +34,9 @@ public class IntroScreen extends BaseScreen{
                 return false;
             }
         });
+
+        this.configControllers = new ConfigControllers(this);
+        this.configControllers.init();
     }
 
 	@Override
@@ -43,6 +47,7 @@ public class IntroScreen extends BaseScreen{
 
     @Override
     public void enterButtonPressed() {
+        this.configControllers.terminate();
     	LD.getInstance().MAIN_SCREEN = new MainScreen(false);
         LD.getInstance().setScreen(LD.getInstance().MAIN_SCREEN);
     }

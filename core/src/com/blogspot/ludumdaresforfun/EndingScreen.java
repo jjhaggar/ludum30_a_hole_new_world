@@ -9,6 +9,7 @@ public class EndingScreen extends BaseScreen{
 
     BGAnimated bg;
     boolean lighningAlreadyPlaying;
+    private ConfigControllers configControllers;
 
     public EndingScreen() {
 
@@ -31,6 +32,8 @@ public class EndingScreen extends BaseScreen{
                 return false;
             }
         });
+        this.configControllers = new ConfigControllers(this);
+        this.configControllers.init();
     }
 
 	@Override
@@ -41,6 +44,7 @@ public class EndingScreen extends BaseScreen{
 
     @Override
     public void enterButtonPressed() {
+        this.configControllers.terminate();
         LD.getInstance().setScreen(new CreditsScreen());
     }
 

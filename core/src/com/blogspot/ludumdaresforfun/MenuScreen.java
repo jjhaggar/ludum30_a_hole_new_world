@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class MenuScreen extends BaseScreen{
 
     BGAnimated bg;
+	private ConfigControllers configControllers;
 
     public MenuScreen() {
 
@@ -14,6 +15,9 @@ public class MenuScreen extends BaseScreen{
 
     	this.bg = new BGAnimated(Assets.Intro);
     	this.stage.addActor(this.bg);
+
+        this.configControllers = new ConfigControllers(this);
+        this.configControllers.init();
     }
 
 	@Override
@@ -24,6 +28,7 @@ public class MenuScreen extends BaseScreen{
 
     @Override
     public void enterButtonPressed() {
+        this.configControllers.terminate();
         LD.getInstance().INTRO_SCREEN = new IntroScreen();
         LD.getInstance().setScreen(LD.getInstance().INTRO_SCREEN);
     }

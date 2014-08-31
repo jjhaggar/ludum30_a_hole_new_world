@@ -42,7 +42,7 @@ public class MainScreen extends BaseScreen {
 	public Array<Shot> shotArray = new Array<Shot>();
 	private Array<Vector2> spawns = new Array<Vector2>();
 	private Array<Vector2> lifes = new Array<Vector2>();
-
+	private boolean callGameOver = false;
 	private Boss boss;
 	private Vector2 door;
 
@@ -95,7 +95,7 @@ public class MainScreen extends BaseScreen {
         this.boss = new Boss(Assets.bossStanding);
 
         this.configControllers = new ConfigControllers(this);
-		this.configControllers.init();
+        this.configControllers.init();
 
 		TiledMapTileLayer layerSpawn = (TiledMapTileLayer)(this.map.getLayers().get("Spawns"));
 		this.rectPool.freeAll(this.tiles);
@@ -263,6 +263,7 @@ public class MainScreen extends BaseScreen {
 		this.boss.setPosition(this.boss.desiredPosition.x, this.boss.desiredPosition.y);
 
 		if (this.boss.setToDie && Assets.bossDie.isAnimationFinished(this.boss.stateTime)) {
+			this.configControllers.terminate();
             LD.getInstance().ENDING_SCREEN = new EndingScreen();
             LD.getInstance().setScreen(LD.getInstance().ENDING_SCREEN);
 		}
@@ -642,6 +643,7 @@ public class MainScreen extends BaseScreen {
 			frame = (AtlasRegion)Assets.playerAttack.getKeyFrame(this.player.stateTime);
 			break;
 		case Die:
+			this.configControllers.terminate();
 			frame = (AtlasRegion)Assets.playerDie.getKeyFrame(this.player.stateTime);
 			break;
 		case BeingHit:
@@ -986,7 +988,8 @@ public class MainScreen extends BaseScreen {
 
         this.player.setPosition(this.player.desiredPosition.x, this.player.desiredPosition.y);
 
-		if (Assets.playerDie.isAnimationFinished(this.player.stateTime) && this.player.dead){
+		if (Assets.playerDie.isAnimationFinished(this.player.stateTime) && this.player.dead && !callGameOver){
+			callGameOver = true;
             Timer.schedule(new Task() {
                 @Override
                 public void run() {
@@ -1479,6 +1482,7 @@ public class MainScreen extends BaseScreen {
 
     @Override
     public void backButtonPressed() {
+        this.configControllers.terminate();
         LD.getInstance().MENU_SCREEN = new MenuScreen();
         LD.getInstance().setScreen(LD.getInstance().MENU_SCREEN);
     }
