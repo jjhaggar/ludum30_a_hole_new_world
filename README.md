@@ -26,7 +26,7 @@ All sounds, music and graphics are licensed under a <a rel="license" href="http:
 Help
 -------
 
-If you've got problems importing the project into Eclipse, you can do it by following tese steps:
+If you've got problems importing the project into Eclipse, you can do it by following these steps:
 
 1. Open console (cmd.exe) and type "git clone https://github.com/jjhaggar/ludum30_a_hole_new_world.git"
 
